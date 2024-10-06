@@ -18,7 +18,7 @@ const Sidebar = () => {
                 </li>
             </ul>
             <ul className='mt-3 text-white font-bold bg-gray-800'>
-                <h1 className='text-xl text-white font-medium mx-3 py-3'> Thí nghiệm </h1>
+                <h1 className='text-xl text-white font-medium mx-3 py-3'> Thí nghiệm  </h1>
                 <li className='mb-2 rounded hover:shadow hover:text-blue-400 px-2 py-2'>
                     <a href="" className='px-3 font-light'>
                         <FaChartLine className='inline-block w-6 h-6 mr-2 -mt-2'>
