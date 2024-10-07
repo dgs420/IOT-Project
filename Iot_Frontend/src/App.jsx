@@ -1,23 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Sidebar from './components/Sidebar'
-import Navbar from './components/Navbar'
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Routes
+} from "react-router-dom";
+import Layout from "./components/shared/Layout";
+import Home from "./pages/Home";
+import Details from "./pages/Details";
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      {/* <div className='flex'> */}
-        <Sidebar />
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="users" element={<p> users</p>} />
+          <Route path="details" element={<Details/>} />
+          <Route path="settings" element={<p> settings</p>} />
+          <Route path="about" element={<p> about</p>} />
 
-        <Navbar />
-
-      {/* </div> */}
-
-    </>
-  )
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
