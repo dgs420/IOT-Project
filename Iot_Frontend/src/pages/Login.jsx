@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import parkingImage from '../assets/parking-management-system.jpeg';
 
 const Login = () => {
+    const[email, setEmail] = useState('');
+    const[password, setPassword] = useState('');
     return (
         <div className='w-full h-screen flex items-start'>
             <div className='relative w-1/2 h-full flex flex-col'>
@@ -25,11 +27,11 @@ const Login = () => {
                         <input
                             type='email'
                             placeholder='Email'
-                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black transition duration-200 ease-in-out' />
+                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black hover:border-black transition duration-200 ease-in-out' />
                         <input
                             type='password'
                             placeholder='Password'
-                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black transition duration-200 ease-in-out' />
+                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black hover:border-black transition duration-200 ease-in-out' />
                     </div>
 
                     <div className='w-full flex flex-col my-4'>
