@@ -8,6 +8,7 @@ import {
 import Layout from "./components/shared/Layout";
 import Home from "./pages/Home";
 import Details from "./pages/Details";
+import Login from "./pages/Login";
 
 export default function App() {
   return (
@@ -20,6 +21,8 @@ export default function App() {
           <Route path="settings" element={<p> settings</p>} />
           <Route path="about" element={<p> about</p>} />
 
+        </Route>
+        <Route path="/login" element={<Login/>}>
         </Route>
       </Routes>
     </Router>
