@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 import Layout from "./components/shared/Layout";
 import Home from "./pages/Home";
-import Details from "./pages/Details";
 import Login from "./pages/Login";
+import Statistics from "./pages/Statistics";
 
 export default function App() {
   return (
@@ -17,7 +17,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="users" element={<p> users</p>} />
-          <Route path="details" element={<Details/>} />
+          <Route path="details" element={<Statistics/>} />
           <Route path="settings" element={<p> settings</p>} />
           <Route path="about" element={<p> about</p>} />
 
