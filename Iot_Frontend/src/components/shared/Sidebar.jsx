@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Sidebar = () => {
     return (
-        <div className='w-1/6 bg-slate-900 fixed h-full py-2 '>
+        <div className='w-64 bg-slate-900 fixed h-full py-2 '>
             <div>
                 <h1 className='text-2xl text-white font-bold  mx-3 mt-1 '> Dashboard</h1>
             </div>

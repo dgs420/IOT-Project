@@ -5,7 +5,6 @@ import DashBoard from '../components/DashBoard'
 const Statistics = () => {
   return (
     <div>
-      Details
       <DashBoard/>
     </div>
   )
