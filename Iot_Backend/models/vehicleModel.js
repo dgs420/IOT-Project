@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./userModel');
 
-const Vehicle = sequelize.define('Vehicle', {
+const Vehicle = sequelize.define('vehicle', {
   vehicle_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -22,6 +22,8 @@ const Vehicle = sequelize.define('Vehicle', {
   vehicle_type: {
     type: DataTypes.ENUM('car', 'bike', 'others'),
   },
+}, {
+  timestamps: false,
 });
 
 module.exports = Vehicle;

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Vehicle = require('./vehicleModel');
 
-const RfidCard = sequelize.define('RfidCard', {
+const RfidCard = sequelize.define('rfid_card', {
   card_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -24,6 +24,9 @@ const RfidCard = sequelize.define('RfidCard', {
       key: 'vehicle_id',
     },
   },
+  
+},{
+  timestamps: false,
 });
 
 module.exports = RfidCard;

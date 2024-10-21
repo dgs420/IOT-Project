@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const sequelize = require('./config/database');
-// const lockRoutes = require('./routes/lockRoutes');
+const trafficLogRoutes = require('./routes/trafficLogRoutes'); // Import the traffic log routes
 
 // Import models
 const User = require('./models/userModel');
@@ -10,9 +10,20 @@ const Vehicle = require('./models/vehicleModel');
 const RfidCard = require('./models/rfidCardModel');
 const TrafficLog = require('./models/trafficLogModel');
 
-const app = express();
-app.use(express.json());
+// Load environment variables
+dotenv.config();
 
+// Initialize the app
+const app = express();
+
+// Middleware
+app.use(express.json()); // Allows the use of JSON in requests
+app.use(cors()); // Allows cross-origin requests
+
+// Routes
+app.use('/api/logs', trafficLogRoutes); // Attach the traffic log routes
+
+// Initialize and sync the database
 async function init() {
   try {
     await sequelize.authenticate();
@@ -30,10 +41,7 @@ async function init() {
 
 init();
 
-
-// Routes
-// app.use('/api/lock', lockRoutes);
-
+// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

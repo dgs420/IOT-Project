@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const RfidCard = require('./rfidCardModel');
 
-const TrafficLog = sequelize.define('TrafficLog', {
+const TrafficLog = sequelize.define('traffic_log', {
   log_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -23,6 +23,8 @@ const TrafficLog = sequelize.define('TrafficLog', {
     type: DataTypes.ENUM('enter', 'exit'),
     allowNull: false,
   },
+},{
+  timestamps: false,
 });
 
 module.exports = TrafficLog;
