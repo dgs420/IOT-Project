@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const sequelize = require('./config/database');
 const trafficLogRoutes = require('./routes/trafficLogRoutes'); // Import the traffic log routes
+const connectMqtt = require('./services/mqttService');
 
 // Import models
 const User = require('./models/userModel');
@@ -32,6 +33,10 @@ async function init() {
     // Sync all models
     await sequelize.sync(); // This will create tables based on your model definitions
     console.log('All models were synchronized successfully.');
+
+    connectMqtt(); // Start the MQTT service within the server
+    
+    console.log('Server is running with MQTT enabled');
 
     // Your server logic here
   } catch (error) {

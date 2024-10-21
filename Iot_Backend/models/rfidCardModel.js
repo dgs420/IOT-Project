@@ -29,4 +29,12 @@ const RfidCard = sequelize.define('rfid_card', {
   timestamps: false,
 });
 
+RfidCard.getCardByNumber = async function(card_number) {
+  return await RfidCard.findOne({
+    where: {
+      card_number: card_number
+    }
+  });
+};
+
 module.exports = RfidCard;
