@@ -48,28 +48,63 @@ exports.getTrafficByHour = async (req, res) => {
   }
 };
 
+exports.getTrafficByDay = async (req, res) => {
+  try {
+    let { date } = req.query;
+
+    // If no date is provided, default to the current date
+    const currentDate = date ? new Date(date) : new Date();
+
+    // Get the start and end of the specified day
+    const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));  // 00:00:00
+    const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999)); // 23:59:59
+
+    // Query traffic logs for the specific day
+    const trafficLogs = await TrafficLog.findAll({
+      where: {
+        time: {
+          [Op.between]: [startOfDay, endOfDay]
+        }
+      },
+      order: [['time', 'ASC']] // Optional: order by time ascending
+    });
+
+    if (trafficLogs.length === 0) {
+      return res.status(404).json({ message: 'No traffic logs found for the specified day.' });
+    }
+
+    // Return the logs for the day
+    res.status(200).json(trafficLogs);
+  } catch (error) {
+    console.error('Error fetching traffic logs for the specific day:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 exports.getTrafficByWeek = async (req, res) => {
   try {
     let { start_date } = req.query;
 
+    // Parse the start_date (Sunday), default to current date if not provided
     const currentDate = start_date ? new Date(start_date) : new Date();
-
-    // Calculate Monday
     const dayOfWeek = currentDate.getDay();
-    const monday = new Date(currentDate);
-    monday.setDate(monday.getDate() - ((dayOfWeek + 6) % 7));
+    const sunday = new Date(currentDate);
+    sunday.setDate(sunday.getDate() - dayOfWeek); // Move back to Sunday
+    const saturday = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6); // Move forward to Saturday
 
-    // Calculate Sunday
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
+    // Set time to 00:00:00 for Sunday start and 23:59:59 for Saturday end
+    const startOfWeek = new Date(sunday.setHours(0, 0, 0, 0)); 
+    const endOfWeek = new Date(saturday.setHours(23, 59, 59, 999)); 
 
-    console.log('Monday:', monday, 'Sunday:', sunday); // Log the calculated dates
+    console.log('Week range from:', startOfWeek, 'to:', endOfWeek);
 
-    // Query logs
+    // Fetch traffic logs between Sunday and Saturday
     const trafficData = await TrafficLog.findAll({
       where: {
         time: {
-          [Op.between]: [monday, sunday],
+          [Op.gte]: startOfWeek,
+          [Op.lte]: endOfWeek,
         }
       },
       attributes: [
@@ -77,39 +112,37 @@ exports.getTrafficByWeek = async (req, res) => {
         'action',
         [sequelize.fn('COUNT', sequelize.col('log_id')), 'count']
       ],
-      group: ['day', 'action']
+      group: ['day', 'action'],
+      order: [[sequelize.fn('DAYOFWEEK', sequelize.col('time')), 'ASC']],
     });
 
-    console.log('Traffic Data:', trafficData); // Log the fetched traffic data
-
-    // Initialize result array
+    // Initialize result array for Sunday to Saturday
     const result = [
-      { day: '1', entering: 0, leaving: 0 }, // Sunday
-      { day: '2', entering: 0, leaving: 0 }, // Monday
-      { day: '3', entering: 0, leaving: 0 }, // Tuesday
-      { day: '4', entering: 0, leaving: 0 }, // Wednesday
-      { day: '5', entering: 0, leaving: 0 }, // Thursday
-      { day: '6', entering: 0, leaving: 0 }, // Friday
-      { day: '7', entering: 0, leaving: 0 }  // Saturday
+      { day: 'Sunday', enter: 0, exit: 0 },
+      { day: 'Monday', enter: 0, exit: 0 },
+      { day: 'Tuesday', enter: 0, exit: 0 },
+      { day: 'Wednesday', enter: 0, exit: 0 },
+      { day: 'Thursday', enter: 0, exit: 0 },
+      { day: 'Friday', enter: 0, exit: 0 },
+      { day: 'Saturday', enter: 0, exit: 0 }
     ];
 
+    // Process and group traffic logs by day
     trafficData.forEach(log => {
-      const dayIndex = parseInt(log.get('day')) - 1; // Correctly map DAYOFWEEK to array index (Sunday = 0)
+      const dayIndex = parseInt(log.get('day')) - 1; // DAYOFWEEK returns 1=Sunday, 7=Saturday
       if (log.get('action') === 'enter') {
-        result[dayIndex].entering += log.get('count'); // Use += to accumulate counts
+        result[dayIndex].enter += log.get('count');
       } else if (log.get('action') === 'exit') {
-        result[dayIndex].leaving += log.get('count'); // Use += to accumulate counts
+        result[dayIndex].exit += log.get('count');
       }
     });
 
-    res.json(result);
-    
+    res.status(200).json(result);
   } catch (error) {
-    console.error('Error fetching traffic log data by day of the week:', error);
-    res.status(500).json({ message: 'Server error', error: error.message }); // Include error details in response
+    console.error('Error fetching traffic log data by week:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
 exports.getLogsByCardId = async (req, res) => {
   const { cardId } = req.params; // Get card_id from URL parameters
 
