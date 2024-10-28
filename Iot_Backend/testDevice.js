@@ -1,5 +1,5 @@
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://localhost:1883'); // Connect to your MQTT broker
+const client = mqtt.connect('mqtt://broker.hivemq.com:1883'); // Connect to your MQTT broker
 
 // Simulate a device sending data to the broker
 function sendCardData(card_number, action) {
@@ -47,5 +47,6 @@ function listenForResponse(action) {
 // listenForResponse('exit'); // Simulate listening for exit gate response
 // sendCardData('RFID0003', 'exit'); // Simulate scanning at the exit gate
 // listenForResponse('exit');
-sendCardData('RFID0001', 'exit'); // Simulate scanning at the exit gate
+sendCardData('RFID0002', 'exit'); // Simulate scanning at the exit gate
 listenForResponse('exit'); // Simulate listening for exit gate response
+// listenForResponse('enter'); 

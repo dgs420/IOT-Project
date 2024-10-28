@@ -7,6 +7,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   host: process.env.DB_HOST,
   dialect: 'mysql',
   timezone: '+07:00',
+  logging: false,
   dialectOptions:{
     dateStrings: true, // This ensures dates are returned as strings
     typeCast: function (field, next) { // Convert timestamps to Date objects

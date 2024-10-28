@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const RfidCard = require('./rfidCardModel');
+
 
 const User = sequelize.define('user', {
   user_id: {
@@ -42,5 +44,7 @@ const User = sequelize.define('user', {
 },{
   timestamps: false,
 });
+
+
 
 module.exports = User;

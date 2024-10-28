@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Vehicle = require('./vehicleModel');
+const User = require('./userModel');
+const TrafficLog = require('./trafficLogModel');
+
 
 const RfidCard = sequelize.define('rfid_card', {
   card_id: {
@@ -13,21 +15,33 @@ const RfidCard = sequelize.define('rfid_card', {
     allowNull: false,
     unique: true,
   },
+  user_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'users',
+      key: 'user_id',
+    },
+  },
   status: {
     type: DataTypes.ENUM('parking', 'exited'),
     allowNull: false,
   },
-  vehicle_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Vehicle,
-      key: 'vehicle_id',
-    },
+  vehicle_number: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  vehicle_type: {
+    type: DataTypes.ENUM('car', 'bike', 'others'),
   },
   
 },{
   timestamps: false,
 });
+
+
+// RfidCard.belongsTo(User, { foreignKey: 'user_id' });
+
+// TrafficLog.belongsTo(RfidCard, { foreignKey: 'card_id' });
 
 RfidCard.getCardByNumber = async function(card_number) {
   return await RfidCard.findOne({

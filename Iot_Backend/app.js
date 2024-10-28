@@ -7,10 +7,15 @@ const connectMqtt = require('./services/mqttService');
 
 // Import models
 const User = require('./models/userModel');
-const Vehicle = require('./models/vehicleModel');
+// const Vehicle = require('./models/vehicleModel');
 const RfidCard = require('./models/rfidCardModel');
 const TrafficLog = require('./models/trafficLogModel');
 
+RfidCard.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(RfidCard, { foreignKey: 'user_id' });
+
+RfidCard.hasMany(TrafficLog, { foreignKey: 'card_id' });
+TrafficLog.belongsTo(RfidCard, { foreignKey: 'card_id' });
 // Load environment variables
 dotenv.config();
 

@@ -1,5 +1,5 @@
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://localhost:1883'); // Connect to the broker
+const client = mqtt.connect('broker.hivemq.com:1883'); // Connect to the broker
 const RfidCard = require('./models/rfidCardModel');
 const TrafficLog = require('./models/trafficLogModel');
 

@@ -1,4 +1,6 @@
 const TrafficLog = require('../models/trafficLogModel');
+const User = require('../models/userModel');
+const RfidCard = require('../models/rfidCardModel');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 
@@ -12,7 +14,61 @@ exports.getAllLogs = async (req, res) => {
   }
 };
 
-// Get traffic count by hour (2-hour periods)
+exports.getDetailedLogs = async (req, res) => {
+  try {
+    const logs = await TrafficLog.findAll({
+      include: [
+        {
+          model: RfidCard,
+          attributes: ['card_number', 'vehicle_number', 'vehicle_type'], // Fields from RfidCard
+          include: [
+            {
+              model: User,
+              attributes: ['user_id', 'username'] // Fields from User
+            }
+          ]
+        }
+      ],
+      order: [['time', 'DESC']] // Optional: Order by time, descending
+    });
+
+    if (logs.length === 0) {
+      return res.status(404).json({ message: 'No logs found.' });
+    }
+
+    res.status(200).json(logs);
+  } catch (error) {
+    console.error('Error fetching detailed logs:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// exports.getDetailedLogs = async (req, res) => {
+//   try {
+//     const logs = await sequelize.query(`
+//       SELECT
+//         traffic_logs.log_id,
+//         traffic_logs.time,
+//         traffic_logs.action,
+//         rfid_cards.card_number,
+//         rfid_cards.vehicle_number,
+//         rfid_cards.vehicle_type,
+//         users.user_id
+//       FROM traffic_logs
+//       JOIN rfid_cards ON traffic_logs.card_id = rfid_cards.card_id
+//       JOIN users ON rfid_cards.user_id = users.user_id
+//       ORDER BY traffic_logs.time DESC;
+//     `, {
+//       type: sequelize.QueryTypes.SELECT // Specify that we're expecting a SELECT query
+//     });
+
+//     res.status(200).json(logs);
+//   } catch (error) {
+//     console.error('Error fetching traffic logs with details:', error);
+//     res.status(500).json({ message: 'Server error', error: error.message });
+//   }
+// };
+
 exports.getTrafficByHour = async (req, res) => {
   try {
     const logs = await TrafficLog.findAll();
@@ -27,18 +83,18 @@ exports.getTrafficByHour = async (req, res) => {
 
     // Initialize trafficData with empty values
     hourRanges.forEach(range => {
-      trafficData.push({ range, entering: 0, leaving: 0 });
+      trafficData.push({ range, enter: 0, exit: 0 });
     });
 
     // Process logs and group by hour ranges
     logs.forEach(log => {
-      const logHour = new Date(log.time).getHours();
+      const logHour = new Date(log.time).getUTCHours();
       const index = Math.floor(logHour / 2); // Get 2-hour range index
 
       if (log.action === 'enter') {
-        trafficData[index].entering++;
+        trafficData[index].enter++;
       } else if (log.action === 'exit') {
-        trafficData[index].leaving++;
+        trafficData[index].exit++;
       }
     });
 
@@ -118,13 +174,13 @@ exports.getTrafficByWeek = async (req, res) => {
 
     // Initialize result array for Sunday to Saturday
     const result = [
-      { day: 'Sunday', enter: 0, exit: 0 },
-      { day: 'Monday', enter: 0, exit: 0 },
-      { day: 'Tuesday', enter: 0, exit: 0 },
-      { day: 'Wednesday', enter: 0, exit: 0 },
-      { day: 'Thursday', enter: 0, exit: 0 },
-      { day: 'Friday', enter: 0, exit: 0 },
-      { day: 'Saturday', enter: 0, exit: 0 }
+      { day: 'Sun', enter: 0, exit: 0 },
+      { day: 'Mon', enter: 0, exit: 0 },
+      { day: 'Tue', enter: 0, exit: 0 },
+      { day: 'Wed', enter: 0, exit: 0 },
+      { day: 'Thu', enter: 0, exit: 0 },
+      { day: 'Fri', enter: 0, exit: 0 },
+      { day: 'Sat', enter: 0, exit: 0 }
     ];
 
     // Process and group traffic logs by day

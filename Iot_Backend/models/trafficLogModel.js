@@ -11,7 +11,7 @@ const TrafficLog = sequelize.define('traffic_log', {
   card_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: RfidCard,
+      model: 'rfid_cards',
       key: 'card_id',
     },
   },

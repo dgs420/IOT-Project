@@ -3,7 +3,7 @@ const RfidCard = require('../models/rfidCardModel');
 const TrafficLog = require('../models/trafficLogModel');
 
 const connectMqtt = () => {
-  const client = mqtt.connect('mqtt://localhost:1883');
+  const client = mqtt.connect('mqtt://broker.hivemq.com:1883');
 
   // Subscribe to "enter" and "exit" topics
   client.on('connect', () => {
@@ -21,6 +21,14 @@ const connectMqtt = () => {
     const data = JSON.parse(message.toString());
     const { card_number, action } = data;
 
+    const rawMessage = message.toString();
+    console.log(`Received message on topic ${topic}:`, rawMessage);
+
+    // Check if the message is empty
+    if (!rawMessage) {
+      console.error('Received an empty message');
+      return;
+    }
     // Use the RfidCard model to find the card by its number
     const card = await RfidCard.findOne({ where: { card_number } });
     let responseTopic;

@@ -4,13 +4,13 @@ import { Card, CardContent, CardHeader } from '@mui/material';
 
 
 const data = [
-  { day: 'Mon', entering: 150, leaving: 130 },
-  { day: 'Tue', entering: 200, leaving: 190 },
-  { day: 'Wed', entering: 175, leaving: 160 },
-  { day: 'Thur', entering: 250, leaving: 240 },
-  { day: 'Fri', entering: 300, leaving: 280 },
-  { day: 'Sat', entering: 275, leaving: 260 },
-  { day: 'Sun', entering: 200, leaving: 180 },
+  { day: 'Sun', enter: 200, exit: 180 },
+  { day: 'Mon', enter: 150, exit: 130 },
+  { day: 'Tue', enter: 200, exit: 190 },
+  { day: 'Wed', enter: 175, exit: 160 },
+  { day: 'Thur', enter: 250, exit: 240 },
+  { day: 'Fri', enter: 300, exit: 280 },
+  { day: 'Sat', enter: 275, exit: 260 },
 ];
 
 export const TrafficCard = () => {
@@ -30,8 +30,8 @@ export const TrafficCard = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="entering" fill="#82ca9d" name="Vehicles Entering" />
-            <Bar dataKey="leaving" fill="#8884d8" name="Vehicles Leaving" />
+            <Bar dataKey="enter" fill="#82ca9d" name="Vehicles Entering" />
+            <Bar dataKey="exit" fill="#8884d8" name="Vehicles Leaving" />
           </BarChart>
         </ResponsiveContainer>
         {/* <div className="h-40 bg-gray-200 mt-4 rounded"></div> */}
