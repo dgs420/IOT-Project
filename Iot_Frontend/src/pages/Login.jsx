@@ -4,6 +4,29 @@ import parkingImage from '../assets/parking-management-system.jpeg';
 const Login = () => {
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:5000/api/user/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+            if(response.ok) {
+
+            }
+            const { token } = await response.json();
+            localStorage.setItem('token', token);  // Store the JWT securely
+            // Redirect user to a dashboard or protected route
+        } catch (error) {
+            setError(error.message);
+        }
+    };
     return (
         <div className='w-full h-screen flex items-start'>
             <div className='relative w-1/2 h-full flex flex-col'>
@@ -23,32 +46,39 @@ const Login = () => {
                         <p className='text-sm mb-2'>Login to continue</p>
                     </div>
 
-                    <div className='w-full flex flex-col'>
+                    <form onSubmit={handleLogin} className='w-full flex flex-col'>
                         <input
                             type='email'
-                            placeholder='Email'
-                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black hover:border-black transition duration-200 ease-in-out' />
+                            placeholder='Username'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black hover:border-black transition duration-200 ease-in-out'/>
                         <input
                             type='password'
                             placeholder='Password'
-                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black hover:border-black transition duration-200 ease-in-out' />
-                    </div>
-
-                    <div className='w-full flex flex-col my-4'>
-                        <button className='w-full text-white my-2 bg-black rounded-md p-5 text-center flex items-center justify-center transition duration-300 ease-in-out transform hover:bg-gray-800 '>
-                            Log in
-                        </button>
-                        <button className='w-full text-black my-2 bg-white rounded-md p-5 text-center flex items-center justify-center border border-black transition duration-300 ease-in-out transform hover:bg-gray-100'>
-                            Register
-                        </button>
-                    </div>
-
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className='w-full text-black py-4 bg-transparent border-b border-gray-400 outline-none focus:border-black hover:border-black transition duration-200 ease-in-out'/>
+                        {error && <p className="text-red-500 mt-2">{error}</p>}
+                        <div className='w-full flex flex-col my-4'>
+                            <button
+                                type='submit'
+                                className='w-full text-white my-2 bg-black rounded-md p-5 text-center flex items-center justify-center transition duration-300 ease-in-out transform hover:bg-gray-800 '>
+                                Log in
+                            </button>
+                            <button
+                                className='w-full text-black my-2 bg-white rounded-md p-5 text-center flex items-center justify-center border border-black transition duration-300 ease-in-out transform hover:bg-gray-100'>
+                                Register
+                            </button>
+                        </div>
+                    </form>
 
 
                 </div>
 
                 <div className='w-full my-4'>
-                    <p className='text-sm font-normal text-black'>Don't have an account? <span className='font-semibold underline underline-offset-2 cursor-pointer'>Sign up</span></p>
+                    <p className='text-sm font-normal text-black'>Don&#39;t have an account? <span
+                        className='font-semibold underline underline-offset-2 cursor-pointer'>Sign up</span></p>
                 </div>
 
             </div>
