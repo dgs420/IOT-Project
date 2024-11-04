@@ -18,7 +18,7 @@ const Login = () => {
                 throw new Error('Login failed');
             }
             if(response.ok) {
-
+                window.location.href = '/';
             }
             const { token } = await response.json();
             localStorage.setItem('token', token);  // Store the JWT securely

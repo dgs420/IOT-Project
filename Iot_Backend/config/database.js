@@ -9,13 +9,13 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   timezone: '+07:00',
   logging: false,
   dialectOptions:{
-    dateStrings: true, // This ensures dates are returned as strings
-    typeCast: function (field, next) { // Convert timestamps to Date objects
-      if (field.type === 'DATETIME' || field.type === 'TIMESTAMP') {
-        return new Date(field.string() + 'Z'); // Convert to UTC and append 'Z' to indicate UTC time
-      }
-      return next();
-    }
+    // dateStrings: true, // This ensures dates are returned as strings
+    // typeCast: function (field, next) { // Convert timestamps to Date objects
+    //   if (field.type === 'DATETIME' || field.type === 'TIMESTAMP') {
+    //     return new Date(field.string() + 'Z'); // Convert to UTC and append 'Z' to indicate UTC time
+    //   }
+    //   return next();
+    // }
   }
 });
 

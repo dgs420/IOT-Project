@@ -47,6 +47,6 @@ function listenForResponse(action) {
 // listenForResponse('exit'); // Simulate listening for exit gate response
 // sendCardData('RFID0003', 'exit'); // Simulate scanning at the exit gate
 // listenForResponse('exit');
-sendCardData('RFID0002', 'exit'); // Simulate scanning at the exit gate
-listenForResponse('exit'); // Simulate listening for exit gate response
+sendCardData('F39C6A1D', 'enter'); // Simulate scanning at the exit gate
+listenForResponse('enter'); // Simulate listening for exit gate response
 // listenForResponse('enter'); 

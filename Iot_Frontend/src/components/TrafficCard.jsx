@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader } from '@mui/material';
 
@@ -14,6 +14,22 @@ const data = [
 ];
 
 export const TrafficCard = () => {
+  const [weekData, setWeekData] = React.useState([]);
+  const fetchWeekData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/logs/traffic-by-week');
+      if (!response.ok) {
+        throw new Error('Failed to fetch logs');
+      }
+      const data = await response.json();
+      setWeekData(data);
+    } catch (error){
+      console.error('Error fetching traffic logs:', error);
+    }
+  }
+  useEffect(() => {
+    fetchWeekData();
+  },[])
   return (
     <Card>
       {/* <CardHeader>
@@ -24,7 +40,7 @@ export const TrafficCard = () => {
         <div className="text-green-500">↑ 2.1% vs last week</div>
         <div className="text-sm text-gray-500">Sales from 1-12 Dec, 2020</div>
         <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <BarChart data={weekData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" />
             <YAxis />

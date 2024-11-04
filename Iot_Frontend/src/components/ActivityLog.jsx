@@ -62,7 +62,7 @@ export const ActivityLog = () => {
     };
 
     getTrafficLogs();
-    setInterval(getTrafficLogs, 8000)
+    // setInterval(getTrafficLogs)
 
   }, []);
   return (
@@ -86,7 +86,7 @@ export const ActivityLog = () => {
               <tr key={log.log_id} className="hover:bg-gray-100 ">
                 <td className="py-2 px-4 border-b text-center">{log.log_id}</td>
                 <td className="py-2 px-4 border-b text-center">{log.card_id}</td>
-                <td className="py-2 px-4 border-b text-center">{new Date(log.time).toUTCString()}</td>
+                <td className="py-2 px-4 border-b text-center">{new Date(log.time).toLocaleString()}</td>
                 <td className="py-2 px-4 border-b text-center">{log.action}</td>
                 <td className="py-2 px-4 border-b text-center">{log.rfid_card.card_number}</td>
                 <td className="py-2 px-4 border-b text-center">{log.rfid_card.vehicle_number}</td>

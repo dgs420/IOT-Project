@@ -88,7 +88,7 @@ exports.getTrafficByHour = async (req, res) => {
 
     // Process logs and group by hour ranges
     logs.forEach(log => {
-      const logHour = new Date(log.time).getUTCHours();
+      const logHour = new Date(log.time).getHours();
       const index = Math.floor(logHour / 2); // Get 2-hour range index
 
       if (log.action === 'enter') {
