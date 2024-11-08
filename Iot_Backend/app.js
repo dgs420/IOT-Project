@@ -4,6 +4,8 @@ const cors = require('cors');
 const sequelize = require('./config/database');
 const trafficLogRoutes = require('./routes/trafficLogRoutes'); // Import the traffic log routes
 const userRoutes = require('./routes/userRoutes');
+const cardRoutes = require('./routes/cardRoutes');
+
 const connectMqtt = require('./services/mqttService');
 
 // Import models
@@ -29,7 +31,8 @@ app.use(cors()); // Allows cross-origin requests
 
 // Routes
 app.use('/api/logs', trafficLogRoutes); // Attach the traffic log routes
-app.use('/api/user', userRoutes); // Attach the traffic log routes
+app.use('/api/user', userRoutes);
+app.use('/api/card', cardRoutes);
 
 // Initialize and sync the database
 async function init() {

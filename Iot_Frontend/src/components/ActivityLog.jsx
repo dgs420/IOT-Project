@@ -1,53 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
 
-// const exampleLogs = [
-//     {
-//       log_id: 27,
-//       card_id: 5,
-//       time: '2024-10-25T15:33:38.000Z',
-//       action: 'exit',
-//       rfid_card: {
-//         card_number: 'RFID0001',
-//         vehicle_number: 'ABC123',
-//         vehicle_type: 'car',
-//         user: {
-//           user_id: 1,
-//           username: 'jdoe',
-//         },
-//       },
-//     },
-//     // Additional log entries here...
-//   ];
-// const fetchTrafficLogs = async () => {
-//   return [
-//     {
-//       log_id: 27,
-//       card_id: 5,
-//       time: '2024-10-25T15:33:38.000Z',
-//       action: 'exit',
-//       rfid_card: {
-//         card_number: 'RFID0001',
-//         vehicle_number: 'ABC123',
-//         vehicle_type: 'car',
-//         user: {
-//           user_id: 1,
-//           username: 'jdoe',
-//         },
-//       },
-//     },
-//
-//   ];
-// };
 
 export const ActivityLog = () => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    // const getTrafficLog = async () => {
-    //   const data = await fetchTrafficLogs();// Replace with API call to fetch logs
-    //   setLogs(data);
-    // };
+
     const getTrafficLogs = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/logs/all-logs-details'); // Adjust URL as needed

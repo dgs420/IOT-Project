@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Statistics from "./pages/Statistics";
 import PersonalProfile from "./pages/PersonalProfile.jsx";
 import UserList from "./pages/UserList.jsx";
+import UserDetail from "./pages/UserDetail.jsx";
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
           <Route path="about" element={<p> about</p>} />
           <Route path="profile" element={<PersonalProfile />} />
           <Route path="users-list" element={<UserList />} />
-
+          <Route path="user/:user_id" element={<UserDetail />} />
         </Route>
         <Route path="/login" element={<Login/>}>
         </Route>
