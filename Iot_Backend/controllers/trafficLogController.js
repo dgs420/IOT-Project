@@ -246,7 +246,7 @@ exports.getUserLogsByUserId = async (req, res) => {
       where: {
         card_id: cardIds // Filter by card IDs
       },
-      order: [['time', 'DESC']], // Optional: Order by time
+      order: [['time', 'DESC']],
     });
 
     // Check if logs were found
