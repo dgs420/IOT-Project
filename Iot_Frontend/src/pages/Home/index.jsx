@@ -1,6 +1,6 @@
 import React from 'react'
-import DashBoard from '../components/DashBoard'
-import { ActivityLog } from '../components/ActivityLog'
+import DashBoard from '../Statistics/Components/DashBoard.jsx'
+import { ActivityLog } from './Components/ActivityLog.jsx'
 
 const Home = () => {
     return (

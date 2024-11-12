@@ -1,8 +1,7 @@
 import React from 'react'
-import VehiclesPieChart from './VehiclesPieChart'
-import { TrafficCard } from './TrafficCard'
-import { HourlyChart } from './HourlyChart'
-import { ActivityLog } from './ActivityLog'
+import VehiclesPieChart from './VehiclesPieChart.jsx'
+import { TrafficCard } from './TrafficCard.jsx'
+import { HourlyChart } from './HourlyChart.jsx'
 // import ActivityLog from './ActivityLog'
 
 const DashBoard = () => {

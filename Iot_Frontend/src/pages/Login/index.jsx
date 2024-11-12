@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import parkingImage from '../assets/parking-management-system.jpeg';
+import parkingImage from '../../assets/parking-management-system.jpeg';
 
 const Login = () => {
     const[email, setEmail] = useState('');

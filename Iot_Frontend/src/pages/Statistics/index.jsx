@@ -1,6 +1,6 @@
 import React from 'react'
 
-import DashBoard from '../components/DashBoard'
+import DashBoard from './Components/DashBoard.jsx'
 
 const Statistics = () => {
   return (

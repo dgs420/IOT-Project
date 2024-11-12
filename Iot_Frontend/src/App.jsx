@@ -6,12 +6,12 @@ import {
   Routes
 } from "react-router-dom";
 import Layout from "./components/shared/Layout";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Statistics from "./pages/Statistics";
-import PersonalProfile from "./pages/PersonalProfile.jsx";
-import UserList from "./pages/UserList.jsx";
-import UserDetail from "./pages/UserDetail.jsx";
+import Home from "./pages/Home/index.jsx";
+import Login from "./pages/Login/index.jsx";
+import Statistics from "./pages/Statistics/index.jsx";
+import PersonalProfile from "./pages/PersonalProfile/index.jsx";
+import UserList from "./pages/UserList/UserList.jsx";
+import UserDetail from "./pages/UserDetail/UserDetail.jsx";
 
 export default function App() {
   return (
