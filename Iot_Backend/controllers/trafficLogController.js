@@ -69,8 +69,44 @@ exports.getDetailedLogs = async (req, res) => {
 //   }
 // };
 
+// exports.getTrafficByHour = async (req, res) => {
+//   try {
+//     const logs = await TrafficLog.findAll();
+//
+//     // Prepare a data structure to hold the counts per 2-hour range
+//     const trafficData = [];
+//     const hourRanges = [
+//       '0:00-2:00', '2:00-4:00', '4:00-6:00', '6:00-8:00',
+//       '8:00-10:00', '10:00-12:00', '12:00-14:00', '14:00-16:00',
+//       '16:00-18:00', '18:00-20:00', '20:00-22:00', '22:00-24:00',
+//     ];
+//
+//     // Initialize trafficData with empty values
+//     hourRanges.forEach(range => {
+//       trafficData.push({ range, enter: 0, exit: 0 });
+//     });
+//
+//     // Process logs and group by hour ranges
+//     logs.forEach(log => {
+//       const logHour = new Date(log.time).getHours();
+//       const index = Math.floor(logHour / 2); // Get 2-hour range index
+//
+//       if (log.action === 'enter') {
+//         trafficData[index].enter++;
+//       } else if (log.action === 'exit') {
+//         trafficData[index].exit++;
+//       }
+//     });
+//
+//     res.status(200).json(trafficData);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to calculate traffic by hour' });
+//   }
+// };
+
 exports.getTrafficByHour = async (req, res) => {
   try {
+    // Fetch all traffic logs
     const logs = await TrafficLog.findAll();
 
     // Prepare a data structure to hold the counts per 2-hour range
@@ -81,13 +117,14 @@ exports.getTrafficByHour = async (req, res) => {
       '16:00-18:00', '18:00-20:00', '20:00-22:00', '22:00-24:00',
     ];
 
-    // Initialize trafficData with empty values
+    // Initialize trafficData with counts and days tracked
     hourRanges.forEach(range => {
-      trafficData.push({ range, enter: 0, exit: 0 });
+      trafficData.push({ range, enter: 0, exit: 0, days: new Set() });
     });
 
-    // Process logs and group by hour ranges
+    // Process logs and group by 2-hour ranges
     logs.forEach(log => {
+      const logDate = new Date(log.time).toISOString().split('T')[0];
       const logHour = new Date(log.time).getHours();
       const index = Math.floor(logHour / 2); // Get 2-hour range index
 
@@ -96,13 +133,27 @@ exports.getTrafficByHour = async (req, res) => {
       } else if (log.action === 'exit') {
         trafficData[index].exit++;
       }
+
+      // Track unique days for averaging
+      trafficData[index].days.add(logDate);
+    });
+
+    // Calculate the average for each time interval
+    trafficData.forEach(interval => {
+      const dayCount = interval.days.size;
+      if (dayCount > 0) {
+        interval.enter = Math.round(interval.enter / dayCount);
+        interval.exit = Math.round(interval.exit / dayCount);
+      }
+      delete interval.days; // Remove days set as it's no longer needed
     });
 
     res.status(200).json(trafficData);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to calculate traffic by hour' });
+    res.status(500).json({ error: 'Failed to calculate average traffic by hour' });
   }
 };
+
 
 exports.getTrafficByDay = async (req, res) => {
   try {

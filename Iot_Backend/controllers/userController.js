@@ -16,6 +16,20 @@ exports.getAllUsers = async (req, res) => {
     }
   };
 
+exports.getUserDetail = async (req, res) => {
+    const userId = req.params.userId;
+     try{
+         const user = await User.findByPk(userId);
+         if(!user){
+             return res.status(404).json({error: 'User does not exist'});
+         }
+
+         res.status(200).json(user);
+     } catch (error){
+         console.error(error);
+         res.status(500).json({ error: 'Failed to retrieve users' });
+     }
+}
 // Signup function with email
 exports.signup = async (req, res) => {
     const { email, password ,username, role} = req.body;

@@ -5,7 +5,7 @@ import {
   Link,
   Routes
 } from "react-router-dom";
-import Layout from "./components/shared/Layout";
+import Layout from "./layout/index.jsx";
 import Home from "./pages/Home/index.jsx";
 import Login from "./pages/Login/index.jsx";
 import Statistics from "./pages/Statistics/index.jsx";

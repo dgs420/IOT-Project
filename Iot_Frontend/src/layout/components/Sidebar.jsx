@@ -30,16 +30,18 @@ const Sidebar = () => {
                         Settings
                     </Link>
                 </li>
-                <li className='mb-2 rounded hover:shadow hover:text-blue-400 px-2 py-2'>
-                    <Link to="/about" className='px-3 font-semibold'>
-                        <FaInfoCircle className='inline-block w-6 h-6 mr-2 -mt-2'/>
-                        About Us
-                    </Link>
-                </li>
+
                 <li className='mb-2 rounded hover:shadow hover:text-blue-400 px-2 py-2'>
                     <Link to="/users-list" className='px-3 font-semibold'>
                         <FaUser className='inline-block w-6 h-6 mr-2 -mt-2'/>
                         Users list
+                    </Link>
+                </li>
+
+                <li className='mb-2 rounded hover:shadow hover:text-blue-400 px-2 py-2'>
+                    <Link to="/about" className='px-3 font-semibold'>
+                        <FaInfoCircle className='inline-block w-6 h-6 mr-2 -mt-2'/>
+                        About Us
                     </Link>
                 </li>
             </ul>

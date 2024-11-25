@@ -8,6 +8,7 @@ router.get('/logs-by-hour', TrafficLogController.getTrafficByHour);
 router.get('/traffic-by-week', TrafficLogController.getTrafficByWeek);
 router.get('/traffic-by-day', TrafficLogController.getTrafficByDay);
 router.get('/logs-by-user/:userId', TrafficLogController.getUserLogsByUserId);
+router.get('/logs-by-card/:cardId', TrafficLogController.getLogsByCardId);
 
 
 module.exports = router;

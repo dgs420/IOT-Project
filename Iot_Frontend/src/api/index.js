@@ -1,159 +1,89 @@
-// import axios from 'axios';
+// config.js
+const BASE_URL = 'http://localhost:5000';
+// const BIO_LAB_BASE_URL = 'https://your-bio-lab-url.com/api';
 
-// export interface ResponseDataType<T> {
-//   code: number;
-//   msg: string | string[];
-//   info?: T;
-// }
+// Helper: Get Authorization Header
+function getAuthHeader() {
+    const token = localStorage.getItem('accessToken');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
-// async function returnResponseData(
-//   response: any,
-//   callback: () => void
-// ): Promise<any> {
-//   if (response.data.code === -1001) {
-//     console.log('expired');
+// Helper: Refresh Token
+async function refreshToken() {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: localStorage.getItem('refreshToken') }),
+        });
 
-//     if (await refreshToken()) return;
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('accessToken', data.accessToken);
+            return true;
+        } else {
+            console.error('Token refresh failed');
+            return false;
+        }
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        return false;
+    }
+}
 
-//     return await callback();
-//   }
+// API Request Function
+async function apiRequest(method, url, body = null, type = 'json', baseUrl = BASE_URL+'/api') {
+    try {
+        const headers = {
+            'Content-Type': type === 'json' ? 'application/json' : 'multipart/form-data',
+            ...getAuthHeader(),
+        };
 
-//   return response.data;
-// }
+        const options = {
+            method,
+            headers,
+        };
 
-// export async function postRequest(
-//   url,
-//   body,
-//   type: 'form-data' | 'json' = 'json'
-// ): Promise<any> {
-//   try {
-//     let response = await axios.post(
-//       process.env.REACT_APP_BASE_URL + '/api' + url,
-//       body,
-//       type === 'json'
-//         ? generateRequestHeader()
-//         : generateRequestFormDataHeader()
-//     );
+        if (body) {
+            options.body = type === 'json' ? JSON.stringify(body) : body;
+        }
 
-//     return returnResponseData(
-//       response,
-//       async () => await postRequest(url, body, type)
-//     );
-//   } catch (error: any) {
-//     return error?.response?.data;
-//   }
-// }
+        const response = await fetch(baseUrl + url, options);
 
-// export async function postRequestBio(
-//   url: string,
-//   body?: any,
-//   type: 'form-data' | 'json' = 'json'
-// ): Promise<any> {
-//   try {
-//     let response = await axios.post(
-//       process.env.REACT_APP_BIO_LAB_BASE_URL + url,
-//       body,
-//       type === 'json'
-//         ? generateRequestHeader()
-//         : generateRequestFormDataHeader()
-//     );
+        if (response.ok) {
+            return await response.json();
+        } else if (response.status === 401) {
+            console.log('Token expired, attempting refresh...');
+            if (await refreshToken()) {
+                return await apiRequest(method, url, body, type, baseUrl); // Retry request
+            }
+            throw new Error('Authentication failed after token refresh');
+        } else {
+            throw new Error(`API error: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Request failed:', error);
+        return null;
+    }
+}
 
-//     return returnResponseData(
-//       response,
-//       async () => await postRequest(url, body, type)
-//     );
-//   } catch (error: any) {
-//     return error?.response?.data;
-//   }
-// }
+// Specific API Call Functions
+export function getRequest(url) {
+    return apiRequest('GET', url);
+}
 
-// export async function putRequest(
-//   url: string,
-//   body?: any,
-//   type: 'form-data' | 'json' = 'json'
-// ): Promise<any> {
-//   try {
-//     let response = await axios.put(
-//       process.env.REACT_APP_BASE_URL + '/api' + url,
-//       body,
-//       type === 'json'
-//         ? generateRequestHeader()
-//         : generateRequestFormDataHeader()
-//     );
+function postRequest(url, body, type = 'json') {
+    return apiRequest('POST', url, body, type);
+}
 
-//     return returnResponseData(
-//       response,
-//       async () => await putRequest(url, body, type)
-//     );
-//   } catch (error: any) {
-//     return error?.response?.data;
-//   }
-// }
+function putRequest(url, body, type = 'json') {
+    return apiRequest('PUT', url, body, type);
+}
 
-// export async function patchRequest(
-//   url: string,
-//   body?: any,
-//   type: 'form-data' | 'json' = 'json'
-// ): Promise<any> {
-//   try {
-//     let response = await axios.patch(
-//       process.env.REACT_APP_BASE_URL + '/api' + url,
-//       body,
-//       type === 'json'
-//         ? generateRequestHeader()
-//         : generateRequestFormDataHeader()
-//     );
+function patchRequest(url, body, type = 'json') {
+    return apiRequest('PATCH', url, body, type);
+}
 
-//     return returnResponseData(
-//       response,
-//       async () => await patchRequest(url, body, type)
-//     );
-//   } catch (error: any) {
-//     return error?.response?.data;
-//   }
-// }
-
-// export async function getRequest(url: string): Promise<any> {
-//   try {
-//     let response = await axios.get(
-//       process.env.REACT_APP_BASE_URL + '/api' + url,
-//       generateRequestHeader()
-//     );
-
-//     return returnResponseData(response, async () => await getRequest(url));
-//   } catch (error: any) {
-//     return error?.response?.data;
-//   }
-// }
-
-// export async function deleteRequest(url: string): Promise<any> {
-//   try {
-//     let response = await axios.delete(
-//       process.env.REACT_APP_BASE_URL + '/api' + url,
-//       generateRequestHeader()
-//     );
-
-//     return returnResponseData(response, async () => await deleteRequest(url));
-//   } catch (error: any) {
-//     return error?.response?.data;
-//   }
-// }
-
-// export function generateRequestHeader() {
-//   return {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-//     },
-//   };
-// }
-
-// // export function generateRequestFormDataHeader() {
-//   return {
-//     headers: {
-//       'Content-Type': 'multipart/form-data',
-//       Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-//     },
-//   };
-// }
-
+function deleteRequest(url) {
+    return apiRequest('DELETE', url);
+}
