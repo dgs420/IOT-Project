@@ -6,11 +6,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 
-
 exports.getAllUsers = async (req, res) => {
     try {
-      const logs = await User.findAll();
-      res.status(200).json(logs);
+      const users = await User.findAll();
+      res.status(200).json({
+          code:200,
+          message: 'Users fetched successfully',
+          info: users
+      });
     } catch (error) {
       res.status(500).json({ error: 'Failed to retrieve users' });
     }
@@ -21,10 +24,15 @@ exports.getUserDetail = async (req, res) => {
      try{
          const user = await User.findByPk(userId);
          if(!user){
-             return res.status(404).json({error: 'User does not exist'});
+             return res.status(404).json({
+                 code:404,
+                 message:'User does not exist'});
          }
 
-         res.status(200).json(user);
+         res.status(200).json({
+             code:200,
+             message:"User found successfully",
+             info:user});
      } catch (error){
          console.error(error);
          res.status(500).json({ error: 'Failed to retrieve users' });
@@ -36,19 +44,25 @@ exports.signup = async (req, res) => {
 
     // Check if email or password are missing
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+        return res.status(400).json({
+            code:400,
+            message: 'Email and password are required' });
     }
 
     try {
         // Check if the user already exists
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
-            return res.status(400).json({ message: 'Email already taken' });
+            return res.status(400).json({
+                code:400,
+                message: 'Email already taken' });
         }
 
         const existingUsername = await User.findOne({ where: { username } });
         if (existingUsername) {
-            return res.status(400).json({ message: 'Username already taken' });
+            return res.status(400).json({
+                code:400,
+                message: 'Username already taken' });
         }
 
         // Hash the password before storing it
@@ -60,7 +74,9 @@ exports.signup = async (req, res) => {
         // Optionally create a token to auto-login upon sign-up
         const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.status(201).json({ message: 'User created', token });
+        res.status(201).json({
+            code: 200,
+            message: 'User created', token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -78,7 +94,10 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-        res.json({ token });
+        res.json({
+            code: 200,
+            message:"Log in success",
+            token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

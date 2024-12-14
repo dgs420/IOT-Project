@@ -5,12 +5,15 @@ const sequelize = require('./config/database');
 const trafficLogRoutes = require('./routes/trafficLogRoutes'); // Import the traffic log routes
 const userRoutes = require('./routes/userRoutes');
 const cardRoutes = require('./routes/cardRoutes');
+const deviceRoutes = require('./routes/deviceRoutes');
+const homeRoutes = require('./routes/homeRoutes');
+
 
 const connectMqtt = require('./services/mqttService');
 
 // Import models
 const User = require('./models/userModel');
-// const Vehicle = require('./models/vehicleModel');
+const Device = require('./models/deviceModel');
 const RfidCard = require('./models/rfidCardModel');
 const TrafficLog = require('./models/trafficLogModel');
 
@@ -19,6 +22,9 @@ User.hasMany(RfidCard, { foreignKey: 'user_id' });
 
 RfidCard.hasMany(TrafficLog, { foreignKey: 'card_id' });
 TrafficLog.belongsTo(RfidCard, { foreignKey: 'card_id' });
+Device.hasMany(TrafficLog, { foreignKey: 'device_id' });
+TrafficLog.belongsTo(Device, { foreignKey: 'device_id' });
+
 // Load environment variables
 dotenv.config();
 
@@ -33,6 +39,8 @@ app.use(cors()); // Allows cross-origin requests
 app.use('/api/logs', trafficLogRoutes); // Attach the traffic log routes
 app.use('/api/user', userRoutes);
 app.use('/api/card', cardRoutes);
+app.use('/api/device',deviceRoutes);
+app.use('/api/home', homeRoutes)
 
 // Initialize and sync the database
 async function init() {

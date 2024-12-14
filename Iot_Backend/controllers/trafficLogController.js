@@ -33,10 +33,16 @@ exports.getDetailedLogs = async (req, res) => {
     });
 
     if (logs.length === 0) {
-      return res.status(404).json({ message: 'No logs found.' });
+      return res.status(404).json({
+        code: 404,
+        message: 'No logs found.' });
     }
 
-    res.status(200).json(logs);
+    res.status(200).json({
+      code: 200,
+      message: 'All logs fetched successfully',
+      info: logs
+    });
   } catch (error) {
     console.error('Error fetching detailed logs:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -148,7 +154,12 @@ exports.getTrafficByHour = async (req, res) => {
       delete interval.days; // Remove days set as it's no longer needed
     });
 
-    res.status(200).json(trafficData);
+    res.status(200).json(
+        {
+          code: 200,
+          message:'Data fetched successfully',
+          info: trafficData
+        });
   } catch (error) {
     res.status(500).json({ error: 'Failed to calculate average traffic by hour' });
   }
@@ -302,7 +313,9 @@ exports.getUserLogsByUserId = async (req, res) => {
 
     // Check if logs were found
     if (logs.length === 0) {
-      return res.status(404).json({ message: 'No logs found for this user ID.' });
+      return res.status(404).json({
+        code:404,
+        message: 'No logs found for this user ID.' });
     }
 
     res.status(200).json(logs); // Return the logs

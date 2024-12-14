@@ -1,11 +1,12 @@
 const mqtt = require('mqtt');
 const RfidCard = require('../models/rfidCardModel');
 const TrafficLog = require('../models/trafficLogModel');
+const Device = require('../models/deviceModel');
 
 const connectMqtt = () => {
   const client = mqtt.connect('mqtt://broker.hivemq.com:1883');
 
-  // Subscribe to "enter" and "exit" topics
+  // Subscribe to topics
   client.on('connect', () => {
     client.subscribe('barrier/enter', (err) => {
       if (!err) console.log('Subscribed to barrier/enter');
@@ -14,53 +15,102 @@ const connectMqtt = () => {
     client.subscribe('barrier/exit', (err) => {
       if (!err) console.log('Subscribed to barrier/exit');
     });
+
+    client.subscribe('device/+/status', (err) => {
+      if (!err) console.log('Subscribed to device/+/status');
+    });
   });
 
-  // Handle card validation logic
+  // Unified message handler
   client.on('message', async (topic, message) => {
-    const data = JSON.parse(message.toString());
-    const { card_number, action } = data;
+    try {
+      const rawMessage = message.toString();
+      console.log(`Received message on topic ${topic}: ${rawMessage}`);
 
-    const rawMessage = message.toString();
-    console.log(`Received message on topic ${topic}:`, rawMessage);
+      const topicParts = topic.split('/');
+      const data = JSON.parse(rawMessage);
 
-    // Check if the message is empty
-    if (!rawMessage) {
-      console.error('Received an empty message');
-      return;
-    }
-    // Use the RfidCard model to find the card by its number
-    const card = await RfidCard.findOne({ where: { card_number } });
-    let responseTopic;
+      // Handle "device status" topics
+      if (topicParts[0] === 'device' && topicParts[2] === 'status') {
+        const embed_id = topicParts[1];
+        const { status } = data;
 
-    if (action === 'enter') {
-      responseTopic = 'barrier/enter/response';
-    } else {
-      responseTopic = 'barrier/exit/response';
-    }
+        console.log(`Processing device status update for embed_id: ${embed_id}, status: ${status}`);
 
-    if (!card) {
-      return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Card not found' }));
-    }
+        const device = await Device.findOne({ where: { embed_id } });
+        if (!device) {
+          console.warn(`Device with embed_id ${embed_id} not found.`);
+          return;
+        }
 
-    if (card.status === 'parking' && action === 'enter') {
-      return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Card is already parked' }));
-    }
+        const now = new Date();
+        await device.update({
+          status: status || 'offline',
+          last_seen: now,
+        });
 
-    if (card.status === 'parking' && action === 'exit') {
-      await card.update({ status: 'exited' });
-      await TrafficLog.create({ card_id: card.card_id, action: 'exit', time: new Date() });
-      return client.publish(responseTopic, JSON.stringify({ status: 'valid', message: 'Exit logged' }));
-    }
+        console.log(`Device ${embed_id} updated to status: ${status} at ${now}`);
+        return;
+      }
 
-    if (card.status === 'exited' && action === 'enter') {
-      await card.update({ status: 'parking' });
-      await TrafficLog.create({ card_id: card.card_id, action: 'enter', time: new Date() });
-      return client.publish(responseTopic, JSON.stringify({ status: 'valid', message: 'Entry logged' }));
-    }
+      // Handle "barrier" topics
+      if (topic === 'barrier/enter' || topic === 'barrier/exit') {
+        const { card_number, embed_id, action } = data;
 
-    if (card.status === 'exited' && action === 'exit') {
-      return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Card is already exited' }));
+        if (!embed_id || !card_number || !action) {
+          console.error('Invalid barrier message format:', data);
+          const responseTopic = `${topic}/response`;
+          return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Missing required fields' }));
+        }
+
+        // Find the device and card
+        const device = await Device.findOne({ where: { embed_id } });
+        const card = await RfidCard.findOne({ where: { card_number } });
+
+        const responseTopic = `${topic}/response`;
+        if (!device) {
+          return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Device not found' }));
+        }
+
+        if (!card) {
+          return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Card not found' }));
+        }
+
+        // Handle card action logic
+        if (action === 'enter' && card.status === 'parking') {
+          return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Card is already parked' }));
+        }
+
+        if (action === 'exit' && card.status === 'exited') {
+          return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Card is already exited' }));
+        }
+
+        if (action === 'exit' && card.status === 'parking') {
+          await card.update({ status: 'exited' });
+          await TrafficLog.create({
+            card_id: card.card_id,
+            device_id: device.device_id,
+            action: 'exit',
+            time: new Date(),
+          });
+          return client.publish(responseTopic, JSON.stringify({ status: 'valid', message: 'Exit logged' }));
+        }
+
+        if (action === 'enter' && card.status === 'exited') {
+          await card.update({ status: 'parking' });
+          await TrafficLog.create({
+            card_id: card.card_id,
+            device_id: device.device_id,
+            action: 'enter',
+            time: new Date(),
+          });
+          return client.publish(responseTopic, JSON.stringify({ status: 'valid', message: 'Entry logged' }));
+        }
+      }
+
+      console.warn(`Unhandled topic: ${topic}`);
+    } catch (error) {
+      console.error('Error processing MQTT message:', error);
     }
   });
 };

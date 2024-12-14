@@ -15,6 +15,15 @@ const TrafficLog = sequelize.define('traffic_log', {
       key: 'card_id',
     },
   },
+  device_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'devices',
+      key: 'device_id',
+    },
+    onDelete: 'SET NULL', // Set to NULL when the device is deleted
+    allowNull: true
+  },
   time: {
     type: DataTypes.DATE,
     allowNull: false,

@@ -9,14 +9,7 @@ const UserDetail = () => {
     const [openModal, setOpenModal] = useState(false);
     const [error, setError] = useState(null);
 
-    const [newCard, setNewCard] = useState({
-        card_number: '',
-        user_id,
-        status: 'exited',
-        vehicle_number: '',
-        vehicle_type: 'car'
-    });
-    const [userDetails, setUserDetails] = useState([]);
+    const [cardDetails, setCardDetails] = useState([]);
     const [userLogs, setUserLogs] = useState([]);
     // const fetchUserLogs = async () => {
     //     try{

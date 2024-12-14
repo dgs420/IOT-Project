@@ -72,11 +72,11 @@ export function getRequest(url) {
     return apiRequest('GET', url);
 }
 
-function postRequest(url, body, type = 'json') {
+export function postRequest(url, body, type = 'json') {
     return apiRequest('POST', url, body, type);
 }
 
-function putRequest(url, body, type = 'json') {
+export function putRequest(url, body, type = 'json') {
     return apiRequest('PUT', url, body, type);
 }
 
@@ -84,6 +84,6 @@ function patchRequest(url, body, type = 'json') {
     return apiRequest('PATCH', url, body, type);
 }
 
-function deleteRequest(url) {
+export function deleteRequest(url) {
     return apiRequest('DELETE', url);
 }

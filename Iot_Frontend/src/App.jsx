@@ -12,6 +12,9 @@ import Statistics from "./pages/Statistics/index.jsx";
 import PersonalProfile from "./pages/PersonalProfile/index.jsx";
 import UserList from "./pages/UserList/UserList.jsx";
 import UserDetail from "./pages/UserDetail/UserDetail.jsx";
+import DeviceList from "./pages/Device/DeviceList/index.jsx";
+import DeviceDetail from "./pages/Device/DeviceDetail/index.jsx";
+import Report from "./pages/Report/index.jsx";
 
 export default function App() {
   return (
@@ -26,6 +29,10 @@ export default function App() {
           <Route path="profile" element={<PersonalProfile />} />
           <Route path="users-list" element={<UserList />} />
           <Route path="user/:user_id" element={<UserDetail />} />
+          <Route path="device" element={<DeviceList />} />
+          <Route path="device/:deviceId" element={<DeviceDetail />} />
+          <Route path="report" element={<Report />} />
+
         </Route>
         <Route path="/login" element={<Login/>}>
         </Route>

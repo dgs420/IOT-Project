@@ -11,13 +11,15 @@ export const HourlyChart = () => {
   // Fetch traffic data from the backend API
   const fetchTrafficData = async () => {
     try {
-      const data = await getRequest('/logs/logs-by-hour'); // Adjust URL as needed
+      const response = await getRequest('/logs/logs-by-hour'); // Adjust URL as needed
 
-      if (!data) {
-        throw new Error('Failed to fetch logs');
+      if (response.code===200) {
+        setTrafficData(response.info);
+      } else {
+        console.error(response.message);
       }
 
-      setTrafficData(data); // Assume setTrafficData is a state updater or similar
+       // Assume setTrafficData is a state updater or similar
     } catch (error) {
       console.error('Error fetching traffic logs:', error);
     }

@@ -28,7 +28,7 @@ export const ActivityLog = () => {
 
     }, []);
     return (
-        <div className="overflow-x-auto h-96">
+        <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-300 shadow-lg">
                 <thead className='top-0 sticky'>
                 <tr className="bg-gray-100 text-gray-600">
