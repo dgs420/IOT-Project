@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import {getRequest} from "../../api/index.js";
+import {getRequest} from "../../../api/index.js";
 import {Button} from "@mui/material";
 
 function UserList(props) {

@@ -4,7 +4,13 @@ const TrafficLog = require('../models/trafficLogModel');
 const Device = require('../models/deviceModel');
 
 const connectMqtt = () => {
-  const client = mqtt.connect('mqtt://broker.hivemq.com:1883');
+  const MQTT_CREDENTIALS = {
+    port: 8883,
+    username: 'username1',   // Optional: Username for your broker
+    password: 'userPassword1',    // Optional: Password for your broker
+    protocol:'mqtts'
+  };
+  const client = mqtt.connect(process.env.BROKER_URL,MQTT_CREDENTIALS);
 
   // Subscribe to topics
   client.on('connect', () => {
@@ -59,7 +65,7 @@ const connectMqtt = () => {
 
         if (!embed_id || !card_number || !action) {
           console.error('Invalid barrier message format:', data);
-          const responseTopic = `${topic}/response`;
+          const responseTopic = `${topic}/response/${embed_id}`;
           return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Missing required fields' }));
         }
 
@@ -67,7 +73,7 @@ const connectMqtt = () => {
         const device = await Device.findOne({ where: { embed_id } });
         const card = await RfidCard.findOne({ where: { card_number } });
 
-        const responseTopic = `${topic}/response`;
+        const responseTopic = `${topic}/response/${embed_id}`;
         if (!device) {
           return client.publish(responseTopic, JSON.stringify({ status: 'invalid', message: 'Device not found' }));
         }

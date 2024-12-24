@@ -2,11 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const sequelize = require('./config/database');
+const authRoutes = require('./routes/authRoutes');
 const trafficLogRoutes = require('./routes/trafficLogRoutes'); // Import the traffic log routes
 const userRoutes = require('./routes/userRoutes');
 const cardRoutes = require('./routes/cardRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
 const homeRoutes = require('./routes/homeRoutes');
+
 
 
 const connectMqtt = require('./services/mqttService');
@@ -34,8 +36,13 @@ const app = express();
 // Middleware
 app.use(express.json()); // Allows the use of JSON in requests
 app.use(cors()); // Allows cross-origin requests
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
 
 // Routes
+app.use('/api/auth', authRoutes)
 app.use('/api/logs', trafficLogRoutes); // Attach the traffic log routes
 app.use('/api/user', userRoutes);
 app.use('/api/card', cardRoutes);

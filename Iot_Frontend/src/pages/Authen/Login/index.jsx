@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import parkingImage from '../../assets/parking-management-system.jpeg';
+import parkingImage from '../../../assets/parking-management-system.jpeg';
 
 const Login = () => {
     const[email, setEmail] = useState('');
@@ -8,7 +8,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/api/user/login', {
+            const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),

@@ -15,7 +15,7 @@ const Sidebar = () => {
 
     return (
         <div className='w-64 bg-slate-900 fixed h-full py-2'>
-            <h1 className='text-3xl text-white font-bold mx-3 my-2'> Parky </h1>
+            <h1 className='text-3xl text-white font-bold mx-3 my-2'> ParkMag </h1>
             <ul className='mt-3 text-black font-bold'>
                 {links.map(({ to, icon, label }) => (
                     <li key={to} className='mb-2 rounded hover:bg-slate-800'>

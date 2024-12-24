@@ -1,6 +1,8 @@
 import React from 'react'
-import VehiclesPieChart from './VehiclesPieChart.jsx'
+// import VehiclesPieChart from './VehiclesPieChart.jsx'
 import { TrafficCard } from './TrafficCard.jsx'
+import VehiclesPieChart from "../../Home/Components/VehiclesPieChart.jsx";
+
 import { HourlyChart } from './HourlyChart.jsx'
 // import ActivityLog from './ActivityLog'
 

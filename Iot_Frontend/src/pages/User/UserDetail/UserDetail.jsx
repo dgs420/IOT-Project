@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
-import {Box, Button, Card, CardContent, CardHeader, Modal, TextField} from "@mui/material";
-import {getRequest,postRequest} from "../../api/index.js";
+import {Box, Button, Card, CardContent, CardHeader, Input, Modal, TextField} from "@mui/material";
+import {getRequest, postRequest} from "../../../api/index.js";
+import SelectInput from "@mui/material/Select/SelectInput.js";
 
 const UserDetail = () => {
     const {user_id} = useParams(); // Get the userId from the URL
@@ -27,15 +28,15 @@ const UserDetail = () => {
     const handleModalClose = () => setOpenModal(false);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewCard({ ...newCard, [name]: value });
+        const {name, value} = e.target;
+        setNewCard({...newCard, [name]: value});
     };
     const fetchRfidCards = async () => {
         try {
             const response = await getRequest(`/card/user-card/${user_id}`);
             console.log(response);
             // const data = await response.json();
-            if(response.code===200){
+            if (response.code === 200) {
                 setRfidCards(response.info);
             } else
                 console.error(response.message);
@@ -44,12 +45,12 @@ const UserDetail = () => {
         }
     };
 
-    const fetchUserDetail= async () => {
+    const fetchUserDetail = async () => {
         try {
             const response = await getRequest(`/user/user-detail/${user_id}`);
             console.log(response);
             // const data = await response.json();
-            if(response.code===200){
+            if (response.code === 200) {
                 setUserDetails(response.info);
             } else
                 console.error(response.message);
@@ -61,7 +62,7 @@ const UserDetail = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response= await postRequest('/card/create-card', newCard); // Adjust the endpoint as necessary
+            const response = await postRequest('/card/create-card', newCard); // Adjust the endpoint as necessary
             if (!response.ok) console.error('Error:', response);
 
             await fetchRfidCards(); // Refresh the list of RFID cards
@@ -78,15 +79,70 @@ const UserDetail = () => {
 
     return (
         <div className={'w-full p-4'}>
-            <h2 className="text-2xl font-semibold mb-4">User Details</h2>
-            <p className="mb-6">User ID: {user_id}</p>
-            <p className="mb-6">Username: {userDetails.username}</p>
-            <p className="mb-6">Email: {userDetails.email}</p>
-            <p className="mb-6">Role: {userDetails.role}</p>
-            <p className="mb-6">First name: {userDetails.first_name}</p>
-            <p className="mb-6">Last name: {userDetails.last_name}</p>
 
-            <h3 className="text-xl font-semibold mb-4">RFID Cards</h3>
+            <div className="bg-white rounded-lg shadow p-6">
+                <h1 className="text-xl font-semibold mb-6">User Details</h1>
+
+                <form className="space-y-6 max-w-2xl">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Username
+                        </label>
+                        <Input placeholder="Username" value={userDetails.username}/>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email
+                        </label>
+                        <Input placeholder="email" value={userDetails.email}/>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Role
+                        </label>
+                        {/*<SelectInput defaultValue="four-wheeler">*/}
+                        {/*    <SelectTrigger>*/}
+                        {/*        <SelectValue placeholder="Select category"/>*/}
+                        {/*    </SelectTrigger>*/}
+                        {/*    <SelectContent>*/}
+                        {/*        <SelectItem value="two-wheeler">Two Wheeler</SelectItem>*/}
+                        {/*        <SelectItem value="three-wheeler">Three Wheeler</SelectItem>*/}
+                        {/*        <SelectItem value="four-wheeler">Four Wheeler</SelectItem>*/}
+                        {/*    </SelectContent>*/}
+                        {/*</SelectInput>*/}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            First Name
+                        </label>
+                        <Input placeholder="First name" value={userDetails.first_name}/>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Last name
+                        </label>
+                        <Input placeholder="Last name" value={userDetails.last_name}/>
+                    </div>
+
+                    <Button type="submit" className="bg-green-500 hover:bg-green-600">
+                        Submit
+                    </Button>
+                </form>
+            </div>
+
+            {/*<h2 className="text-2xl font-semibold mb-4">User Details</h2>*/}
+            {/*<p className="mb-6">User ID: {user_id}</p>*/}
+            {/*<p className="mb-6">Username: {userDetails.username}</p>*/}
+            {/*<p className="mb-6">Email: {userDetails.email}</p>*/}
+            {/*<p className="mb-6">Role: {userDetails.role}</p>*/}
+            {/*<p className="mb-6">First name: {userDetails.first_name}</p>*/}
+            {/*<p className="mb-6">Last name: {userDetails.last_name}</p>*/}
+
+            <h3 className="text-xl font-semibold mb-4 my-4">Registered Cards</h3>
             <div className="my-4 mx-4">
                 <Button variant="contained" color="primary" onClick={handleModalOpen}>
                     Add RFID Card
