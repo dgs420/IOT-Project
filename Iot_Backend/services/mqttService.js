@@ -5,9 +5,9 @@ const Device = require('../models/deviceModel');
 
 const connectMqtt = () => {
   const MQTT_CREDENTIALS = {
-    port: 8883,
-    username: 'username1',   // Optional: Username for your broker
-    password: 'userPassword1',    // Optional: Password for your broker
+    port: process.env.MQTT_PORT,
+    username: process.env.BROKER_USERNAME,   // Optional: Username for your broker
+    password: process.env.BROKER_PASSWORD,    // Optional: Password for your broker
     protocol:'mqtts'
   };
   const client = mqtt.connect(process.env.BROKER_URL,MQTT_CREDENTIALS);
