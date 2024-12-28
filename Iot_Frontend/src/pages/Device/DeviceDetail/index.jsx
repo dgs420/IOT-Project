@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {Box, Button, Card, CardContent, CardHeader, Input, Modal, TextField} from "@mui/material";
-import {getRequest} from "../../../api/index.js";
+import {getRequest, postRequest} from "../../../api/index.js";
+import { toast } from 'react-toastify';
 
 const DeviceDetail = () => {
     const {deviceId} = useParams(); // Get the userId from the URL
@@ -9,7 +10,7 @@ const DeviceDetail = () => {
 
 
 
-    const fetchDeviceDeetails = async () => {
+    const fetchDeviceDetails = async () => {
         try {
             const response = await getRequest(`/device/${deviceId}`);
             console.log(response);
@@ -23,10 +24,23 @@ const DeviceDetail = () => {
         }
     };
 
-
+    const handleDeviceCommand = async (command) => {
+        try {
+            const response = await postRequest(`/device/command`, { embed_id: deviceDetails.embed_id, command });
+            if (response.code === 200) {
+                toast.success(response.message);
+                console.log(`Command "${command}" sent successfully.`);
+            } else {
+                toast.error(response.message);
+                console.error(`Failed to send command: ${response.message}`);
+            }
+        } catch (error) {
+            console.error('Error sending command:', error.response?.data?.message || error.message);
+        }
+    };
 
     useEffect(() => {
-        fetchDeviceDeetails();
+        fetchDeviceDetails();
     }, [deviceId]);
 
     return (
@@ -47,7 +61,7 @@ const DeviceDetail = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Location
                         </label>
-                        <Input placeholder="email"  value={deviceDetails.location}/>
+                        <Input placeholder="email" value={deviceDetails.location}/>
                     </div>
 
                     <div>
@@ -75,7 +89,7 @@ const DeviceDetail = () => {
                         </label>
                         <label style={{color: deviceDetails.status === 'online' ? 'green' : 'red'}}>
                             {deviceDetails.status}
-                            </label>
+                        </label>
                     </div>
 
                     <div>
@@ -88,6 +102,24 @@ const DeviceDetail = () => {
                     <Button type="submit" className="bg-green-500 hover:bg-green-600">
                         Submit
                     </Button>
+
+                    <div className="flex space-x-4">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleDeviceCommand('enter')}
+                        >
+                            Open Enter
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleDeviceCommand('exit')}
+                        >
+                            Open Exit
+                        </Button>
+                    </div>
+
                 </form>
             </div>
         </div>

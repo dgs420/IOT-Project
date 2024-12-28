@@ -2,15 +2,17 @@ const mqtt = require('mqtt');
 const RfidCard = require('../models/rfidCardModel');
 const TrafficLog = require('../models/trafficLogModel');
 const Device = require('../models/deviceModel');
+let client;
 
 const connectMqtt = () => {
+  if (client) return client;
   const MQTT_CREDENTIALS = {
     port: process.env.MQTT_PORT,
     username: process.env.BROKER_USERNAME,   // Optional: Username for your broker
     password: process.env.BROKER_PASSWORD,    // Optional: Password for your broker
     protocol:'mqtts'
   };
-  const client = mqtt.connect(process.env.BROKER_URL,MQTT_CREDENTIALS);
+  client = mqtt.connect(process.env.BROKER_URL,MQTT_CREDENTIALS);
 
   // Subscribe to topics
   client.on('connect', () => {
@@ -26,6 +28,20 @@ const connectMqtt = () => {
       if (!err) console.log('Subscribed to device/+/status');
     });
   });
+
+  const sendDeviceCommand = ( embed_id, command) => {
+    const topic = `device/${embed_id}/command`;
+    const payload = JSON.stringify({ command });
+
+    console.log(`[COMMAND] Sending command to device ${embed_id}:`, payload);
+    client.publish(topic, payload, (err) => {
+      if (err) {
+        console.error(`[COMMAND] Failed to send command to device ${embed_id}:`, err.message);
+      } else {
+        console.info(`[COMMAND] Command sent to device ${embed_id}`);
+      }
+    });
+  };
 
   // Unified message handler
   client.on('message', async (topic, message) => {
@@ -119,6 +135,8 @@ const connectMqtt = () => {
       console.error('Error processing MQTT message:', error);
     }
   });
-};
 
+  return client;
+};
 module.exports = connectMqtt;
+

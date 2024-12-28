@@ -4,8 +4,8 @@ const RfidCard = require('../models/rfidCardModel');
 const Device = require('../models/deviceModel');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
-
-
+const connectMqtt = require('../services/mqttService');
+const client  = connectMqtt();
 
 exports.createDevice = async (req, res) => {
     const { embed_id, location, type, status } = req.body;
@@ -151,3 +151,41 @@ exports.deleteDevice = async (req, res) => {
     }
 };
 
+exports.commandDevice =async (req,res) =>{
+    const { embed_id, command } = req.body;
+
+    try {
+        const device = await Device.findOne({ where: { embed_id } });
+        if (!device) {
+            return res.status(404).json({
+                code: 404,
+                message: 'Device not found.',
+            });
+        }
+        if (!embed_id || !command) {
+            return res.status(400).json({
+                code: 400,
+                message:'embed_id and command are required' });
+        }
+
+        // Publish command using the existing MQTT connection
+        const topic = `barrier/${command}/response/${embed_id}`;
+        const payload = JSON.stringify({ status: 'valid', message: command });
+
+        client.publish(topic, payload, (err) => {
+            if (err) {
+                console.error(`[COMMAND] Failed to send command to device ${embed_id}:`, err.message);
+                return res.status(500).json({ code: 500, message: 'Failed to send command' });
+            }
+
+            console.info(`[COMMAND] Command sent to device ${embed_id}:`, payload);
+            res.status(200).json({ code: 200, message: 'Command sent successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting device:', error);
+        res.status(500).json({
+            code: 500,
+            error: 'Failed to delete device.',
+        });
+    }
+}

@@ -5,6 +5,8 @@ import {
   Link,
   Routes
 } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import Layout from "./layout/index.jsx";
 import Home from "./pages/Home/index.jsx";
 import Login from "./pages/Authen/Login/index.jsx";
@@ -37,6 +39,18 @@ export default function App() {
         <Route path="/login" element={<Login/>}>
         </Route>
       </Routes>
+      <ToastContainer
+          position='top-center'
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme='light'
+      />
     </Router>
   );
 }

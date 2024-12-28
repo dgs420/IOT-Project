@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const TrafficLogController = require('../controllers/trafficLogController');
 
+
 router.get('/all-logs', TrafficLogController.getAllLogs);
 router.get('/all-logs-details', TrafficLogController.getDetailedLogs);
 router.get('/logs-by-hour', TrafficLogController.getTrafficByHour);

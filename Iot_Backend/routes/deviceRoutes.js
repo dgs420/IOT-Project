@@ -9,6 +9,7 @@ router.post('/create-device',deviceController.createDevice );
 router.get('/:deviceId', deviceController.getDeviceById);
 router.put('/:deviceId', deviceController.updateDevice);
 router.delete('/:deviceId', deviceController.deleteDevice);
+router.post('/command', deviceController.commandDevice);
 
 
 module.exports = router;
