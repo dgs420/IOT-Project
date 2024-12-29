@@ -8,8 +8,8 @@ const connectMqtt = () => {
   if (client) return client;
   const MQTT_CREDENTIALS = {
     port: process.env.MQTT_PORT,
-    username: process.env.BROKER_USERNAME,   // Optional: Username for your broker
-    password: process.env.BROKER_PASSWORD,    // Optional: Password for your broker
+    username: process.env.BROKER_USERNAME,
+    password: process.env.BROKER_PASSWORD,
     protocol:'mqtts'
   };
   client = mqtt.connect(process.env.BROKER_URL,MQTT_CREDENTIALS);
@@ -66,12 +66,21 @@ const connectMqtt = () => {
         }
 
         const now = new Date();
-        await device.update({
-          status: status || 'offline',
-          last_seen: now,
-        });
-
-        console.log(`Device ${embed_id} updated to status: ${status} at ${now}`);
+        if (status === 'offline' && device.status === 'online') {
+          await device.update({
+            status: 'offline',
+            last_seen: now,
+          });
+          console.log(`Device ${embed_id} updated to status: offline at ${now}`);
+        } else if (status === 'online') {
+          await device.update({
+            status: 'online',
+            last_seen: now,
+          });
+          console.log(`Device ${embed_id} updated to status: online at ${now}`);
+        } else {
+          console.log(`No status change for device ${embed_id}.`);
+        }
         return;
       }
 

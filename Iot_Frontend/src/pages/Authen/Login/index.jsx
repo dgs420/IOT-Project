@@ -31,10 +31,11 @@ const Login = () => {
         <div className='w-full h-screen flex items-start'>
             <div className='relative w-1/2 h-full flex flex-col'>
                 <div className='absolute inset-0 flex flex-col justify-center items-center'>
-                    <h1 className='text-4xl text-white font-bold my-4'>Barrier Management System</h1>
-
+                    <h1 className='text-4xl text-white font-bold my-4 bg-black bg-opacity-50 p-2 rounded shadow-lg'>
+                        Entry Management System
+                    </h1>
                 </div>
-                <img src={parkingImage} alt="back ground" className='w-full h-full object-cover' />
+                <img src={parkingImage} alt="back ground" className='w-full h-full object-cover'/>
 
             </div>
 
@@ -42,7 +43,7 @@ const Login = () => {
                 {/* <h1>interactive band</h1> */}
                 <div className='w-full flex flex-col'>
                     <div className='w-full flex flex-col'>
-                        <h3 className='text-2xl font-semibold mb-4'>Welcome back</h3>
+                    <h3 className='text-2xl font-semibold mb-4'>Welcome back</h3>
                         <p className='text-sm mb-2'>Login to continue</p>
                     </div>
 

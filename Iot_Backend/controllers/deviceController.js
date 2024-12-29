@@ -16,21 +16,85 @@ exports.createDevice = async (req, res) => {
         if (existingDevice) {
             return res.status(400).json({
                 code: 400,
-                message: 'Device with this id already exists.',
+                message: 'Device with this ID already exists.',
             });
         }
 
-        // Create the device
+        // Default the device status to 'offline' initially
+        const initialStatus = status || 'offline';
+
+        // Create the device in the database
         const newDevice = await Device.create({
             embed_id,
             location,
             type,
-            status: status || 'offline', // Default to 'offline' if not provided
+            status: initialStatus,
         });
 
+        // Subscribe to the status topic for the new device
+        const topic = `device/${embed_id}/status`;
+        client.subscribe(topic, (err) => {
+            if (err) {
+                console.error(`Failed to subscribe to topic ${topic}:`, err.message);
+                return res.status(500).json({
+                    code: 500,
+                    message: 'Failed to create device. Could not subscribe to status topic.',
+                });
+            }
+
+            console.log(`Subscribed to status topic for device ${embed_id}`);
+        });
+
+        const timeout = setTimeout(async () => {
+            console.warn(`No status message received for device ${embed_id} within timeout period.`);
+
+            // Optionally update the status to "unknown" or handle as needed
+            // await Device.update({ status: 'offline' }, { where: { embed_id } });
+
+            // Unsubscribe from the topic after the timeout
+            client.unsubscribe(topic, (err) => {
+                if (err) {
+                    console.error(`Failed to unsubscribe from topic ${topic}:`, err.message);
+                } else {
+                    console.log(`Unsubscribed from topic: ${topic} due to timeout`);
+                }
+            });
+        }, 10000); // Timeout period in milliseconds (e.g., 10 seconds)
+
+        // Listen for the retained status message
+        client.once('message', async (receivedTopic, message) => {
+            if (receivedTopic === topic) {
+                clearTimeout(timeout);
+                try {
+                    const statusMessage = JSON.parse(message.toString());
+
+                    if (statusMessage.status) {
+                        // Update the device status in the database
+                        await Device.update(
+                            { status: statusMessage.status },
+                            { where: { embed_id } }
+                        );
+                        console.log(`Device ${embed_id} status updated to: ${statusMessage.status}`);
+                    }
+
+                    // Unsubscribe from the topic after handling the message
+                    client.unsubscribe(topic, (err) => {
+                        if (err) {
+                            console.error(`Failed to unsubscribe from topic ${topic}:`, err.message);
+                        } else {
+                            console.log(`Unsubscribed from topic: ${topic}`);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error parsing retained status message:', error);
+                }
+            }
+        });
+
+        // Respond to the client
         res.status(200).json({
             code: 200,
-            message: 'Device created successfully.',
+            message: 'Device created successfully. Waiting for status update...',
             info: newDevice,
         });
     } catch (error) {
@@ -41,7 +105,6 @@ exports.createDevice = async (req, res) => {
         });
     }
 };
-
 
 
 exports.getAllDevice = async (req, res) => {
@@ -162,8 +225,14 @@ exports.commandDevice =async (req,res) =>{
                 message: 'Device not found.',
             });
         }
-        if (!embed_id || !command) {
+        if (device.status === 'offline') {
             return res.status(400).json({
+                code: 400,
+                message: 'Device is offline'
+            });
+        }
+        if (!embed_id || !command) {
+            return res.json({
                 code: 400,
                 message:'embed_id and command are required' });
         }
@@ -172,14 +241,21 @@ exports.commandDevice =async (req,res) =>{
         const topic = `barrier/${command}/response/${embed_id}`;
         const payload = JSON.stringify({ status: 'valid', message: command });
 
-        client.publish(topic, payload, (err) => {
+        client.publish(topic, payload, async (err) => {
             if (err) {
                 console.error(`[COMMAND] Failed to send command to device ${embed_id}:`, err.message);
-                return res.status(500).json({ code: 500, message: 'Failed to send command' });
+                return res.status(500).json({code: 500, message: 'Failed to send command'});
             }
 
             console.info(`[COMMAND] Command sent to device ${embed_id}:`, payload);
-            res.status(200).json({ code: 200, message: 'Command sent successfully' });
+            const actionType = command === "enter" ? "admin enter" : "admin exit"; // Determine action type
+            await TrafficLog.create({
+                card_id: null, // Assuming no RFID card for admin actions
+                device_id: device.device_id,
+                action: actionType,
+                time: new Date(),
+            });
+            res.status(200).json({code: 200, message: 'Command sent successfully'});
         });
     } catch (error) {
         console.error('Error deleting device:', error);

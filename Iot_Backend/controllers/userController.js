@@ -4,6 +4,8 @@ const sequelize = require('../config/database');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const Device = require("../models/deviceModel");
+const Card = require('../models/rfidCardModel');
 
 
 exports.getAllUsers = async (req, res) => {
@@ -38,4 +40,41 @@ exports.getUserDetail = async (req, res) => {
          res.status(500).json({ error: 'Failed to retrieve users' });
      }
 }
-// Signup function with email
+
+exports.deleteUser = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by primary key
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({
+                code: 404,
+                message: 'User not found.',
+            });
+        }
+
+        // Check if the user has associated RFID cards
+        const cards = await Card.findAll({ where: { user_id: userId } });
+        if (cards.length > 0) {
+            return res.json({
+                code: 400,
+                message: 'User cannot be deleted while having associated RFID cards.',
+            });
+        }
+
+        // Delete the user
+        await user.destroy();
+
+        res.status(200).json({
+            code: 200,
+            message: 'User deleted successfully.',
+        });
+    } catch (error) {
+        console.error('Error deleting User:', error);
+        res.json({
+            code: 500,
+            error: 'Failed to delete user.',
+        });
+    }
+};

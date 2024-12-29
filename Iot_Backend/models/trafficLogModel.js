@@ -14,6 +14,7 @@ const TrafficLog = sequelize.define('traffic_log', {
       model: 'rfid_cards',
       key: 'card_id',
     },
+    allowNull: true
   },
   device_id: {
     type: DataTypes.INTEGER,
@@ -29,7 +30,7 @@ const TrafficLog = sequelize.define('traffic_log', {
     allowNull: false,
   },
   action: {
-    type: DataTypes.ENUM('enter', 'exit'),
+    type: DataTypes.ENUM('enter', 'exit','admin enter','admin exit'),
     allowNull: false,
   },
 },{

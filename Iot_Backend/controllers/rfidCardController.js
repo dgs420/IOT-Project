@@ -45,7 +45,7 @@ exports.createRfidCard = async (req, res) => {
         });
 
         if (existingCard) {
-            return res.status(400).json({
+            return res.json({
                 code:400,
                 message: 'Card number already exists.' });
         }
@@ -56,8 +56,8 @@ exports.createRfidCard = async (req, res) => {
         });
 
         if (vehicleCard) {
-            return res.status(400).json({
-                code:200,
+            return res.json({
+                code:400,
                 message: 'A card is already associated with this vehicle.' });
         }
 
@@ -77,8 +77,40 @@ exports.createRfidCard = async (req, res) => {
         });
     } catch (error) {
         console.error('Error creating RFID card:', error);
-        res.status(500).json({ message: 'Server error.' });
+        res.json({
+            code:500,
+            message: 'Server error.' });
     }
 };
 exports.getRfidCardsById = async (req, res) => {}
-exports.deleteCard = async (req, res) => {}
+exports.deleteCard = async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        // Find the user by primary key
+        const card = await RfidCard.findByPk(cardId);
+        if (!card) {
+            return res.status(404).json({
+                code: 404,
+                message: 'Card not found.',
+            });
+        }
+
+        // Check if the user has associated RFID cards
+
+
+        // Delete the user
+        await card.destroy();
+
+        res.status(200).json({
+            code: 200,
+            message: 'Card deleted successfully.',
+        });
+    } catch (error) {
+        console.error('Error deleting Card:', error);
+        res.json({
+            code: 500,
+            error: 'Failed to delete Card.',
+        });
+    }
+};

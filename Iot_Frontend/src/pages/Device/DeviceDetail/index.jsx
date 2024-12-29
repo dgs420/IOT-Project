@@ -26,7 +26,7 @@ const DeviceDetail = () => {
 
     const handleDeviceCommand = async (command) => {
         try {
-            const response = await postRequest(`/device/command`, { embed_id: deviceDetails.embed_id, command });
+            const response = await postRequest(`/device/command`, {embed_id: deviceDetails.embed_id, command});
             if (response.code === 200) {
                 toast.success(response.message);
                 console.log(`Command "${command}" sent successfully.`);
@@ -35,7 +35,8 @@ const DeviceDetail = () => {
                 console.error(`Failed to send command: ${response.message}`);
             }
         } catch (error) {
-            console.error('Error sending command:', error.response?.data?.message || error.message);
+            toast.error(error.message);
+            console.error('Error:', error);
         }
     };
 

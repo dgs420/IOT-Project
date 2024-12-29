@@ -1,21 +1,18 @@
-// eslint-disable-next-line no-unused-vars
-import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
-import {getRequest} from "../../../api/index.js";
-
+import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+import { getRequest } from "../../../api/index.js";
 
 export const ActivityLog = () => {
     const [logs, setLogs] = useState([]);
 
     useEffect(() => {
-
         const getTrafficLogs = async () => {
             try {
                 const response = await getRequest('/logs/all-logs-details'); // Adjust URL as needed
-                if(response.code === 200){
+                if (response.code === 200) {
                     setLogs(response.info);
                     console.log(response);
-                }else{
+                } else {
                     console.error(response.message);
                 }
             } catch (error) {
@@ -24,9 +21,8 @@ export const ActivityLog = () => {
         };
 
         getTrafficLogs();
-        // setInterval(getTrafficLogs)
-
     }, []);
+
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-300 shadow-lg">
@@ -46,22 +42,23 @@ export const ActivityLog = () => {
                 </thead>
                 <tbody>
                 {logs.map((log) => (
-                    <tr key={log.log_id} className="hover:bg-gray-100 ">
+                    <tr key={log.log_id} className="hover:bg-gray-100">
                         <td className="py-2 px-4 border-b text-center">{log.log_id}</td>
                         <td className="py-2 px-4 border-b text-center">{log.card_id}</td>
                         <td className="py-2 px-4 border-b text-center">{new Date(log.time).toLocaleString()}</td>
                         <td className="py-2 px-4 border-b text-center">{log.action}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.card_number}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.vehicle_number}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.vehicle_type}</td>
+                        <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.card_number : 'N/A'}</td>
+                        <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_number : 'N/A'}</td>
+                        <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_type : 'N/A'}</td>
                         <td className="py-2 px-4 border-b text-center">{log.device_id}</td>
                         <td className="py-2 px-4 border-b text-center">
-                            <Link
-                                to={`/user/${log.rfid_card.user.user_id}`}>
-                                {log.rfid_card.user.user_id}
-                            </Link>
+                            {log.rfid_card && log.rfid_card.user ? (
+                                <Link to={`/user/${log.rfid_card.user.user_id}`}>
+                                    {log.rfid_card.user.user_id}
+                                </Link>
+                            ) : 'N/A'}
                         </td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.user.username}</td>
+                        <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.user.username : 'N/A'}</td>
                     </tr>
                 ))}
                 </tbody>

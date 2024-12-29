@@ -1,15 +1,29 @@
-import React, {useEffect, useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
-import {Box, Button, Card, CardContent, CardHeader, Input, Modal, TextField} from "@mui/material";
-import {getRequest, postRequest} from "../../../api/index.js";
-import SelectInput from "@mui/material/Select/SelectInput.js";
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    Input,
+    Modal,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    MenuItem
+} from "@mui/material";
+import { getRequest, postRequest, deleteRequest } from "../../../api/index.js";
+import { toast } from "react-toastify";
 
 const UserDetail = () => {
-    const {user_id} = useParams(); // Get the userId from the URL
+    const { user_id } = useParams(); // Get the userId from the URL
     const [rfidCards, setRfidCards] = useState([]);
     const [openModal, setOpenModal] = useState(false);
-    const [error, setError] = useState(null);
-
+    const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+    const [cardToDelete, setCardToDelete] = useState(null);
     const [newCard, setNewCard] = useState({
         card_number: '',
         user_id,
@@ -18,28 +32,23 @@ const UserDetail = () => {
         vehicle_type: 'car'
     });
     const [userDetails, setUserDetails] = useState([]);
-    const [userLogs, setUserLogs] = useState([]);
-    // const fetchUserLogs = async () => {
-    //     try{
-    //         const response: = await fetch()
-    //     }
-    // }
+
     const handleModalOpen = () => setOpenModal(true);
     const handleModalClose = () => setOpenModal(false);
 
     const handleInputChange = (e) => {
-        const {name, value} = e.target;
-        setNewCard({...newCard, [name]: value});
+        const { name, value } = e.target;
+        setNewCard({ ...newCard, [name]: value });
     };
+
     const fetchRfidCards = async () => {
         try {
             const response = await getRequest(`/card/user-card/${user_id}`);
-            console.log(response);
-            // const data = await response.json();
             if (response.code === 200) {
                 setRfidCards(response.info);
-            } else
+            } else {
                 console.error(response.message);
+            }
         } catch (error) {
             console.error('Error:', error.response.data.message);
         }
@@ -48,12 +57,11 @@ const UserDetail = () => {
     const fetchUserDetail = async () => {
         try {
             const response = await getRequest(`/user/user-detail/${user_id}`);
-            console.log(response);
-            // const data = await response.json();
             if (response.code === 200) {
                 setUserDetails(response.info);
-            } else
+            } else {
                 console.error(response.message);
+            }
         } catch (error) {
             console.error('Error:', error.response.data.message);
         }
@@ -63,15 +71,43 @@ const UserDetail = () => {
         e.preventDefault();
         try {
             const response = await postRequest('/card/create-card', newCard); // Adjust the endpoint as necessary
-            if (!response.ok) console.error('Error:', response);
-
-            await fetchRfidCards(); // Refresh the list of RFID cards
-            handleModalClose(); // Close the modal
+            if (response.code === 200) {
+                await fetchRfidCards(); // Refresh the list of RFID cards
+                handleModalClose(); // Close the modal
+                toast.success("New card added successfully.");
+                fetchRfidCards();
+            } else {
+                toast.error(response.message);
+                console.error('Error:', response);
+            }
         } catch (error) {
-            console.log(error);
             console.error('Error adding RFID card:', error);
         }
     };
+
+    const handleDeleteCard = (cardId) => {
+        setCardToDelete(cardId);
+        setConfirmDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        try {
+            const response = await deleteRequest(`/card/${cardToDelete}`); // Adjust the endpoint as necessary
+            if (response.code === 200) {
+                toast.success("Card deleted successfully.");
+                await fetchRfidCards(); // Refresh the list of RFID cards
+            } else {
+                toast.error(response.message);
+                console.error(response.message);
+            }
+        } catch (error) {
+            console.error('Error deleting card:', error);
+        } finally {
+            setConfirmDeleteModal(false);
+            setCardToDelete(null);
+        }
+    };
+
     useEffect(() => {
         fetchRfidCards();
         fetchUserDetail();
@@ -79,68 +115,31 @@ const UserDetail = () => {
 
     return (
         <div className={'w-full p-4'}>
-
             <div className="bg-white rounded-lg shadow p-6">
                 <h1 className="text-xl font-semibold mb-6">User Details</h1>
-
-                <form className="space-y-6 max-w-2xl">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Username
-                        </label>
-                        <Input placeholder="Username" value={userDetails.username}/>
-                    </div>
+                <form className="space-y-6 max-w-2xl"
+                      // onSubmit={}
+                >
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Email
-                        </label>
-                        <Input placeholder="email" value={userDetails.email}/>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <Input placeholder="Username" value={userDetails.username} readOnly />
                     </div>
-
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Role
-                        </label>
-                        {/*<SelectInput defaultValue="four-wheeler">*/}
-                        {/*    <SelectTrigger>*/}
-                        {/*        <SelectValue placeholder="Select category"/>*/}
-                        {/*    </SelectTrigger>*/}
-                        {/*    <SelectContent>*/}
-                        {/*        <SelectItem value="two-wheeler">Two Wheeler</SelectItem>*/}
-                        {/*        <SelectItem value="three-wheeler">Three Wheeler</SelectItem>*/}
-                        {/*        <SelectItem value="four-wheeler">Four Wheeler</SelectItem>*/}
-                        {/*    </SelectContent>*/}
-                        {/*</SelectInput>*/}
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <Input placeholder="Email" value={userDetails.email} readOnly />
                     </div>
-
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            First Name
-                        </label>
-                        <Input placeholder="First name" value={userDetails.first_name}/>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <Input placeholder="First Name" value={userDetails.first_name} readOnly />
                     </div>
-
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Last name
-                        </label>
-                        <Input placeholder="Last name" value={userDetails.last_name}/>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <Input placeholder="Last Name" value={userDetails.last_name} readOnly />
                     </div>
-
-                    <Button type="submit" className="bg-green-500 hover:bg-green-600">
-                        Submit
-                    </Button>
+                    <Button type="submit" className="bg-green-500 hover:bg-green-600">Submit</Button>
                 </form>
             </div>
-
-            {/*<h2 className="text-2xl font-semibold mb-4">User Details</h2>*/}
-            {/*<p className="mb-6">User ID: {user_id}</p>*/}
-            {/*<p className="mb-6">Username: {userDetails.username}</p>*/}
-            {/*<p className="mb-6">Email: {userDetails.email}</p>*/}
-            {/*<p className="mb-6">Role: {userDetails.role}</p>*/}
-            {/*<p className="mb-6">First name: {userDetails.first_name}</p>*/}
-            {/*<p className="mb-6">Last name: {userDetails.last_name}</p>*/}
 
             <h3 className="text-xl font-semibold mb-4 my-4">Registered Cards</h3>
             <div className="my-4 mx-4">
@@ -149,31 +148,25 @@ const UserDetail = () => {
                 </Button>
             </div>
 
-
             <div className="flex flex-wrap gap-4 mx-4">
                 {rfidCards.length > 0 ? (
                     rfidCards.map((card) => (
-                        <Card
-                            key={card.card_id}
-                            className="w-full md:w-1/3 lg:w-1/4 bg-white shadow-md rounded-lg p-4"
-                        >
-                            <Link style={{textDecoration: 'none'}} to='/test-list'>
-                                <CardHeader title={`Card ID: ${card.card_id}`}/>
+                        <Card key={card.card_id} className="w-full md:w-1/3 lg:w-1/4 bg-white shadow-md rounded-lg p-4">
+                            {/*<Link style={{ textDecoration: 'none' }} to='/test-list'>*/}
+                                <CardHeader title={`Card ID: ${card.card_id}`} />
                                 <CardContent>
-                                    <p className="text-gray-700">
-                                        <strong>Card Number:</strong> {card.card_number}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <strong>Vehicle Number:</strong> {card.vehicle_number || 'No vehicle linked'}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <strong>Vehicle Type:</strong> {card.vehicle_type || 'No vehicle linked'}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <strong>Status:</strong> {card.status}
-                                    </p>
+                                    <p className="text-gray-700"><strong>Card Number:</strong> {card.card_number}</p>
+                                    <p className="text-gray-700"><strong>Vehicle Number:</strong> {card.vehicle_number || 'No vehicle linked'}</p>
+                                    <p className="text-gray-700"><strong>Vehicle Type:</strong> {card.vehicle_type || 'No vehicle linked'}</p>
+                                    <p className="text-gray-700"><strong>Status:</strong> {card.status}</p>
+                                    <div className="mt-4" >
+                                        <Button variant="contained" color="error" onClick={() => handleDeleteCard(card.card_id)}>
+                                            Delete Card
+                                        </Button>
+                                    </div>
+
                                 </CardContent>
-                            </Link>
+                            {/*</Link>*/}
                         </Card>
                     ))
                 ) : (
@@ -217,10 +210,11 @@ const UserDetail = () => {
                             onChange={handleInputChange}
                             select
                             fullWidth
+                            required
                         >
-                            <option value="car">Car</option>
-                            <option value="bike">Bike</option>
-                            <option value="others">Others</option>
+                            <MenuItem value="car">Car</MenuItem>
+                            <MenuItem value="bike">Bike</MenuItem>
+                            <MenuItem value="others">Others</MenuItem>
                         </TextField>
                         <Button type="submit" variant="contained" color="primary" fullWidth>
                             Add Card
@@ -228,10 +222,24 @@ const UserDetail = () => {
                     </form>
                 </Box>
             </Modal>
-        </div>
 
-    )
-        ;
+            {/* Confirmation Delete Modal */}
+            <Dialog open={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)}>
+                <DialogTitle>Confirm Deletion</DialogTitle>
+                <DialogContent>
+                    <p>Are you sure you want to delete this card?</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmDeleteModal(false)} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={confirmDelete} color="primary">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
 };
 
 export default UserDetail;

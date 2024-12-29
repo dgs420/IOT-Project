@@ -6,4 +6,5 @@ const requireAuth = require('../middleware/requireAuth');
 
 router.get('/all-user', userController.getAllUsers);
 router.get('/user-detail/:userId',userController.getUserDetail)
+router.delete('/:userId',userController.deleteUser);
 module.exports = router;

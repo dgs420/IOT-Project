@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import {getRequest, postRequest} from "../../../api/index.js";
+import {deleteRequest, getRequest, postRequest} from "../../../api/index.js";
 import {Box, Button, MenuItem, Modal, TextField} from "@mui/material";
-import { LayoutDashboard, Car, Users, UserCircle, ClipboardList, ShoppingCart, Settings, Shield, Video, Clock, Building2, Wrench, MoreVertical } from 'lucide-react'
+import { Modal as AntModal } from 'antd';
+import {toast} from "react-toastify";
 
 function DeviceList(props) {
     const [devices, setDevices] = useState([]);
@@ -51,6 +52,29 @@ function DeviceList(props) {
     const handleModalOpen = () => setOpenModal(true);
     const handleModalClose = () => setOpenModal(false);
 
+    const handleDelete = async (deviceId) => {
+        AntModal.confirm({
+            title: 'Confirm Deletion',
+            content: 'Are you sure you want to delete this device?',
+            onOk: async () => {
+                try {
+                    const response = await deleteRequest(`/device/${deviceId}`); // Adjust the endpoint as necessary
+                    if (response.code === 200) {
+                        toast.success('Device deleted successfully');
+                        await getAllDevices(); // Refresh the list after successful deletion
+                    } else {
+                        toast.error(response.message || 'Failed to delete device');
+                    }
+                } catch (error) {
+                    console.error('Error deleting device:', error);
+                    toast.error('An error occurred while deleting the device');
+                }
+            },
+            onCancel() {
+                console.log('Device deletion cancelled');
+            },
+        });
+    };
 
     useEffect(() => {
         getAllDevices();
@@ -104,11 +128,11 @@ function DeviceList(props) {
                                     Detail
                                 </Link>
 
-                                <Link
-                                    className="py-2 text-center font-medium text-red-600 px-1"
-                                    to={`/device/${device.device_id}`}>
+                                <span
+                                    className="py-2 text-center font-medium text-red-600 px-1 cursor-pointer"
+                                    onClick={() => handleDelete(device.device_id)}>
                                     Delete
-                                </Link>
+                                </span>
                             </td>
 
                         </tr>
