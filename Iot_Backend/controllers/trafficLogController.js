@@ -255,7 +255,11 @@ exports.getTrafficByWeek = async (req, res) => {
       }
     });
 
-    res.status(200).json(result);
+    res.status(200).json({
+      code: 200,
+      message:'Data fetched successfully',
+      info: result
+    });
   } catch (error) {
     console.error('Error fetching traffic log data by week:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

@@ -12,7 +12,7 @@ export const HourlyChart = () => {
   const fetchTrafficData = async () => {
     try {
       const response = await getRequest('/logs/logs-by-hour'); // Adjust URL as needed
-
+      console.log(response);
       if (response.code===200) {
         setTrafficData(response.info);
       } else {
