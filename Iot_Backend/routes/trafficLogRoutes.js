@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const TrafficLogController = require('../controllers/trafficLogController');
+const requireAuth = require("../middleware/requireAuth");
 
+router.use(requireAuth);
 
 router.get('/all-logs', TrafficLogController.getAllLogs);
 router.get('/all-logs-details', TrafficLogController.getDetailedLogs);

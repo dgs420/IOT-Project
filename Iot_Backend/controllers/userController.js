@@ -43,6 +43,14 @@ exports.getUserDetail = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     const { userId } = req.params;
+    const { user } = req;
+    console.log(user);
+    if (parseInt(userId, 10) === user.user_id) {
+        return res.status(400).json({
+            message: 'You cannot delete your own account.',
+        });
+    }
+
 
     try {
         // Find the user by primary key
@@ -57,7 +65,7 @@ exports.deleteUser = async (req, res) => {
         // Check if the user has associated RFID cards
         const cards = await Card.findAll({ where: { user_id: userId } });
         if (cards.length > 0) {
-            return res.json({
+            return res.status(400).json({
                 code: 400,
                 message: 'User cannot be deleted while having associated RFID cards.',
             });

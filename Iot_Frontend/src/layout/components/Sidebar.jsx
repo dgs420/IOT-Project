@@ -2,22 +2,31 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaChartLine, FaCog, FaFile, FaHome, FaInfoCircle, FaMicrochip, FaUser } from 'react-icons/fa';
 
-const Sidebar = () => {
-    const links = [
-        { to: "/", icon: <FaHome />, label: "Home" },
-        { to: "/details", icon: <FaChartLine />, label: "Statistic" },
-        { to: "/device", icon: <FaMicrochip />, label: "Devices" },
-        { to: "/users-list", icon: <FaUser />, label: "Users" },
-        { to: "/report", icon: <FaFile />, label: "Report" },
-        { to: "/settings", icon: <FaCog />, label: "Settings" },
-        { to: "/about", icon: <FaInfoCircle />, label: "About Us" },
-    ];
-
+// eslint-disable-next-line react/prop-types
+const Sidebar = ({ userRole }) => {
+    const links = {
+        admin: [
+            { to: "/", icon: <FaHome />, label: "Home" },
+            { to: "/details", icon: <FaChartLine />, label: "Statistic" },
+            { to: "/device", icon: <FaMicrochip />, label: "Devices" },
+            { to: "/users-list", icon: <FaUser />, label: "Users" },
+            { to: "/report", icon: <FaFile />, label: "Report" },
+            { to: "/settings", icon: <FaCog />, label: "Settings" },
+            { to: "/about", icon: <FaInfoCircle />, label: "About Us" },
+        ],
+        user: [
+            { to: "/", icon: <FaHome />, label: "Home" },
+            { to: "/details", icon: <FaChartLine />, label: "Statistic" },
+            { to: "/device", icon: <FaMicrochip />, label: "Devices" },
+            { to: "/about", icon: <FaInfoCircle />, label: "About Us" },
+        ],
+    };
+    const userLinks = userRole === 'admin' ? links.admin : links.user;
     return (
         <div className='w-64 bg-slate-900 fixed h-full py-2'>
             <h1 className='text-3xl text-white font-bold mx-3 my-2'> ParkMag </h1>
             <ul className='mt-3 text-black font-bold'>
-                {links.map(({ to, icon, label }) => (
+                {userLinks.map(({ to, icon, label }) => (
                     <li key={to} className='mb-2 rounded hover:bg-slate-800'>
                         <NavLink
                             to={to}

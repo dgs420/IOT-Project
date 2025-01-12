@@ -27,7 +27,7 @@ axios.interceptors.response.use(
                 // Handle forbidden access (403)
                 console.log('Forbidden access - You do not have permission to access this resource.');
                 // Clear user session or show a notification
-                clearUserSession();
+                // clearUserSession();
                 // Optionally, redirect to a "403 Forbidden" page or show a message
             }
         }
@@ -85,7 +85,7 @@ async function apiRequest(method, url, body = null, type = 'json', baseUrl = BAS
         return response.data; // Axios automatically parses the JSON response
     } catch (error) {
         console.error('Request failed:', error);
-        throw error; // Rethrow the error to handle it in the calling function
+        return error?.response?.data; // Rethrow the error to handle it in the calling function
     }
 }
 // Specific API Call Functions
@@ -112,8 +112,8 @@ export function deleteRequest(url) {
 function clearUserSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('uid');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
     localStorage.removeItem('role');
     window.location.href = '/login';
 }

@@ -118,7 +118,7 @@ exports.getAllDevice = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             code: 500,
-            error: 'Failed to retrieve logs' });
+            error: 'Failed to retrieve devices' });
     }
 };
 

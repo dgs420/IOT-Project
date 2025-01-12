@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const deviceController = require('../controllers/deviceController');
 const requireAuth = require('../middleware/requireAuth');
+const requireRole = require('../middleware/requireRole');
 
-router.use(requireAuth);
+
+router.use(requireAuth,requireRole(['manager','admin']));
+
 router.get('/', deviceController.getAllDevice);
 router.post('/create-device',deviceController.createDevice );
 router.get('/:deviceId', deviceController.getDeviceById);

@@ -17,12 +17,12 @@ const requireAuth = async (req, res, next) => {
 
     try {
         // Verify JWT
-        const {user_id}  = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded Token:", user_id);
+        req.user = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded Token:",req.user);
 
         const user = await User.findOne({
-            where: { user_id },
-            attributes: ["user_id"] // Fetch only the user_id field
+            where: { user_id: req.user.user_id },
+            attributes: ["user_id","role"] // Fetch only the user_id field
         });
 
         if (!user) {
@@ -42,5 +42,6 @@ const requireAuth = async (req, res, next) => {
         });
     }
 };
+
 
 module.exports = requireAuth;

@@ -8,8 +8,12 @@ import {useNavigate} from "react-router-dom";
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const username = localStorage.getItem('username');
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('uid');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
     // Redirect to login page
     navigate('/login');
   };
@@ -25,7 +29,7 @@ const Header = () => {
       <Bell className="text-gray-500" />
       <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-orange-500 rounded-full"></div>
-        <span>Delicious Burger</span>
+        <span>{username}</span>
         <ChevronDown
             className="text-gray-500 cursor-pointer"
             onClick={() => setShowDropdown(!showDropdown)}

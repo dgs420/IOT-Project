@@ -28,6 +28,7 @@ const Home = () => {
 
     useEffect(() => {
         getHomeCount();
+        // console.log( 'Token: ' + localStorage.getItem('token'));
     }, []);
     return (
         <div className='px-3 py-3'>

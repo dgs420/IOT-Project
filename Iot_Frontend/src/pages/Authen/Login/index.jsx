@@ -20,8 +20,19 @@ const Login = () => {
             if(response.ok) {
                 window.location.href = '/';
             }
-            const { token } = await response.json();
-            localStorage.setItem('token', token);  // Store the JWT securely
+            const data = await response.json();
+
+            // Extract token, uid, and role from the parsed data
+            const { token } = data.info;
+            const { uid } = data.info; // use uid directly from data.info
+            const { role } = data.info; // use role directly from data.info
+            const { username } = data.info;
+
+            // Store the JWT and user information securely
+            localStorage.setItem('token', token);
+            localStorage.setItem('uid', uid);
+            localStorage.setItem('role', role);
+            localStorage.setItem('username',username);
             // Redirect user to a dashboard or protected route
         } catch (error) {
             setError(error.message);
