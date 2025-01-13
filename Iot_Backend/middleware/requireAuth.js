@@ -12,13 +12,13 @@ const requireAuth = async (req, res, next) => {
         });
     }
 
-    console.log(authorization);
+    // console.log(authorization);
     const token = authorization.split(" ")[1];
 
     try {
         // Verify JWT
         req.user = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded Token:",req.user);
+        // console.log("Decoded Token:",req.user);
 
         const user = await User.findOne({
             where: { user_id: req.user.user_id },
