@@ -1,71 +1,75 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import {getRequest} from "../../../api/index.js";
+import {io} from "socket.io-client";
+import {Card, CardContent} from "@mui/material";
 
 
-export const ActivityLog = () => {
-    const [logs, setLogs] = useState([]);
+const ActivityLog = () => {
+    const [events, setEvents] = useState([]); // State to store MQTT events
 
     useEffect(() => {
+        const storedEvents = JSON.parse(localStorage.getItem('mqttEvents')) || [];
+        setEvents(storedEvents.slice(-10)); // Only keep the last 5 events
 
-        const getTrafficLogs = async () => {
-            try {
-                const response = await getRequest('/logs/all-logs-details'); // Adjust URL as needed
-                if(response.code === 200){
-                    setLogs(response.info);
-                    console.log(response);
-                }else{
-                    console.error(response.message);
-                }
-            } catch (error) {
-                console.error('Error fetching traffic logs:', error);
-            }
+        const socket = io('http://localhost:5000'); // Replace with your backend URL
+
+        socket.on('mqttMessage', (data) => {
+            console.log('Received MQTT Message:', data);
+
+            setEvents((prevEvents) => {
+                const updatedEvents = [...prevEvents, data].slice(-10); // Keep only the last 5 events
+                localStorage.setItem('mqttEvents', JSON.stringify(updatedEvents)); // Save to local storage
+                return updatedEvents;
+            });
+        });
+
+        return () => {
+            socket.disconnect();
         };
-
-        getTrafficLogs();
-        // setInterval(getTrafficLogs)
-
     }, []);
+
     return (
-        <div className="overflow-x-auto h-96">
-            <table className="min-w-full bg-white border border-gray-300 shadow-lg">
-                <thead className='top-0 sticky'>
-                <tr className="bg-gray-100 text-gray-600">
-                    <th className="py-3 px-4 border-b">Log ID</th>
-                    <th className="py-3 px-4 border-b">Card ID</th>
-                    <th className="py-3 px-4 border-b">Time</th>
-                    <th className="py-3 px-4 border-b">Action</th>
-                    <th className="py-3 px-4 border-b">Card Number</th>
-                    <th className="py-3 px-4 border-b">Vehicle Number</th>
-                    <th className="py-3 px-4 border-b">Vehicle Type</th>
-                    <th className="py-3 px-4 border-b">Gate ID</th>
-                    <th className="py-3 px-4 border-b">User ID</th>
-                    <th className="py-3 px-4 border-b">Username</th>
-                </tr>
-                </thead>
-                <tbody>
-                {logs.map((log) => (
-                    <tr key={log.log_id} className="hover:bg-gray-100 ">
-                        <td className="py-2 px-4 border-b text-center">{log.log_id}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.card_id}</td>
-                        <td className="py-2 px-4 border-b text-center">{new Date(log.time).toLocaleString()}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.action}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.card_number}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.vehicle_number}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.vehicle_type}</td>
-                        <td className="py-2 px-4 border-b text-center">{log.device_id}</td>
-                        <td className="py-2 px-4 border-b text-center">
-                            <Link
-                                to={`/user/${log.rfid_card.user.user_id}`}>
-                                {log.rfid_card.user.user_id}
-                            </Link>
-                        </td>
-                        <td className="py-2 px-4 border-b text-center">{log.rfid_card.user.username}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>
-    );
+        <Card className="shadow-lg rounded-lg overflow-hidden">
+            <CardContent className="p-6">
+                <h2 className="text-2xl font-bold mb-4 text-center">Gate Activity</h2>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-100">
+                        <tr>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Embed ID</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Card Number</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Action</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Message</th>
+                        </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                        {events.length > 0 ? (
+                            events.slice().reverse().map((event, index) => (
+                                <tr key={index} className="hover:bg-gray-50 transition duration-200">
+                                    <td className="px-4 py-2 text-sm text-gray-700">
+                                        <Link to={`/device/${event.embed_id}`}>
+                                            {event.embed_id}
+                                        </Link>
+                                    </td>
+                                    <td className="px-4 py-2 text-sm text-gray-700">{event.card_number}</td>
+                                    <td className="px-4 py-2 text-sm text-gray-700">{event.action}</td>
+                                    <td className="px-4 py-2 text-sm text-gray-700">{event.message}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="px-4 py-2 text-gray-500 text-center">No events received
+                                    yet.
+                                </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                </div>
+            </CardContent>
+        </Card>
+    )
+        ;
 };
+export default ActivityLog;

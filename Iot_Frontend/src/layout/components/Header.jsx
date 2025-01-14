@@ -18,16 +18,37 @@ const Header = () => {
     navigate('/login');
   };
 
+  const getHeaderTitle = () => {
+    switch (location.pathname) {
+      case '/':
+        return 'Dashboard';
+      case '/settings':
+        return 'Settings';
+      case '/device':
+        return 'Devices list';
+      case '/details':
+        return 'Statistics';
+      case '/report':
+        return 'Log history';
+      case '/users-list':
+        return 'Users list';
+      default:
+        return null;
+    }
+  };
+
   return (
     <header className="flex justify-between items-center p-4 bg-white border-b">
-    <div className="relative">
-      {/*<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />*/}
-      <h1>Dashboard</h1>
-      {/* <Input type="text" placeholder="Search" className="pl-10 pr-4 py-2 w-64" /> */}
-    </div>
-    <div className="flex items-center space-x-4">
-      <Bell className="text-gray-500" />
-      <div className="flex items-center space-x-2">
+      <div className="relative">
+        {/*<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />*/}
+        <div className="relative">
+          <h3 className="text-xl font-bold text-gray-800">{getHeaderTitle()}</h3>
+        </div>
+        {/* <Input type="text" placeholder="Search" className="pl-10 pr-4 py-2 w-64" /> */}
+      </div>
+      <div className="flex items-center space-x-4">
+        <Bell className="text-gray-500"/>
+        <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-orange-500 rounded-full"></div>
         <span>{username}</span>
         <ChevronDown

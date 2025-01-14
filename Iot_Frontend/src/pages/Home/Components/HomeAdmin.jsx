@@ -4,7 +4,7 @@ import { Car, Users, ClipboardList, DollarSign, LogOut, LogIn } from 'lucide-rea
 import {Card, CardContent} from "@mui/material";
 import {FaCar} from "react-icons/fa";
 import {getRequest} from "../../../api/index.js";
-import MqttLogs from "./MqttLogs.jsx";
+import ActivityLog from "./ActivityLog.jsx";
 
 
 const HomeAdmin = () => {
@@ -52,12 +52,15 @@ const HomeAdmin = () => {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <VehiclesPieChart/>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="col-span-1">
+                    <VehiclesPieChart/>
+                </div>
+                <div className="col-span-2 ">
+                    <ActivityLog/>
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <MqttLogs/>
-            </div>
+
 
         </div>
     );

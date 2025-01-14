@@ -4,6 +4,7 @@ import {deleteRequest, getRequest, postRequest} from "../../../api/index.js";
 import {Box, Button, MenuItem, Modal, TextField} from "@mui/material";
 import { Modal as AntModal } from 'antd';
 import {toast} from "react-toastify";
+import {io} from "socket.io-client";
 
 function DeviceList(props) {
     const [devices, setDevices] = useState([]);
@@ -78,6 +79,17 @@ function DeviceList(props) {
 
     useEffect(() => {
         getAllDevices();
+        const socket = io('http://localhost:5000'); // Replace with your backend URL
+
+        socket.on('deviceStatus', (data) => {
+            console.log('Received MQTT Message:', data);
+
+            getAllDevices();
+        });
+
+        return () => {
+            socket.disconnect();
+        };
         // setInterval(getTrafficLogs)
 
     }, []);
@@ -124,7 +136,7 @@ function DeviceList(props) {
                             <td className="py-2 px-4 border-b text-center flex justify-between">
                                 <Link
                                     className="py-2 text-center font-medium text-blue-500 "
-                                    to={`/device/${device.device_id}`}>
+                                    to={`/device/${device.embed_id}`}>
                                     Detail
                                 </Link>
 

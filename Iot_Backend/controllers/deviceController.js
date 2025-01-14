@@ -4,7 +4,7 @@ const RfidCard = require('../models/rfidCardModel');
 const Device = require('../models/deviceModel');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
-const connectMqtt = require('../services/mqttService');
+const {connectMqtt} = require('../services/mqttService');
 const client  = connectMqtt();
 
 exports.createDevice = async (req, res) => {
@@ -128,6 +128,34 @@ exports.getDeviceById = async (req, res) => {
 
     try {
         const device = await Device.findByPk(deviceId);
+        if (!device) {
+            return res.status(404).json({
+                code: 404,
+                message: 'Device not found.',
+            });
+        }
+
+        res.status(200).json({
+            code: 200,
+            message: 'Device retrieved successfully.',
+            info: device,
+        });
+    } catch (error) {
+        console.error('Error retrieving device:', error);
+        res.status(500).json({
+            code: 500,
+            error: 'Failed to retrieve device.',
+        });
+    }
+};
+
+exports.getDeviceByEmbedId = async (req, res) => {
+    const { embedId } = req.params; // Change to embedId
+
+    try {
+        // Find the device by the embed ID
+        const device = await Device.findOne({ where: { embed_id: embedId } }); // Assuming the column in the database is named 'embed_id'
+
         if (!device) {
             return res.status(404).json({
                 code: 404,

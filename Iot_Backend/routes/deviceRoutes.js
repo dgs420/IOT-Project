@@ -10,6 +10,7 @@ router.use(requireAuth,requireRole(['manager','admin']));
 router.get('/', deviceController.getAllDevice);
 router.post('/create-device',deviceController.createDevice );
 router.get('/:deviceId', deviceController.getDeviceById);
+router.get('/embed/:embedId', deviceController.getDeviceByEmbedId);
 router.put('/:deviceId', deviceController.updateDevice);
 router.delete('/:deviceId', deviceController.deleteDevice);
 router.post('/command', deviceController.commandDevice);

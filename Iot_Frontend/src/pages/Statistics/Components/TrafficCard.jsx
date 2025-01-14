@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import {Card, CardContent, TextField} from '@mui/material';
 import {format, startOfWeek, isValid, endOfWeek} from 'date-fns';
 import {getRequest} from "../../../api/index.js";
+import {toast} from "react-toastify";
 
 export const TrafficCard = () => {
   const [weekData, setWeekData] = useState([]);
@@ -21,6 +22,7 @@ export const TrafficCard = () => {
       if (response.code===200) {
         setWeekData(response.info);
       } else {
+        toast.error(response.message);
         console.error(response.message);
       }
       // const data = await response.json();

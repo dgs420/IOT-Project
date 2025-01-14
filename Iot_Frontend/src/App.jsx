@@ -32,7 +32,7 @@ export default function App() {
           <Route path="users-list" element={<UserList />} />
           <Route path="user/:user_id" element={<UserDetail />} />
           <Route path="device" element={<DeviceList />} />
-          <Route path="device/:deviceId" element={<DeviceDetail />} />
+          <Route path="device/:embedId" element={<DeviceDetail />} />
           <Route path="report" element={<Report />} />
 
         </Route>
