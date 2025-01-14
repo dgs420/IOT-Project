@@ -5,7 +5,10 @@ const Device = require('../models/deviceModel');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 const {connectMqtt} = require('../services/mqttService');
+const EventEmitter = require("events");
 const client  = connectMqtt();
+const mqttEventEmitter = new EventEmitter();
+
 
 exports.createDevice = async (req, res) => {
     const { embed_id, location, type, status } = req.body;
@@ -274,9 +277,10 @@ exports.commandDevice =async (req,res) =>{
                 console.error(`[COMMAND] Failed to send command to device ${embed_id}:`, err.message);
                 return res.status(500).json({code: 500, message: 'Failed to send command'});
             }
-
             console.info(`[COMMAND] Command sent to device ${embed_id}:`, payload);
             const actionType = command === "enter" ? "admin enter" : "admin exit"; // Determine action type
+            mqttEventEmitter.emit('mqttMessage', { embed_id, card_number: null,vehicle_number:null, action:actionType, message: `${actionType} logged` });
+
             await TrafficLog.create({
                 card_id: null, // Assuming no RFID card for admin actions
                 device_id: device.device_id,

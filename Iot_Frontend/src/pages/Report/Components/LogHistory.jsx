@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 import "jspdf-autotable";
 import {Button} from "@mui/material";
 
-export const ActivityLog = () => {
+export const LogHistory = () => {
     const [logs, setLogs] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -140,7 +140,16 @@ export const ActivityLog = () => {
                                 <td className="py-2 px-4 border-b text-center">{log.log_id}</td>
                                 <td className="py-2 px-4 border-b text-center">{log.card_id}</td>
                                 <td className="py-2 px-4 border-b text-center">{new Date(log.time).toLocaleString()}</td>
-                                <td className="py-2 px-4 border-b text-center">{log.action}</td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    <span
+                                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                            log.action.includes('enter')
+                                                ? 'bg-green-100 text-green-700'
+                                                : 'bg-blue-100 text-blue-700'
+                                        }`}>
+                                            {log.action}
+                                    </span>
+                                </td>
                                 <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.card_number : 'N/A'}</td>
                                 <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_number : 'N/A'}</td>
                                 <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_type : 'N/A'}</td>

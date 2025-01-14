@@ -71,7 +71,7 @@ const connectMqtt = () => {
         const card = await RfidCard.findOne({ where: { card_number } });
         if (!device || !card) {
           const error = !device ? 'Device not found' : 'Card not found';
-          mqttEventEmitter.emit('mqttMessage', { embed_id, card_number, action, message: error });
+          mqttEventEmitter.emit('mqttMessage', { embed_id, card_number,vehicle_number:null,action, message: error });
           return client.publish(`${topic}/response/${embed_id}`, JSON.stringify({ status: 'invalid', message: error }));
         }
 
@@ -81,13 +81,13 @@ const connectMqtt = () => {
         } else if (action === 'exit' && card.status === 'parking') {
           await card.update({ status: 'exited' });
         } else {
-          mqttEventEmitter.emit('mqttMessage', { embed_id, card_number, action, message:  `Invalid ${logAction} status`  });
+          mqttEventEmitter.emit('mqttMessage', { embed_id, card_number,vehicle_number:card.vehicle_number, action, message:  `Invalid ${logAction} status`  });
           return client.publish(`${topic}/response/${embed_id}`, JSON.stringify({ status: 'invalid', message: `Invalid ${logAction} status` }));
         }
 
         await TrafficLog.create({ card_id: card.card_id, device_id: device.device_id, action: logAction, time: new Date() });
         client.publish(`${topic}/response/${embed_id}`, JSON.stringify({ status: 'valid', message: `${logAction} logged` }));
-        mqttEventEmitter.emit('mqttMessage', { embed_id, card_number, action, message: `${logAction} logged` });
+        mqttEventEmitter.emit('mqttMessage', { embed_id, card_number,vehicle_number:card.vehicle_number, action, message: `${logAction} logged` });
 
       }
     } catch (error) {

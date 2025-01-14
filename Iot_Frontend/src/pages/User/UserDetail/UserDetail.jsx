@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import {
     Box,
     Button,
     Card,
     CardContent,
     CardHeader,
-    Input,
-    Modal,
-    TextField,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    MenuItem
+    Input,
+    MenuItem,
+    Modal,
+    TextField,
 } from "@mui/material";
-import { getRequest, postRequest, deleteRequest } from "../../../api/index.js";
-import { toast } from "react-toastify";
+import {deleteRequest, getRequest, postRequest} from "../../../api/index.js";
+import {toast} from "react-toastify";
 
 const UserDetail = () => {
-    const { user_id } = useParams(); // Get the userId from the URL
+    const {user_id} = useParams(); // Get the userId from the URL
     const [rfidCards, setRfidCards] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
@@ -37,8 +37,8 @@ const UserDetail = () => {
     const handleModalClose = () => setOpenModal(false);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewCard({ ...newCard, [name]: value });
+        const {name, value} = e.target;
+        setNewCard({...newCard, [name]: value});
     };
 
     const fetchRfidCards = async () => {
@@ -70,12 +70,11 @@ const UserDetail = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await postRequest('/card/create-card', newCard); // Adjust the endpoint as necessary
+            const response = await postRequest('/card/create-card', newCard);
             if (response.code === 200) {
-                await fetchRfidCards(); // Refresh the list of RFID cards
-                handleModalClose(); // Close the modal
+                await fetchRfidCards();
+                handleModalClose();
                 toast.success("New card added successfully.");
-                fetchRfidCards();
             } else {
                 toast.error(response.message);
                 console.error('Error:', response);
@@ -85,6 +84,11 @@ const UserDetail = () => {
         }
     };
 
+    const handleUserInputChange = (e) => {
+        const {name, value} = e.target;
+        setUserDetails({...userDetails, [name]: value});
+    };
+
     const handleDeleteCard = (cardId) => {
         setCardToDelete(cardId);
         setConfirmDeleteModal(true);
@@ -92,10 +96,10 @@ const UserDetail = () => {
 
     const confirmDelete = async () => {
         try {
-            const response = await deleteRequest(`/card/${cardToDelete}`); // Adjust the endpoint as necessary
+            const response = await deleteRequest(`/card/${cardToDelete}`);
             if (response.code === 200) {
                 toast.success("Card deleted successfully.");
-                await fetchRfidCards(); // Refresh the list of RFID cards
+                await fetchRfidCards();
             } else {
                 toast.error(response.message);
                 console.error(response.message);
@@ -114,66 +118,109 @@ const UserDetail = () => {
     }, [user_id]);
 
     return (
-        <div className={'w-full p-4'}>
-            <div className="bg-white rounded-lg shadow p-6">
-                <h1 className="text-xl font-semibold mb-6">User Details</h1>
-                <form className="space-y-6 max-w-2xl"
-                      // onSubmit={}
-                >
+        <div className="flex-1 p-4">
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                        <Input placeholder="Username" value={userDetails.username} readOnly />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <Input placeholder="Email" value={userDetails.email} readOnly />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <Input placeholder="First Name" value={userDetails.first_name} readOnly />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <Input placeholder="Last Name" value={userDetails.last_name} readOnly />
-                    </div>
-                    <Button type="submit" className="bg-green-500 hover:bg-green-600">Submit</Button>
-                </form>
-            </div>
 
-            <h3 className="text-xl font-semibold mb-4 my-4">Registered Cards</h3>
-            <div className="my-4 mx-4">
-                <Button variant="contained" color="primary" onClick={handleModalOpen}>
-                    Add RFID Card
-                </Button>
-            </div>
+            {/* User Details Form */}
+            <Card className="mb-8">
+                <CardHeader title="User Details"/>
+                <CardContent className="space-y-4">
+                    <form
+                        // onSubmit={handleUserUpdate}
+                        className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">Username</label>
+                                <Input
+                                    name="username"
+                                    value={userDetails.username}
+                                    onChange={handleUserInputChange}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">Email</label>
+                                <Input
+                                    name="email"
+                                    type="email"
+                                    value={userDetails.email}
+                                    onChange={handleUserInputChange}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">First Name</label>
+                                <Input
+                                    name="first_name"
+                                    value={userDetails.first_name}
+                                    onChange={handleUserInputChange}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                                <Input
+                                    name="last_name"
+                                    value={userDetails.last_name}
+                                    onChange={handleUserInputChange}
+                                />
+                            </div>
+                        </div>
+                        <Button type="submit" variant="contained" color="primary">Update</Button>
+                    </form>
+                </CardContent>
+            </Card>
 
-            <div className="flex flex-wrap gap-4 mx-4">
-                {rfidCards.length > 0 ? (
-                    rfidCards.map((card) => (
-                        <Card key={card.card_id} className="w-full md:w-1/3 lg:w-1/4 bg-white shadow-md rounded-lg p-4">
-                            {/*<Link style={{ textDecoration: 'none' }} to='/test-list'>*/}
-                                <CardHeader title={`Card ID: ${card.card_id}`} />
+            {/* Registered Cards */}
+            <div>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Registered Cards</h2>
+                    <Button variant="contained" color="primary" onClick={handleModalOpen}>
+                        Add RFID Card
+                    </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {rfidCards.length > 0 ? (
+                        rfidCards.map(card => (
+                            <Card key={card.card_id}>
                                 <CardContent>
-                                    <p className="text-gray-700"><strong>Card Number:</strong> {card.card_number}</p>
-                                    <p className="text-gray-700"><strong>Vehicle Number:</strong> {card.vehicle_number || 'No vehicle linked'}</p>
-                                    <p className="text-gray-700"><strong>Vehicle Type:</strong> {card.vehicle_type || 'No vehicle linked'}</p>
-                                    <p className="text-gray-700"><strong>Status:</strong> {card.status}</p>
-                                    <div className="mt-4" >
-                                        <Button variant="contained" color="error" onClick={() => handleDeleteCard(card.card_id)}>
+                                    <div className="flex justify-between my-1">
+                                        <span className=" text-gray-500">Card Number:</span>
+                                        <span className="font-medium">{card.card_number}</span>
+                                    </div>
+                                    <div className="flex justify-between my-1">
+                                        <span className=" text-gray-500">Vehicle Number:</span>
+                                        <span
+                                            className="font-medium">{card.vehicle_number || 'No vehicle linked'}</span>
+                                    </div>
+                                    <div className="flex justify-between my-1">
+                                        <span className=" text-gray-500">Vehicle Type:</span>
+                                        <span
+                                            className="capitalize">{card.vehicle_type || 'No vehicle linked'}</span>
+                                    </div>
+                                    <div className="flex justify-between my-1">
+                                        <span className="text-gray-500">Status:</span>
+                                        <span
+                                            className={`inline-flex items-center px-2.5 py-0.5 my-1 rounded-full font-medium ${
+                                                card.status === 'exited' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                                            }`}>
+                                            {card.status}
+                                        </span>
+                                    </div>
+                                    <div className="mt-4">
+                                        <Button variant="contained" color="error"
+                                                onClick={() => handleDeleteCard(card.card_id)}>
                                             Delete Card
                                         </Button>
                                     </div>
-
                                 </CardContent>
-                            {/*</Link>*/}
-                        </Card>
-                    ))
-                ) : (
-                    <p>No RFID cards found for this user.</p>
-                )}
+                            </Card>
+                        ))
+                    ) : (
+                        <p>No RFID cards found for this user.</p>
+                    )}
+                </div>
             </div>
 
+            {/* Add RFID Card Modal */}
             <Modal open={openModal} onClose={handleModalClose}>
                 <Box sx={{
                     width: 400,

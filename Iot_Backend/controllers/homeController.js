@@ -3,13 +3,14 @@ const User = require('../models/userModel');
 const TrafficLog = require("../models/trafficLogModel");
 // const RfidCard=require("../models/rfidCardModel");
 const sequelize = require('../config/database');
-
+const { Op } = require('sequelize');
+const moment = require('moment');
 
 exports.getHomeCount = async (req, res) => {
     try {
         // Count total RFID cards
         const vehiclesCount = await RfidCard.count();
-
+        const startOfDay = moment().startOf('day').toDate();
         // Count parking cards
         const vehiclesIn = await RfidCard.count({
             where: {status: 'parking'}
@@ -20,6 +21,14 @@ exports.getHomeCount = async (req, res) => {
             where: {status: 'exited'}
         });
 
+        const trafficToday = await TrafficLog.count({
+            where: {
+                time: {
+                    [Op.gte]: startOfDay,
+                },
+            },
+        });
+
         // Send back the counts in the response
         res.json({
             code: 200,
@@ -27,7 +36,8 @@ exports.getHomeCount = async (req, res) => {
             info: {
                 total_vehicles: vehiclesCount,
                 vehicles_in: vehiclesIn,
-                vehicles_exited: vehiclesExited
+                vehicles_exited: vehiclesExited,
+                traffic_today: trafficToday,
             }
         });
     } catch (error) {

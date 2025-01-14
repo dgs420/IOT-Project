@@ -5,14 +5,18 @@ import {Card, CardContent} from "@mui/material";
 import {FaCar} from "react-icons/fa";
 import {getRequest} from "../../../api/index.js";
 import ActivityLog from "./ActivityLog.jsx";
+import {io} from "socket.io-client";
 
 
 const HomeAdmin = () => {
     const [homeData, setHomeData] = useState({
         "total_vehicles": 0,
         "vehicles_in": 0,
-        "vehicles_exited": 0
+        "vehicles_exited": 0,
+        "traffic_today":0
     });
+
+    const [socket, setSocket] = useState(null);
     const getHomeCount = async() =>{
         try {
             const response = await getRequest('/home'); // Adjust URL as needed
@@ -28,8 +32,21 @@ const HomeAdmin = () => {
     }
 
     useEffect(() => {
+        const newSocket = io('http://localhost:5000'); // Replace with your backend URL
+        setSocket(newSocket);
         getHomeCount();
-        // console.log( 'Token: ' + localStorage.getItem('token'));
+        // const socketInstance = io('http://localhost:5000'); // Adjust the URL as needed
+        // setSocket(socketInstance);
+        const handleMqttMessage = () => {
+            getHomeCount(); // Call your function here
+        };
+
+        // Listen for mqttMessage events
+        newSocket.on('mqttMessage', handleMqttMessage);
+        return () => {
+            newSocket.off('mqttMessage', handleMqttMessage);
+            newSocket.disconnect();
+        };
     }, []);
     return (
         <div className='px-3 py-3'>
@@ -38,7 +55,7 @@ const HomeAdmin = () => {
                     {title: "TOTAL VEHICLES REGISTERED", value: homeData.total_vehicles, icon: Car},
                     {title: "VEHICLES IN", value: homeData.vehicles_in, icon: LogIn},
                     {title: "VEHICLES OUT", value: homeData.vehicles_exited, icon: LogOut},
-                    {title: "PARKING DONE WITHIN 24 HRS", value: "0", icon: ClipboardList},
+                    {title: "PARKING DONE TODAY", value: homeData.traffic_today, icon: ClipboardList},
                 ].map((item, index) => (
                     <Card key={index}>
                         <CardContent className="flex flex-col items-center justify-center p-6">
@@ -57,7 +74,8 @@ const HomeAdmin = () => {
                     <VehiclesPieChart/>
                 </div>
                 <div className="col-span-2 ">
-                    <ActivityLog/>
+                    {socket && <ActivityLog socket={socket} />}
+                    {/*<ActivityLog/>*/}
                 </div>
             </div>
 

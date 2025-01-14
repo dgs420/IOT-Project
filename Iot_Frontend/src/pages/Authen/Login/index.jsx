@@ -78,20 +78,20 @@ const Login = () => {
                                 className='w-full text-white my-2 bg-black rounded-md p-5 text-center flex items-center justify-center transition duration-300 ease-in-out transform hover:bg-gray-800 '>
                                 Log in
                             </button>
-                            <button
-                                className='w-full text-black my-2 bg-white rounded-md p-5 text-center flex items-center justify-center border border-black transition duration-300 ease-in-out transform hover:bg-gray-100'>
-                                Register
-                            </button>
+                            {/*<button*/}
+                            {/*    className='w-full text-black my-2 bg-white rounded-md p-5 text-center flex items-center justify-center border border-black transition duration-300 ease-in-out transform hover:bg-gray-100'>*/}
+                            {/*    Register*/}
+                            {/*</button>*/}
                         </div>
                     </form>
 
 
                 </div>
 
-                <div className='w-full my-4'>
-                    <p className='text-sm font-normal text-black'>Don&#39;t have an account? <span
-                        className='font-semibold underline underline-offset-2 cursor-pointer'>Sign up</span></p>
-                </div>
+                {/*<div className='w-full my-4'>*/}
+                {/*    <p className='text-sm font-normal text-black'>Don&#39;t have an account? <span*/}
+                {/*        className='font-semibold underline underline-offset-2 cursor-pointer'>Sign up</span></p>*/}
+                {/*</div>*/}
 
             </div>
 
