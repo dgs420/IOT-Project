@@ -86,3 +86,76 @@ exports.deleteUser = async (req, res) => {
         });
     }
 };
+
+exports.updateUser = async (req, res) => {
+    const { userId } = req.params; // Get user ID from URL parameters
+    const { email, password, username, role, first_name, last_name } = req.body; // Fields to update
+
+    try {
+        // Find the user by their ID
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({
+                code: 404,
+                message: 'User not found',
+            });
+        }
+
+        // Check if the new email is already taken by another user
+        if (email && email !== user.email) {
+            const existingEmail = await User.findOne({ where: { email } });
+            if (existingEmail) {
+                return res.json({
+                    code: 400,
+                    message: 'Email already taken',
+                });
+            }
+        }
+
+        // Check if the new username is already taken by another user
+        if (username && username !== user.username) {
+            const existingUsername = await User.findOne({ where: { username } });
+            if (existingUsername) {
+                return res.json({
+                    code: 400,
+                    message: 'Username already taken',
+                });
+            }
+        }
+
+        // Update the user's details
+        const updatedFields = {};
+        if (email) updatedFields.email = email;
+        if (username) updatedFields.username = username;
+        if (role) updatedFields.role = role;
+        if (first_name) updatedFields.first_name = first_name;
+        if (last_name) updatedFields.last_name = last_name;
+
+        // If a new password is provided, hash it before updating
+        if (password) {
+            updatedFields.password = await bcrypt.hash(password, 10);
+        }
+
+        // Save the updated fields
+        await user.update(updatedFields);
+
+        res.json({
+            code: 200,
+            message: 'User updated successfully',
+            user: {
+                id: user.user_id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                first_name: user.first_name,
+                last_name: user.last_name,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            code: 500,
+            message: 'Server error',
+        });
+    }
+};

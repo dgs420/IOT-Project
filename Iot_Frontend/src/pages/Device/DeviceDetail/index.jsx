@@ -56,7 +56,7 @@ const DeviceDetail = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Embed Id
                                 </label>
-                                <Input placeholder="Username" value={deviceDetails.embed_id}/>
+                                <span>{deviceDetails.embed_id}</span>
                             </div>
 
                             <div>
@@ -98,8 +98,9 @@ const DeviceDetail = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Last seen
                                 </label>
-                                <Input placeholder="Last name"
-                                       value={new Date(deviceDetails.last_seen).toLocaleString()}/>
+                                <span>
+                                    {deviceDetails.last_seen ? new Date(deviceDetails.last_seen).toLocaleString() : 'N/A'}
+                                </span>
                             </div>
 
                             <Button type="submit" className="bg-green-500 hover:bg-green-600">
@@ -127,7 +128,7 @@ const DeviceDetail = () => {
                     </div>
                 </div>
                 <div className="col-span-2">
-                    <DeviceActivity embedId={deviceDetails.embed_id} />
+                    <DeviceActivity embedId={deviceDetails.embed_id}/>
                 </div>
             </div>
         </div>

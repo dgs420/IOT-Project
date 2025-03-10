@@ -331,7 +331,7 @@ exports.getLogsByCardId = async (req, res) => {
 };
 
 exports.getUserLogsByUserId = async (req, res) => {
-    const {userId} = req.params; // Get user_id from URL parameters
+    const { userId } = req.params; // Get user_id from URL parameters
 
     try {
         // Fetch RFID cards for the specified user ID
@@ -342,18 +342,33 @@ exports.getUserLogsByUserId = async (req, res) => {
         });
 
         if (rfidCards.length === 0) {
-            return res.status(404).json({message: 'No RFID cards found for this user ID.'});
+            return res.status(404).json({
+                code: 404,
+                message: 'No RFID cards found for this user ID.'
+            });
         }
 
         // Extract card IDs to fetch logs
         const cardIds = rfidCards.map(card => card.card_id);
 
-        // Fetch logs for the specified card IDs
+        // Fetch logs for the specified card IDs with associated RfidCard and User
         const logs = await TrafficLog.findAll({
             where: {
                 card_id: cardIds // Filter by card IDs
             },
-            order: [['time', 'DESC']],
+            include: [
+                {
+                    model: RfidCard,
+                    attributes: ['card_number', 'vehicle_number', 'vehicle_type'], // Fields from RfidCard
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['user_id', 'username'] // Fields from User
+                        }
+                    ]
+                }
+            ],
+            order: [['time', 'DESC']] // Optional: Order by time, descending
         });
 
         // Check if logs were found
@@ -364,9 +379,13 @@ exports.getUserLogsByUserId = async (req, res) => {
             });
         }
 
-        res.status(200).json(logs); // Return the logs
+        res.status(200).json({
+            code: 200,
+            message: 'User logs fetched successfully',
+            info: logs // Return the detailed logs
+        });
     } catch (error) {
         console.error('Error fetching user logs by user ID:', error);
-        res.status(500).json({message: 'Server error', error: error.message});
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

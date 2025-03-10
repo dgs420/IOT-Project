@@ -33,6 +33,11 @@ const User = sequelize.define('user', {
   last_name: {
     type: DataTypes.STRING,
   },
+  balance: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    allowNull: false
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

@@ -15,8 +15,9 @@ import {
     Modal,
     TextField,
 } from "@mui/material";
-import {deleteRequest, getRequest, postRequest} from "../../../api/index.js";
+import {deleteRequest, getRequest, postRequest, putRequest} from "../../../api/index.js";
 import {toast} from "react-toastify";
+import {UserLog} from "./components/UserLog.jsx";
 
 const UserDetail = () => {
     const {user_id} = useParams(); // Get the userId from the URL
@@ -94,6 +95,22 @@ const UserDetail = () => {
         setConfirmDeleteModal(true);
     };
 
+    const handleUserUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await putRequest(`/user/user-update/${user_id}`, userDetails);
+            if (response.code === 200) {
+                toast.success("User details updated successfully.");
+            } else {
+                toast.error(response.message);
+                console.error('Error updating user:', response);
+                fetchUserDetail();
+            }
+        } catch (error) {
+            console.error('Error updating user details:', error);
+        }
+    };
+
     const confirmDelete = async () => {
         try {
             const response = await deleteRequest(`/card/${cardToDelete}`);
@@ -126,7 +143,7 @@ const UserDetail = () => {
                 <CardHeader title="User Details"/>
                 <CardContent className="space-y-4">
                     <form
-                        // onSubmit={handleUserUpdate}
+                        onSubmit={handleUserUpdate}
                         className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -162,6 +179,19 @@ const UserDetail = () => {
                                     onChange={handleUserInputChange}
                                 />
                             </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">Role</label>
+                                <select
+                                    name="role"
+                                    value={userDetails.role}
+                                    onChange={handleUserInputChange}
+                                    className="block w-1/2 mt-1 border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-10"
+                                >
+                                    <option value="admin">Admin</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="user">User</option>
+                                </select>
+                            </div>
                         </div>
                         <Button type="submit" variant="contained" color="primary">Update</Button>
                     </form>
@@ -178,7 +208,7 @@ const UserDetail = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {rfidCards.length > 0 ? (
+                {rfidCards.length > 0 ? (
                         rfidCards.map(card => (
                             <Card key={card.card_id}>
                                 <CardContent>
@@ -219,7 +249,10 @@ const UserDetail = () => {
                     )}
                 </div>
             </div>
+            <div className='my-6'>
+                <UserLog userId={user_id} />
 
+            </div>
             {/* Add RFID Card Modal */}
             <Modal open={openModal} onClose={handleModalClose}>
                 <Box sx={{

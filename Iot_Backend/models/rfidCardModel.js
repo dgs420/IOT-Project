@@ -23,7 +23,7 @@ const RfidCard = sequelize.define('rfid_card', {
         },
     },
     status: {
-        type: DataTypes.ENUM('parking', 'exited'),
+        type: DataTypes.ENUM('parking', 'exited','blocked'),
         allowNull: false,
     },
     vehicle_number: {

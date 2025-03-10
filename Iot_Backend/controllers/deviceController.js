@@ -4,10 +4,10 @@ const RfidCard = require('../models/rfidCardModel');
 const Device = require('../models/deviceModel');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
-const {connectMqtt} = require('../services/mqttService');
+const {getClient,connectMqtt } = require('../services/mqttClient');
 const EventEmitter = require("events");
-const client  = connectMqtt();
-const mqttEventEmitter = new EventEmitter();
+const client  = connectMqtt ();
+const mqttEventEmitter   = new EventEmitter();
 
 
 exports.createDevice = async (req, res) => {

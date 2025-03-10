@@ -62,13 +62,12 @@ export const LogHistory = () => {
         doc.autoTable({
             head: [
                 [
-                    "Log ID", "Card ID", "Time", "Action", "Card Number",
+                    "Log ID", "Time", "Action", "Card Number",
                     "Vehicle Number", "Vehicle Type", "Gate ID", "User ID", "Username"
                 ]
             ],
             body: allLogs.map(log => [
                 log.log_id,
-                log.card_id,
                 new Date(log.time).toLocaleString(),
                 log.action,
                 log.rfid_card?.card_number || "N/A",
@@ -123,7 +122,6 @@ export const LogHistory = () => {
                         <thead className='top-0 sticky'>
                         <tr className="bg-gray-100 text-gray-600">
                             <th className="py-3 px-4 border-b">Log ID</th>
-                            <th className="py-3 px-4 border-b">Card ID</th>
                             <th className="py-3 px-4 border-b">Time</th>
                             <th className="py-3 px-4 border-b">Action</th>
                             <th className="py-3 px-4 border-b">Card Number</th>
@@ -138,7 +136,6 @@ export const LogHistory = () => {
                         {logs.map((log) => (
                             <tr key={log.log_id} className="hover:bg-gray-100">
                                 <td className="py-2 px-4 border-b text-center">{log.log_id}</td>
-                                <td className="py-2 px-4 border-b text-center">{log.card_id}</td>
                                 <td className="py-2 px-4 border-b text-center">{new Date(log.time).toLocaleString()}</td>
                                 <td className="py-2 px-4 border-b text-center">
                                     <span
@@ -165,9 +162,19 @@ export const LogHistory = () => {
                                         <Link to={`/user/${log.rfid_card.user.user_id}`}>
                                             {log.rfid_card.user.user_id}
                                         </Link>
-                                    ) : 'N/A'}
+                                    ) : (
+                                        'N/A'
+                                    )}
                                 </td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.user.username : 'N/A'}</td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card && log.rfid_card.user ? (
+                                        <Link to={`/user/${log.rfid_card.user.user_id}`}>
+                                            {log.rfid_card.user.username}
+                                        </Link>
+                                    ) : (
+                                        'N/A'
+                                    )}
+                                </td>
                             </tr>
                         ))}
                         </tbody>

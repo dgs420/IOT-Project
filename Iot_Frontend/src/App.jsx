@@ -17,42 +17,42 @@ import UserDetail from "./pages/User/UserDetail/UserDetail.jsx";
 import DeviceList from "./pages/Device/DeviceList/index.jsx";
 import DeviceDetail from "./pages/Device/DeviceDetail/index.jsx";
 import Report from "./pages/Report/index.jsx";
+import { APP_ROUTES } from './router/index.jsx';
+import {ConfigProvider} from "antd";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="users" element={<p> users</p>} />
-          <Route path="details" element={<Statistics/>} />
-          <Route path="settings" element={<p> settings</p>} />
-          <Route path="about" element={<p> about</p>} />
-          <Route path="profile" element={<PersonalProfile />} />
-          <Route path="users-list" element={<UserList />} />
-          <Route path="user/:user_id" element={<UserDetail />} />
-          <Route path="device" element={<DeviceList />} />
-          <Route path="device/:embedId" element={<DeviceDetail />} />
-          <Route path="report" element={<Report />} />
 
-        </Route>
-        <Route path="/login" element={<Login/>}>
-        </Route>
-      </Routes>
-      <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-      />
-
-    </Router>
+        <Router>
+          <Routes>
+            {APP_ROUTES.map((route) => (
+                <Route
+                    key={route.key}
+                    path={route.path}
+                    element={
+                      route.path === '/login' ? (
+                          route.element // Directly render Login without Layout
+                      ) : (
+                          <Layout>{route.element}</Layout> // Wrap other routes with Layout
+                      )
+                    }
+                />
+            ))}
+            <Route path='*' element={<p>Not Found</p>} /> {/* You can replace with a NotFound component */}
+          </Routes>
+          <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+          />
+        </Router>
   );
 }
 
