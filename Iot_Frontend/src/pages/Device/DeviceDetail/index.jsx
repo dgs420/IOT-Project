@@ -4,11 +4,13 @@ import {Button, Input} from "@mui/material";
 import {getRequest, postRequest} from "../../../api/index.js";
 import {toast} from 'react-toastify';
 import DeviceActivity from "./components/DeviceActivity.jsx";
-
+import {io} from "socket.io-client";
+import CustomToast from "./components/CustomToast.jsx"
 const DeviceDetail = () => {
     const {embedId} = useParams(); // Get the userId from the URL
     const [deviceDetails, setDeviceDetails] = useState([]);
-
+    const [socket, setSocket] = useState(null);
+    const [customToast, setCustomToast] = useState(null);
 
     const fetchDeviceDetails = async () => {
         try {
@@ -40,12 +42,39 @@ const DeviceDetail = () => {
         }
     };
 
+    const playAlertSound = () =>{
+        const audio = new Audio("../../../public/sounds/AccessDenied");
+        audio.play();
+    }
+
     useEffect(() => {
         fetchDeviceDetails();
+        const newSocket = io('http://localhost:5000'); // Replace with your backend URL
+        setSocket(newSocket);
+        newSocket.emit("join_gate", 'device01');
+
+        // Listen for scan updates for this gate
+        newSocket.on("scan", (data) => {
+            // setStatus(data);
+            console.log(data);
+            setCustomToast({
+                message: data.message,
+                type: data.success ? "success" : "error"
+            });
+
+
+        });
+        return () =>{
+            newSocket.off("scan");
+            newSocket.disconnect();
+        }
     }, [embedId]);
 
     return (
         <div className={'w-full p-4'}>
+            <div className="w-full h-12 mb-4 flex items-center justify-center">
+                {customToast && <CustomToast message={customToast.message} type={customToast.type} onClose={() => setCustomToast(null)}/>}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="col-span-1">
                     <div className="bg-white rounded-lg shadow p-6">

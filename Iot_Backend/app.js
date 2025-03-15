@@ -11,7 +11,8 @@ const homeRoutes = require('./routes/homeRoutes');
 const http = require('http');
 
 
-const {connectMqtt, mqttEventEmitter } = require('./services/mqttService');
+const {startMqttService } = require('./services/mqttService');
+const {mqttEventEmitter} = require('./services/eventEmitter');
 
 // Import models
 const User = require('./models/userModel');
@@ -63,6 +64,13 @@ mqttEventEmitter.on('mqttMessage', (data) => {
   console.log('Received MQTT Event:', data);
 });
 
+mqttEventEmitter.on('scan', (data) => {
+  io.to(data.embed_id).emit('scan', data);
+  console.log(data.embed_id);
+  console.log('Scan result:', data);
+});
+
+
 mqttEventEmitter.on('deviceStatus', (data) => {
   io.emit('deviceStatus', data);
   console.log('Received MQTT Event:', data);
@@ -70,6 +78,10 @@ mqttEventEmitter.on('deviceStatus', (data) => {
 
 io.on('connection', (socket) => {
   console.log('Client connected to WebSocket');
+  socket.on("join_gate", (gate_id) => {
+    socket.join(gate_id);
+    console.log(`Kiosk joined gate: ${gate_id}`);
+  });
   socket.on('disconnect', () => {
     console.log('Client disconnected from WebSocket');
   });
@@ -81,14 +93,14 @@ async function init() {
     console.log('Database connected successfully.');
 
     // Sync all models
-    await sequelize.sync(); // This will create tables based on your model definitions
+    await sequelize.sync();
     console.log('All models were synchronized successfully.');
 
-    connectMqtt(); // Start the MQTT service within the server
+    startMqttService(); // Start the MQTT service
     
     console.log('Server is running with MQTT enabled');
 
-    // Your server logic here
+
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }

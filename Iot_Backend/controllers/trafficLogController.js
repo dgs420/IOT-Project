@@ -43,7 +43,7 @@ exports.getAllLogs = async (req, res) => {
 //       code: 200,
 //       message: 'All logs fetched successfully',
 //       info: logs
-//     });
+//     });z
 //   } catch (error) {
 //     console.error('Error fetching detailed logs:', error);
 //     res.status(500).json({ message: 'Server error', error: error.message });

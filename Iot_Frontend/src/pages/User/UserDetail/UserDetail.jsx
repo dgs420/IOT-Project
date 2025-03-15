@@ -13,7 +13,9 @@ import {
     Input,
     MenuItem,
     Modal,
-    TextField,
+    Tab,
+    Tabs,
+    TextField
 } from "@mui/material";
 import {deleteRequest, getRequest, postRequest, putRequest} from "../../../api/index.js";
 import {toast} from "react-toastify";
@@ -33,6 +35,8 @@ const UserDetail = () => {
         vehicle_type: 'car'
     });
     const [userDetails, setUserDetails] = useState([]);
+    const [tabIndex, setTabIndex] = useState(0);
+
 
     const handleModalOpen = () => setOpenModal(true);
     const handleModalClose = () => setOpenModal(false);
@@ -199,60 +203,68 @@ const UserDetail = () => {
             </Card>
 
             {/* Registered Cards */}
-            <div>
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-semibold">Registered Cards</h2>
-                    <Button variant="contained" color="primary" onClick={handleModalOpen}>
+            <Tabs value={tabIndex} onChange={(e, newIndex) => setTabIndex(newIndex)} centered>
+                <Tab label="RFID Cards"/>
+                <Tab label="User Logs"/>
+            </Tabs>
+
+            {tabIndex === 0 && (
+                <div className="mt-6">
+                    <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
                         Add RFID Card
                     </Button>
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        {rfidCards.length > 0 ? (
+                            rfidCards.map(card => (
+                                <Card key={card.card_id}>
+                                    <CardContent>
+                                        <div className="flex justify-between my-1">
+                                            <span className=" text-gray-500">Card Number:</span>
+                                            <span className="font-medium">{card.card_number}</span>
+                                        </div>
+                                        <div className="flex justify-between my-1">
+                                            <span className=" text-gray-500">Vehicle Number:</span>
+                                            <span
+                                                className="font-medium">{card.vehicle_number || 'No vehicle linked'}</span>
+                                        </div>
+                                        <div className="flex justify-between my-1">
+                                            <span className=" text-gray-500">Vehicle Type:</span>
+                                            <span
+                                                className="capitalize">{card.vehicle_type || 'No vehicle linked'}</span>
+                                        </div>
+                                        <div className="flex justify-between my-1">
+                                            <span className="text-gray-500">Status:</span>
+                                            <span
+                                                className={`inline-flex items-center px-2.5 py-0.5 my-1 rounded-full font-medium ${
+                                                    card.status === 'exited' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                                                }`}
+                                            >
+    {card.status}
+</span>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rfidCards.length > 0 ? (
-                        rfidCards.map(card => (
-                            <Card key={card.card_id}>
-                                <CardContent>
-                                    <div className="flex justify-between my-1">
-                                        <span className=" text-gray-500">Card Number:</span>
-                                        <span className="font-medium">{card.card_number}</span>
-                                    </div>
-                                    <div className="flex justify-between my-1">
-                                        <span className=" text-gray-500">Vehicle Number:</span>
-                                        <span
-                                            className="font-medium">{card.vehicle_number || 'No vehicle linked'}</span>
-                                    </div>
-                                    <div className="flex justify-between my-1">
-                                        <span className=" text-gray-500">Vehicle Type:</span>
-                                        <span
-                                            className="capitalize">{card.vehicle_type || 'No vehicle linked'}</span>
-                                    </div>
-                                    <div className="flex justify-between my-1">
-                                        <span className="text-gray-500">Status:</span>
-                                        <span
-                                            className={`inline-flex items-center px-2.5 py-0.5 my-1 rounded-full font-medium ${
-                                                card.status === 'exited' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                                            }`}>
-                                            {card.status}
-                                        </span>
-                                    </div>
-                                    <div className="mt-4">
-                                        <Button variant="contained" color="error"
-                                                onClick={() => handleDeleteCard(card.card_id)}>
-                                            Delete Card
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))
-                    ) : (
-                        <p>No RFID cards found for this user.</p>
-                    )}
+                                        </div>
+                                        <div className="mt-4">
+                                            <Button variant="contained" color="error"
+                                                    onClick={() => handleDeleteCard(card.card_id)}>
+                                                Delete Card
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        ) : (
+                            <p>No RFID cards found for this user.</p>
+                        )}
+                    </div>
                 </div>
-            </div>
-            <div className='my-6'>
-                <UserLog userId={user_id} />
+            )}
 
-            </div>
+            {tabIndex === 1 && (
+                <div className="mt-6">
+                    <UserLog userId={user_id}/>
+                </div>
+            )}
+
             {/* Add RFID Card Modal */}
             <Modal open={openModal} onClose={handleModalClose}>
                 <Box sx={{
@@ -310,12 +322,8 @@ const UserDetail = () => {
                     <p>Are you sure you want to delete this card?</p>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setConfirmDeleteModal(false)} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={confirmDelete} color="primary">
-                        Delete
-                    </Button>
+                    <Button onClick={() => setConfirmDeleteModal(false)} color="secondary">Cancel</Button>
+                    <Button onClick={confirmDelete} color="primary">Delete</Button>
                 </DialogActions>
             </Dialog>
         </div>

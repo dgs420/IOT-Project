@@ -4,7 +4,7 @@ import PersonalProfile from '../pages/PersonalProfile';
 import Report from '../pages/Report';
 import Login from '../pages/Authen/Login';
 import UserList from "../pages/User/UserList/UserList.jsx";
-import UserDetail from "../pages/RfidCard/index.jsx";
+import UserDetail from "../pages/User/UserDetail/UserDetail.jsx";
 import DeviceList from "../pages/Device/DeviceList/index.jsx";
 import DeviceDetail from "../pages/Device/DeviceDetail/index.jsx";
 

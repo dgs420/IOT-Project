@@ -3,7 +3,7 @@ import {Link, useParams} from 'react-router-dom';
 import {Box, Button, Card, CardContent, CardHeader, Modal, TextField} from "@mui/material";
 import {getRequest,postRequest} from "../../api/index.js";
 
-const UserDetail = () => {
+const CardDetail = () => {
     const {user_id} = useParams(); // Get the userId from the URL
     const [rfidCards, setRfidCards] = useState([]);
     const [openModal, setOpenModal] = useState(false);

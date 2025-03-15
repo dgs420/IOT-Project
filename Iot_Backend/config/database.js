@@ -22,5 +22,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 sequelize.authenticate()
   .then(() => console.log('MySQL connected...'))
   .catch(err => console.error('Error connecting to MySQL:', err));
-
+// sequelize.sync({ alter: true })
+//     .then(() => console.log('MySQL synced...'))
+//     .catch(err => console.error('Error syncing MySQL models:', err));
 module.exports = sequelize;
