@@ -102,6 +102,8 @@ const UserDetail = () => {
     const handleUserUpdate = async (e) => {
         e.preventDefault();
         try {
+            console.log(userDetails);
+            
             const response = await putRequest(`/user/user-update/${user_id}`, userDetails);
             if (response.code === 200) {
                 toast.success("User details updated successfully.");

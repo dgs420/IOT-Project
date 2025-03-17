@@ -3,7 +3,7 @@ const RfidCard = require('../../models/rfidCardModel');
 const TrafficLog = require('../../models/trafficLogModel');
 const ParkingSession = require('../../models/parkingSessionModel'); // New table
 const User = require('../../models/userModel');
-
+const Transaction = require('../../models/transactionModel');
 const { mqttEventEmitter } = require('../eventEmitter');
 const {getClient } = require('../mqttClient');
 // const EventEmitter = require("events");
@@ -73,6 +73,7 @@ async function barrierHandler(client, topic,data) {
 
         await user.update({ balance: user.balance - fee });
         await session.update({ exit_time: exit_time, status: "completed", payment_status:"paid" , fee: fee })
+        await Transaction.create({user_id: user.user_id, amount: fee, status: 'completed',payment_method: 'stripe',transaction_type:'fee' });
         await card.update({ status: 'exited' });
         mqttEventEmitter.emit('scan', { success: true,embed_id, action, message:  `Valid card`  });
 

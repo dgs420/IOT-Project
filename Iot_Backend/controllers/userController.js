@@ -24,7 +24,9 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserDetail = async (req, res) => {
     const userId = req.params.userId;
      try{
-         const user = await User.findByPk(userId);
+         const user = await User.findByPk(userId, {
+             attributes: { exclude: ['password'] } // Excludes the password field
+         });
          if(!user){
              return res.status(404).json({
                  code:404,

@@ -1,4 +1,6 @@
-import Home from '../pages/Home';
+import Home from '../pages/Home/Home.jsx';
+import Login from "../pages/Auth/Login/index.jsx";
+import Signup from "../pages/Auth/Signup/index.jsx";
 // import Statistics from '../pages/Statistics';
 // import PersonalProfile from '../pages/PersonalProfile';
 // import Report from '../pages/Report';
@@ -13,7 +15,12 @@ export const APP_ROUTES = [
         key: 'home',
         path: '/',
         element: <Home />,
-    }
+    },
+    {
+        key: 'register',
+        path: '/register',
+        element: <Signup/>
+    },
     // {
     //     key: 'details',
     //     path: '/details',
@@ -59,9 +66,9 @@ export const APP_ROUTES = [
     //     path: '/report',
     //     element: <Report />,
     // },
-    // {
-    //     key: 'login',
-    //     path: '/login',
-    //     element: <Login />,
-    // },
+    {
+        key: 'login',
+        path: '/login',
+        element: <Login />,
+    },
 ];

@@ -1,29 +1,51 @@
-// App.js
-import { useState } from 'react';
-import './App.css';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { APP_ROUTES } from './router/index.jsx';
+import React from "react";
+import {
+    BrowserRouter as Router,
+    Route,
+    Link,
+    Routes
+} from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import Layout from "./layout/index.jsx";
+import { APP_ROUTES } from './router/index.jsx';
+// import {ConfigProvider} from "antd";
 
-function App() {
-    const [count, setCount] = useState(0);
-
+export default function App() {
     return (
+
         <Router>
-            <Layout>
-                <Routes>
-                    {APP_ROUTES.map((route) => (
-                        <Route
-                            key={route.key}
-                            path={route.path}
-                            element={route.element}
-                        />
-                    ))}
-                    <Route path='*' element={<p>Not Found</p>} />
-                </Routes>
-            </Layout>
+            <Routes>
+                {APP_ROUTES.map((route) => (
+                    <Route
+                        key={route.key}
+                        path={route.path}
+                        element={
+                            route.path === '/login' || route.path === '/register' ?  (
+                                route.element // Directly render Login without Layout
+                            ) : (
+                                <Layout>{route.element}</Layout> // Wrap other routes with Layout
+                            )
+                        }
+                    />
+                ))}
+                <Route path='*' element={<p>Not Found</p>} /> {/* You can replace with a NotFound component */}
+            </Routes>
+
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+
         </Router>
     );
 }
 
-export default App;

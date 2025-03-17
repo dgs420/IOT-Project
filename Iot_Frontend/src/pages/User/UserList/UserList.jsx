@@ -66,7 +66,7 @@ function UserList(props) {
         }
 
         try {
-            const response = await postRequest('/auth/signup', newUser); // Adjust API endpoint as needed
+            const response = await postRequest('/auth/create-user', newUser); // Adjust API endpoint as needed
             if (response.code === 200) {
                 getAllUsers();
                 toast.success("New user created");// Add new user to the state

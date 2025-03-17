@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const cardRoutes = require('./routes/cardRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
 const homeRoutes = require('./routes/homeRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 const http = require('http');
 
 
@@ -53,12 +54,12 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes)
-app.use('/api/logs', trafficLogRoutes); // Attach the traffic log routes
+app.use('/api/logs', trafficLogRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/card', cardRoutes);
 app.use('/api/device',deviceRoutes);
 app.use('/api/home', homeRoutes)
-
+app.use('/api/payment',paymentRoutes);
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);
   console.log('Received MQTT Event:', data);

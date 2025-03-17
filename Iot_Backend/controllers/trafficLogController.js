@@ -142,7 +142,9 @@ exports.getDetailedLogs = async (req, res) => {
         }
     } catch (error) {
         console.error('Error fetching detailed logs:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({
+            code: 500,
+            message: 'Server error', error: error.message });
     }
 };
 
