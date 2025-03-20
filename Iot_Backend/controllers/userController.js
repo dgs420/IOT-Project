@@ -43,6 +43,28 @@ exports.getUserDetail = async (req, res) => {
      }
 }
 
+exports.getPersonalDetail = async (req, res) => {
+    const user_id = req.user.user_id;
+    try{
+        const user = await User.findByPk(user_id, {
+            attributes: { exclude: ['password'] } // Excludes the password field
+        });
+        if(!user){
+            return res.status(404).json({
+                code:404,
+                message:'User does not exist'});
+        }
+
+        res.status(200).json({
+            code:200,
+            message:"User found successfully",
+            info:user});
+    } catch (error){
+        console.error(error);
+        res.status(500).json({ error: 'Failed to retrieve users' });
+    }
+}
+
 exports.deleteUser = async (req, res) => {
     const { userId } = req.params;
     const { user } = req;

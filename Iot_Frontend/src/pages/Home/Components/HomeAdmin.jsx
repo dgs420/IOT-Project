@@ -52,6 +52,7 @@ const HomeAdmin = () => {
         <div className='px-3 py-3'>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 {[
+                    {title: "UNRESOLVED REQUESTS", value: 8, icon: Car},
                     {title: "TOTAL VEHICLES REGISTERED", value: homeData.total_vehicles, icon: Car},
                     {title: "VEHICLES IN", value: homeData.vehicles_in, icon: LogIn},
                     {title: "VEHICLES OUT", value: homeData.vehicles_exited, icon: LogOut},

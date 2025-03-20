@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const rfidCardController = require('../controllers/rfidCardController');
 const requireAuth = require("../middleware/requireAuth");
+const requireRole = require("../middleware/requireRole");
 
 router.use(requireAuth);
-router.get('/user-card/:userId', rfidCardController.getRfidCardsByUserId);
+router.get('/user-card/:userId',requireRole(['manager','admin']), rfidCardController.getRfidCardsByUserId);
+router.get('/your-cards', rfidCardController.getYourRfidCards);
 router.post('/create-card', rfidCardController.createRfidCard);
 router.delete('/:cardId', rfidCardController.deleteCard);
 

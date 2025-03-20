@@ -25,7 +25,7 @@ const Transaction = sequelize.define('Transaction', {
         allowNull: false
     },
     payment_method: {
-        type: DataTypes.ENUM('cash', 'stripe'),
+        type: DataTypes.ENUM('cash','credit', 'stripe'),
         allowNull: false
     },
     payment_id: {
@@ -34,6 +34,11 @@ const Transaction = sequelize.define('Transaction', {
     },
     transaction_type: {
         type: DataTypes.ENUM('top-up', 'fee'),
+        allowNull: false
+    },
+    balance:{
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
         allowNull: false
     },
     createdAt: {

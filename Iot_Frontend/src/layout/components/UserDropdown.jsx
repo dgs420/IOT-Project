@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout }) => {
+// eslint-disable-next-line react/prop-types
+const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout ,userInitial}) => {
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -15,15 +16,28 @@ const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout })
     }, [setShowDropdown]);
 
     return (
-        <div className="relative">
-            <button onClick={() => setShowDropdown(prev => !prev)} className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-orange-500 rounded-full"></div>
-                <span>{username}</span>
-                <ChevronDown className="text-gray-500" />
+        <div className="relative user-trigger">
+
+            <button
+                className={`flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none ${
+                    showDropdown ? "bg-gray-100" : ""
+                }`}
+                onClick={() => setShowDropdown(!showDropdown)}
+            >
+                <div
+                    className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
+                    {userInitial}
+                </div>
+                <div className="hidden md:block text-left">
+                    <p className="text-sm font-medium text-gray-700">{username}</p>
+                    <p className="text-xs text-gray-500">User</p>
+                </div>
+                <ChevronDown className="h-4 w-4 text-gray-500"/>
             </button>
             {showDropdown && (
                 <div ref={dropdownRef} className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
-                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <button onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Log out
                     </button>
                 </div>

@@ -1,5 +1,5 @@
 // config.js
-const BASE_URL = 'http://localhost:5000';
+// const BASE_URL = import.meta.env.VITE_BASE_URL;
 // const BIO_LAB_BASE_URL = 'https://your-bio-lab-url.com/api';
 import axios from 'axios';
 
@@ -44,7 +44,7 @@ function getAuthHeader() {
 // Helper: Refresh Token
 async function refreshToken() {
     try {
-        const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/refresh-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: localStorage.getItem('refreshToken') }),
@@ -66,7 +66,7 @@ async function refreshToken() {
 
 // API Request Function
 // API Request Function using Axios
-async function apiRequest(method, url, body = null, type = 'json', baseUrl = BASE_URL + '/api') {
+async function apiRequest(method, url, body = null, type = 'json', baseUrl = import.meta.env.VITE_BASE_URL + '/api') {
     try {
         const headers = {
             'Content-Type': type === 'json' ? 'application/json' : 'multipart/form-data',

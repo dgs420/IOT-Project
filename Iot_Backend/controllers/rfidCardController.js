@@ -35,6 +35,32 @@ exports.getRfidCardsByUserId = async (req, res) => {
             message: 'Server error' });
     }
 };
+exports.getYourRfidCards = async (req, res) => {
+    const user_id = req.user.user_id;
+
+    try {
+        const cards = await RfidCard.findAll({
+            where: {
+                user_id // Filter by card IDs
+            }
+        });
+        if (cards.length === 0) {
+            return res.status(404).json({
+                code: 404,
+                message: 'You have not registered any RFID cards.' });
+        }
+
+        res.status(200).json({
+            code:200,
+            message: "RFID Successfully Fetched",
+            info: cards});
+    } catch (error) {
+        console.error('Error fetching RFID cards:', error);
+        res.status(500).json({
+            code:500,
+            message: 'Server error' });
+    }
+};
 exports.createRfidCard = async (req, res) => {
     const { card_number, user_id, vehicle_number, vehicle_type } = req.body;
 
@@ -67,7 +93,7 @@ exports.createRfidCard = async (req, res) => {
             user_id,
             vehicle_number,
             vehicle_type,
-            status: 'parking', // Default status
+            status: 'exited', // Default status
         });
 
         res.status(201).json({

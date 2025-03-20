@@ -1,14 +1,18 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
 // import { FaChartLine, FaCog, FaFile, FaHome, FaInfoCircle, FaMicrochip, FaUser } from 'react-icons/fa';
-import {BarChart, Home, Info} from 'lucide-react'; // eslint-disable-next-line react/prop-types
+import {BarChart, Home, Info, IdCard, Landmark, FileQuestion} from 'lucide-react'; // eslint-disable-next-line react/prop-types
 const Sidebar = ({userRole}) => {
     const links =
 
         [
             {to: "/", icon: <Home/>, label: "Home"},
             {to: "/activity", icon: <BarChart/>, label: "Activity"},
+            {to: "/your-cards", icon: <IdCard />, label: "Registered cards" },
+            {to: "/transactions", icon: <Landmark />, label: "Transactions" },
+            {to:"/requests", icon:<FileQuestion/>, label: "Requests"},
             {to: "/about", icon: <Info/>, label: "About Us"},
+
         ]
     ;
     // const userLinks = userRole === 'admin' ? links.admin : links.user;

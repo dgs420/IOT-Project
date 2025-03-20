@@ -20,9 +20,14 @@ const Notification = sequelize.define('Notification', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    status: {
-        type: DataTypes.ENUM('read', 'unread'),
-        defaultValue: 'unread',
+    type:{
+        type: DataTypes.ENUM('info', 'success', 'fail', 'warning'),
+        defaultValue:'info',
+        allowNull: false
+    },
+    read: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false
     },
     timestamp: {

@@ -63,5 +63,5 @@ export const APP_ROUTES = [
         key: 'login',
         path: '/login',
         element: <Login />,
-    },
+    }
 ];

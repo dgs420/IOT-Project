@@ -44,6 +44,7 @@ const io = new Server(server, {
   },
 });
 
+app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 // Middleware
 app.use(express.json()); // Allows the use of JSON in requests
 app.use(cors()); // Allows cross-origin requests
@@ -60,6 +61,8 @@ app.use('/api/card', cardRoutes);
 app.use('/api/device',deviceRoutes);
 app.use('/api/home', homeRoutes)
 app.use('/api/payment',paymentRoutes);
+
+
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);
   console.log('Received MQTT Event:', data);

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Bell, ChevronDown } from 'lucide-react';
-import { useNavigate, useLocation } from "react-router-dom";
+import { Bell, ChevronDown, Search, Menu, X, Home, ChevronRight } from 'lucide-react';
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown.jsx";
 import UserDropdown from "./UserDropdown.jsx";
 
@@ -10,17 +10,24 @@ const mockNotifications = [
   { id: 3, message: "New update available for your app.", status: "unread" },
 ];
 
-const Header = () => {
+const Header = ({ toggleSidebar }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const username = localStorage.getItem('username');
+  const username = localStorage.getItem('username') || 'User';
+  const userInitial = username.charAt(0).toUpperCase();
+
+  const headerRef = useRef(null);
+  const isMobile = window.innerWidth < 768;
 
   const toggleNotification = useCallback(() => {
     setShowNotification(prev => !prev);
+    setShowDropdown(false);
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -42,31 +49,191 @@ const Header = () => {
     const titles = {
       '/': 'Dashboard',
       '/settings': 'Settings',
-      '/device': 'Devices list',
+      '/device': 'Devices List',
       '/details': 'Statistics',
-      '/report': 'Log history',
-      '/users-list': 'Users list'
+      '/report': 'Log History',
+      '/users-list': 'Users List'
     };
     return titles[location.pathname] || 'Page';
   }, [location.pathname]);
 
+  const handleSearch = useCallback((e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      console.log(`Searching for: ${searchQuery}`);
+      // Implement search functionality
+      // navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  }, [searchQuery]);
+
+  // Generate breadcrumbs
+  const generateBreadcrumbs = useCallback(() => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length === 0) return null;
+
+    return (
+        <div className="flex items-center text-xs text-gray-500 mt-1">
+          <Link to="/" className="hover:text-blue-600 flex items-center">
+            <Home className="h-3 w-3 mr-1" />
+            <span>Home</span>
+          </Link>
+
+          {pathSegments.map((segment, index) => {
+            const path = `/${pathSegments.slice(0, index + 1).join('/')}`;
+            const isLast = index === pathSegments.length - 1;
+            const titles = {
+              'settings': 'Settings',
+              'device': 'Devices',
+              'details': 'Statistics',
+              'report': 'Log History',
+              'users-list': 'Users'
+            };
+
+            return (
+                <React.Fragment key={path}>
+                  <ChevronRight className="h-3 w-3 mx-1 text-gray-400" />
+                  {isLast ? (
+                      <span className="font-medium text-gray-700 capitalize">
+                                    {titles[segment] || segment}
+                                </span>
+                  ) : (
+                      <Link to={path} className="hover:text-blue-600 capitalize">
+                        {titles[segment] || segment}
+                      </Link>
+                  )}
+                </React.Fragment>
+            );
+          })}
+        </div>
+    );
+  }, [location.pathname]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (headerRef.current && !headerRef.current.contains(event.target)) {
+        setShowNotification(false);
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && showMobileSearch) {
+        setShowMobileSearch(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [showMobileSearch]);
+
   return (
-      <header className="flex justify-between items-center p-4 bg-white border-b">
-        <h3 className="text-xl font-bold text-gray-800">{getHeaderTitle()}</h3>
-        <div className="flex items-center space-x-4">
-          <NotificationDropdown
-              notifications={notifications}
-              toggleNotification={toggleNotification}
-              markAsRead={markAsRead}
-              showNotification={showNotification}
-              unreadCount={unreadCount}
-          />
-          <UserDropdown
-              username={username}
-              showDropdown={showDropdown}
-              setShowDropdown={setShowDropdown}
-              handleLogout={handleLogout}
-          />
+      <header
+          ref={headerRef}
+          className="sticky top-0 z-30 w-full bg-white border-b shadow-sm"
+      >
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Left section: Menu toggle, title and breadcrumbs */}
+            <div className="flex items-center">
+              {/* Mobile menu toggle */}
+              <button
+                  className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
+                  onClick={toggleSidebar}
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </button>
+
+              {/* Title and breadcrumbs */}
+              <div className="ml-2 md:ml-0">
+                <h1 className="text-xl font-semibold text-gray-800">{getHeaderTitle()}</h1>
+                {!isMobile && generateBreadcrumbs()}
+              </div>
+            </div>
+
+            {/* Right section: Search, notifications, user */}
+            <div className="flex items-center space-x-4">
+              {/* Search - hide on mobile unless expanded */}
+              <div className={`transition-all duration-200 ease-in-out ${
+                  isMobile && !showMobileSearch ? "w-0 overflow-hidden opacity-0" : "w-auto opacity-100"
+              }`}>
+                <form onSubmit={handleSearch} className="relative">
+                  <input
+                      type="search"
+                      placeholder="Search..."
+                      className="w-full md:w-64 pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <button
+                      type="submit"
+                      className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
+                  >
+                    <Search className="h-4 w-4" />
+                    <span className="sr-only">Search</span>
+                  </button>
+                </form>
+              </div>
+
+              {/* Mobile search toggle */}
+              {isMobile && (
+                  <button
+                      className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
+                      onClick={() => setShowMobileSearch(!showMobileSearch)}
+                  >
+                    {showMobileSearch ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+                    <span className="sr-only">
+                                    {showMobileSearch ? "Close search" : "Open search"}
+                                </span>
+                  </button>
+              )}
+
+              {/* Notifications - keeping the original component */}
+              {/*<div className="relative notification-trigger">*/}
+              {/*    <button*/}
+              {/*        className={`p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none relative ${*/}
+              {/*            showNotification ? "bg-gray-100" : ""*/}
+              {/*        }`}*/}
+              {/*        onClick={toggleNotification}*/}
+              {/*    >*/}
+              {/*        <Bell className="h-5 w-5" />*/}
+              {/*        {unreadCount > 0 && (*/}
+              {/*            <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">*/}
+              {/*                {unreadCount}*/}
+              {/*            </span>*/}
+              {/*        )}*/}
+              {/*        <span className="sr-only">Notifications</span>*/}
+              {/*    </button>*/}
+
+              {/*    {showNotification && (*/}
+              <NotificationDropdown
+                  notifications={notifications}
+                  toggleNotification={toggleNotification}
+                  markAsRead={markAsRead}
+                  showNotification={showNotification}
+                  unreadCount={unreadCount}
+              />
+              {/*    )}*/}
+              {/*</div>*/}
+
+
+              <UserDropdown
+                  username={username}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  handleLogout={handleLogout}
+                  userInitial={userInitial}
+              />
+
+            </div>
+          </div>
         </div>
       </header>
   );

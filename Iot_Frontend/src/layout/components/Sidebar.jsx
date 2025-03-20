@@ -5,6 +5,9 @@ const Sidebar = ({ userRole }) => {
     const links = {
         admin: [
             { to: "/", icon: <Home />, label: "Home" },
+            { to: "/about", icon: <Info />, label: "User requests" },
+            { to: "/about", icon: <Info />, label: "Parking spaces" },
+            { to: "/about", icon: <Info />, label: "Registered cards" },
             { to: "/details", icon: <BarChart />, label: "Statistic" },
             { to: "/device", icon: <Microchip />, label: "Devices" },
             { to: "/users-list", icon: <User />, label: "Users" },
