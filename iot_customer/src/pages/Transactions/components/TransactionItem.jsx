@@ -1,4 +1,4 @@
-// File: components/transactions/TransactionItem.jsx
+
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { formatDate, formatCurrency } from '../../../utils/formatters';
@@ -34,7 +34,9 @@ const TransactionItem = ({ transaction }) => {
                             </div>
                             {transaction.payment_method.charAt(0).toUpperCase() + transaction.payment_method.slice(1)}
                             <span className="mx-1">•</span>
-                            <span className="font-mono">{transaction.payment_id.substring(0, 8)}...</span>
+                            <span className="font-mono">
+                                {transaction.payment_id ? `${transaction.payment_id.substring(0, 8)}...` : 'N/A'}
+                            </span>
                         </div>
                     </div>
                 </div>

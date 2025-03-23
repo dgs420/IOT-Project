@@ -33,10 +33,12 @@ const RfidCard = sequelize.define('rfid_card', {
     },
     vehicle_type: {
         type: DataTypes.ENUM('car', 'bike', 'others'),
-    },
+    }
 
 }, {
-    timestamps: false,
+    timestamps: true, // Enable automatic timestamp fields
+    createdAt: 'created_at', // Custom name for createdAt
+    updatedAt: 'updated_at',
 });
 
 

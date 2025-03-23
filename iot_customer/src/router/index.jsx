@@ -5,6 +5,7 @@ import Activity from "../pages/Activity/index.jsx";
 import PaymentSuccess from "../pages/PaymentResult/PaymentSuccess.jsx";
 import Transactions from "../pages/Transactions/index.jsx";
 import {UserCards} from "../pages/Cards/index.jsx";
+import {UserRequests} from "../pages/Requests/index.jsx";
 // import Statistics from '../pages/Statistics';
 // import PersonalProfile from '../pages/PersonalProfile';
 // import Report from '../pages/Report';
@@ -67,7 +68,7 @@ export const APP_ROUTES = [
     {
         key:'requests',
         path: '/requests',
-        element: <p>your request</p>,
+        element: <UserRequests/>,
 
     },
     // {

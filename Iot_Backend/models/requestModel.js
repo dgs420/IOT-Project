@@ -47,7 +47,9 @@ const Request = sequelize.define('request', {
     // }
 
 }, {
-    timestamps: false,
+    timestamps: true, // Enable automatic timestamp fields
+    createdAt: 'created_at', // Custom name for createdAt
+    updatedAt: 'updated_at',
 });
 
 // RfidCard.belongsTo(User, { foreignKey: 'user_id' });

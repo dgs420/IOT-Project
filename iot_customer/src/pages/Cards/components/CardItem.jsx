@@ -12,14 +12,14 @@ export const CardItem = ({ card, onEdit, onDelete }) => {
                         <div
                             className={`p-2 rounded-full ${
                                 card.status.toLowerCase() === 'active' ? 'bg-green-100' :
-                                    card.status.toLowerCase() === 'entered' ? 'bg-blue-100' :
+                                    card.status.toLowerCase() === 'parking' ? 'bg-blue-100' :
                                         'bg-gray-100'
                             }`}
                         >
                             <CreditCard
                                 className={`h-6 w-6 ${
                                     card.status.toLowerCase() === 'active' ? 'text-green-600' :
-                                        card.status.toLowerCase() === 'entered' ? 'text-blue-600' :
+                                        card.status.toLowerCase() === 'parking' ? 'text-blue-600' :
                                             'text-gray-600'
                                 }`}
                             />
@@ -63,23 +63,23 @@ export const CardItem = ({ card, onEdit, onDelete }) => {
                     </div>
                 </div>
 
-                <div className="mt-5 flex justify-end space-x-2">
-                    <button
-                        onClick={() => onEdit(card)}
-                        className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        <Edit className="h-3.5 w-3.5 mr-1" />
-                        Edit
-                    </button>
+                {/*<div className="mt-5 flex justify-end space-x-2">*/}
+                {/*    <button*/}
+                {/*        onClick={() => onEdit(card)}*/}
+                {/*        className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"*/}
+                {/*    >*/}
+                {/*        <Edit className="h-3.5 w-3.5 mr-1" />*/}
+                {/*        Edit*/}
+                {/*    </button>*/}
 
-                    <button
-                        onClick={() => onDelete(card.card_id)}
-                        className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                        <Trash2 className="h-3.5 w-3.5 mr-1" />
-                        Delete
-                    </button>
-                </div>
+                {/*    <button*/}
+                {/*        onClick={() => onDelete(card.card_id)}*/}
+                {/*        className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"*/}
+                {/*    >*/}
+                {/*        <Trash2 className="h-3.5 w-3.5 mr-1" />*/}
+                {/*        Delete*/}
+                {/*    </button>*/}
+                {/*</div>*/}
             </div>
         </div>
     );

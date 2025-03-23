@@ -7,7 +7,7 @@ import UserList from "../pages/User/UserList/UserList.jsx";
 import UserDetail from "../pages/User/UserDetail/UserDetail.jsx";
 import DeviceList from "../pages/Device/DeviceList/index.jsx";
 import DeviceDetail from "../pages/Device/DeviceDetail/index.jsx";
-import UsersRequests from "../pages/Requests/index.jsx";
+import {UserRequests} from "../pages/Requests/index.jsx";
 import RegisteredCards from "../pages/RegisteredCards/index.jsx";
 
 export const APP_ROUTES = [
@@ -69,12 +69,7 @@ export const APP_ROUTES = [
     {
         key: 'users-requests',
         path: '/users-requests',
-        element: <UsersRequests />,
-    },
-    {
-        key: 'users-requests',
-        path: '/users-requests',
-        element: <UsersRequests />,
+        element: <UserRequests />,
     },
     {
         key: 'users-cards',

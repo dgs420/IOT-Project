@@ -1,18 +1,38 @@
-// File: src/components/CustomerDashboard/UserCardsPanel.jsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Paper, Box, Typography, Button, Chip } from '@mui/material';
 import {ChevronRight, CreditCard} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import {getRequest} from "../../../api/index.jsx";
+import HomeCardsItem from "./HomeCardsItem.jsx";
 
-export default function UserCardsPanel({ cards , onRequestNewCard}) {
+export default function HomeCardsPanel({ onRequestNewCard}) {
     const navigate = useNavigate();
+
+    const [cards, setCards] = React.useState([]);
+    useEffect( () => {
+            const getUserCards = async () => {
+                try {
+                    const response = await getRequest('/card/recent-cards');
+                    console.log(response);
+                    if (response.code === 200) {
+                        setCards(response.info);
+                    } else
+                        console.error(response.message);
+                } catch (error) {
+                    console.error('Error fetching traffic logs:', error);
+                }
+            }
+            getUserCards();
+
+        },
+        [])
     return (
         <Paper sx={{ p: 3, flex: 1, boxShadow: 3, borderRadius: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Box>
                     <Typography variant="h6" sx={{ mb: 1 }}>Your Cards</Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Manage your parking cards
+                        Your parking cards
                     </Typography>
                 </Box>
                 <Button
@@ -31,9 +51,9 @@ export default function UserCardsPanel({ cards , onRequestNewCard}) {
                 </Button>
             </Box>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ maxHeight: '200px', overflowY: 'auto',display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {cards.map((card) => (
-                    <CardItem key={card.id} card={card} />
+                    <HomeCardsItem key={card.id} card={card} />
                 ))}
             </Box>
 
@@ -50,30 +70,5 @@ export default function UserCardsPanel({ cards , onRequestNewCard}) {
     );
 }
 
-function CardItem({ card }) {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                p: 1.5,
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 1,
-                '&:hover': { boxShadow: 2 },
-            }}
-        >
-            <Box>
-                <Typography variant="body1" fontWeight="medium">{card.id}</Typography>
-                <Typography variant="body2" color="text.secondary">{card.vehicle}</Typography>
-            </Box>
-            <Chip
-                label={card.type}
-                variant="outlined"
-                size="small"
-                sx={{ textTransform: 'capitalize' }}
-            />
-        </Box>
-    );
-}
+
+

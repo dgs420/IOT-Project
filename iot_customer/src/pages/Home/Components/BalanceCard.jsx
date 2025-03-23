@@ -1,12 +1,27 @@
 // File: src/components/CustomerDashboard/BalanceCard.jsx
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Paper, Box, Typography, Button } from '@mui/material';
 import { CreditCard, Add } from '@mui/icons-material';
+import {getRequest} from "../../../api/index.jsx";
 
 export default function BalanceCard({ balance, onTopUp, onRequestNewCard }) {
-    useEffect(() => {
-
-    }, []);
+    // const [balance, setBalance] = useState(0);
+    // useEffect(  () => {
+    //     const getUserBalance = async () => {
+    //         try {
+    //             const response = await getRequest('/payment/balance');
+    //             console.log(response);
+    //             if (response.code === 200) {
+    //                 setBalance(response.info.balance);
+    //             } else
+    //                 console.error(response.message);
+    //         } catch (error) {
+    //             console.error('Error fetching traffic logs:', error);
+    //         }
+    //     }
+    //     getUserBalance();
+    //
+    // }, []);
     return (
         <Paper sx={{
             p: 3,

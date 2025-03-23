@@ -1,5 +1,5 @@
 // File: src/components/CustomerDashboard/TransactionsPanel.jsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     Box, Card, CardHeader, CardContent, CardActions,
     Button, List, Typography, Avatar
@@ -7,11 +7,30 @@ import {
 import {
     AccountBalanceWallet, AccessTime, CalendarToday
 } from '@mui/icons-material';
-import TransactionItem from './TransactionItem';
+import HomeTransactionItem from './HomeTransactionItem';
 import {useNavigate} from "react-router-dom";
+import {getRequest} from "../../../api/index.jsx";
 
-export default function TransactionPanel({ transactions }) {
+export default function HomeTransactionPanel() {
     const navigate = useNavigate();
+    const [transactions, setTransactions] = React.useState([]);
+    useEffect(() => {
+        const getRecentTransactions = async () => {
+            try {
+                const response = await getRequest('/payment/recent-transactions');
+                console.log(response);
+                if (response.code === 200) {
+                    setTransactions(response.info);
+                } else {
+
+                    console.error(response.message);
+                }
+            } catch (error) {
+                console.error('Error fetching traffic logs:', error);
+            }
+        }
+        getRecentTransactions();
+    }, []);
     return (
         <Box sx={{ p: 3 }}>
             <Card>
@@ -22,8 +41,8 @@ export default function TransactionPanel({ transactions }) {
                 <CardContent>
                     <List sx={{ p: 0 }}>
                         {transactions.map((transaction) => (
-                            <TransactionItem
-                                key={transaction.id}
+                            <HomeTransactionItem
+                                key={transaction.transaction_id}
                                 transaction={transaction}
                             />
                         ))}

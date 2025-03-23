@@ -105,7 +105,9 @@ async function init() {
     console.log('Database connected successfully.');
 
     // Sync all models
-    await sequelize.sync();
+    await sequelize.sync(
+        // { alter: true }
+    );
     console.log('All models were synchronized successfully.');
 
     startMqttService(); // Start the MQTT service

@@ -73,7 +73,7 @@ async function barrierHandler(client, topic,data) {
 
         await user.update({ balance: user.balance - fee });
         await session.update({ exit_time: exit_time, status: "completed", payment_status:"paid" , fee: fee })
-        await Transaction.create({user_id: user.user_id, amount: fee, status: 'completed',payment_method: 'credit',transaction_type:'fee' });
+        await Transaction.create({user_id: user.user_id, balance: user.balance, amount: fee, status: 'completed',payment_method: 'credit',transaction_type:'fee' });
         await card.update({ status: 'exited' });
         mqttEventEmitter.emit('scan', { success: true,embed_id, action, message:  `Valid card`  });
 

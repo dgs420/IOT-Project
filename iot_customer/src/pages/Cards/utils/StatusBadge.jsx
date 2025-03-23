@@ -17,11 +17,11 @@ export const StatusBadge = ({ status }) => {
           Inactive
         </span>
             );
-        case 'entered':
+        case 'parking':
             return (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           <CheckCircle className="h-3 w-3 mr-1" />
-          Entered
+          Parking
         </span>
             );
         case 'exited':

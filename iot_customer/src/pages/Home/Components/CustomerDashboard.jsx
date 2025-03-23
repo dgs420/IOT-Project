@@ -1,10 +1,9 @@
-// File: src/components/CustomerDashboard/index.jsx
 import React, {useEffect, useState} from 'react';
 import {Box, Container, Paper, Tab, Tabs} from '@mui/material';
 import BalanceCard from './BalanceCard';
-import UserCardsPanel from './UserCardsPanel';
+import HomeCardsPanel from './HomeCardsPanel';
 import ParkingMap from './ParkingMap';
-import TransactionPanel from './TransactionPanel';
+import HomeTransactionPanel from './HomeTransactionPanel';
 import TopUpDialogWrapper from './dialogs/TopUpDialogWrapper'; // Import the wrapper instead
 import NewCardDialog from './dialogs/NewCardDialog';
 import {loadStripe} from "@stripe/stripe-js";
@@ -55,8 +54,7 @@ export default function CustomerDashboard() {
                         balance={balance}
                         onTopUp={() => setTopUpDialogOpen(true)}
                     />
-                    <UserCardsPanel
-                        cards={userCards}
+                    <HomeCardsPanel
                         onRequestNewCard={() => setNewCardDialogOpen(true)}
                     />
                 </Box>
@@ -75,7 +73,7 @@ export default function CustomerDashboard() {
 
                     {/* Tab Panels */}
                     {tabValue === 0 && <ParkingMap parkingLots={parkingLots}/>}
-                    {tabValue === 1 && <TransactionPanel transactions={recentTransactions}/>}
+                    {tabValue === 1 && <HomeTransactionPanel transactions={recentTransactions}/>}
                 </Paper>
             </div>
 
