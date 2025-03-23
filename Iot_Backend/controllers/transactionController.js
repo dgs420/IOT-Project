@@ -25,7 +25,7 @@ exports.getRecentTransactions = async (req, res) => {
         const transactions = await Transaction.findAll({
             where: { user_id },
             order: [['createdAt', 'DESC']],
-            limit: 10
+            limit: 5
         });
 
         res.status(200).json({

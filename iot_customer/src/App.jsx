@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Layout from "./layout/index.jsx";
 import { APP_ROUTES } from './router/index.jsx';
+import {NotFoundPage} from "./pages/NotFound/index.jsx";
 // import {ConfigProvider} from "antd";
 
 export default function App() {
@@ -22,14 +23,14 @@ export default function App() {
                         path={route.path}
                         element={
                             route.path === '/login' || route.path === '/register' ?  (
-                                route.element // Directly render Login without Layout
+                                route.element
                             ) : (
-                                <Layout>{route.element}</Layout> // Wrap other routes with Layout
+                                <Layout>{route.element}</Layout>
                             )
                         }
                     />
                 ))}
-                <Route path='*' element={<p>Not Found</p>} /> {/* You can replace with a NotFound component */}
+                <Route path='*' element={<NotFoundPage/>} />
             </Routes>
 
             <ToastContainer

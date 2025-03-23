@@ -166,7 +166,7 @@ export default function NotificationDropdown() {
                                 <Box>
                                     <NotificationHeader>
                                             Notifications
-                                        <Box>
+                                         <Box>
                                             {unreadCount > 0 && (
                                                 <Button
                                                     size="small"

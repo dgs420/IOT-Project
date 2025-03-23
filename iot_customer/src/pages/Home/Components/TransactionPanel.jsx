@@ -8,8 +8,10 @@ import {
     AccountBalanceWallet, AccessTime, CalendarToday
 } from '@mui/icons-material';
 import TransactionItem from './TransactionItem';
+import {useNavigate} from "react-router-dom";
 
 export default function TransactionPanel({ transactions }) {
+    const navigate = useNavigate();
     return (
         <Box sx={{ p: 3 }}>
             <Card>
@@ -27,7 +29,9 @@ export default function TransactionPanel({ transactions }) {
                         ))}
                     </List>
                 </CardContent>
-                <CardActions>
+                <CardActions
+                    onClick={() => navigate('/transactions')}
+                >
                     <Button fullWidth variant="outlined">View All Transactions</Button>
                 </CardActions>
             </Card>

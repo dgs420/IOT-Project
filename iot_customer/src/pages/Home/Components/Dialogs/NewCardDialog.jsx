@@ -39,9 +39,10 @@ import {
     Info,
 } from "@mui/icons-material"
 import { toast } from "react-toastify"
+import {postRequest} from "../../../../api/index.jsx";
 
 // Card type definitions with additional info
-const cardTypes = [
+const card_types = [
     {
         value: "standard",
         label: "Standard",
@@ -66,9 +67,9 @@ const cardTypes = [
 ]
 
 // Vehicle type definitions with icons
-const vehicleTypes = [
+const vehicle_types = [
     { value: "car", label: "Car", icon: <DirectionsCar /> },
-    { value: "motorcycle", label: "Motorcycle", icon: <TwoWheeler /> },
+    { value: "bike", label: "Motorcycle", icon: <TwoWheeler /> },
     { value: "truck", label: "Truck", icon: <LocalShipping /> },
 ]
 
@@ -77,12 +78,12 @@ export default function NewCardDialog({ open, onClose }) {
     const [activeStep, setActiveStep] = useState(0)
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
-        cardType: "standard",
-        vehicleNumber: "",
-        vehicleType: "car",
-        deliveryAddress: "",
-        fullName: "",
-        contactNumber: "",
+        card_type: "standard",
+        vehicle_number: "",
+        vehicle_type: "car",
+        delivery_address: "",
+        name: "",
+        contact_number: "",
     })
     const [errors, setErrors] = useState({})
 
@@ -112,26 +113,26 @@ export default function NewCardDialog({ open, onClose }) {
         if (activeStep === 0) {
             // No validation needed for card type
         } else if (activeStep === 1) {
-            if (!formData.vehicleNumber.trim()) {
-                newErrors.vehicleNumber = "Vehicle number is required"
-            } else if (!/^[A-Z0-9-]{3,10}$/i.test(formData.vehicleNumber.trim())) {
-                newErrors.vehicleNumber = "Please enter a valid vehicle number"
+            if (!formData.vehicle_number.trim()) {
+                newErrors.vehicle_number = "Vehicle number is required"
+            } else if (!/^[A-Z0-9-]{3,10}$/i.test(formData.vehicle_number.trim())) {
+                newErrors.vehicle_number = "Please enter a valid vehicle number"
             }
         } else if (activeStep === 2) {
-            if (!formData.fullName.trim()) {
-                newErrors.fullName = "Full name is required"
+            if (!formData.name.trim()) {
+                newErrors.name = "Full name is required"
             }
 
-            if (!formData.contactNumber.trim()) {
-                newErrors.contactNumber = "Contact number is required"
-            } else if (!/^\d{10,15}$/.test(formData.contactNumber.replace(/\D/g, ""))) {
-                newErrors.contactNumber = "Please enter a valid contact number"
+            if (!formData.contact_number.trim()) {
+                newErrors.contact_number = "Contact number is required"
+            } else if (!/^\d{10,15}$/.test(formData.contact_number.replace(/\D/g, ""))) {
+                newErrors.contact_number = "Please enter a valid contact number"
             }
 
-            if (!formData.deliveryAddress.trim()) {
-                newErrors.deliveryAddress = "Delivery address is required"
-            } else if (formData.deliveryAddress.trim().length < 10) {
-                newErrors.deliveryAddress = "Please enter a complete address"
+            if (!formData.delivery_address.trim()) {
+                newErrors.delivery_address = "Delivery address is required"
+            } else if (formData.delivery_address.trim().length < 10) {
+                newErrors.delivery_address = "Please enter a complete address"
             }
         }
 
@@ -161,22 +162,38 @@ export default function NewCardDialog({ open, onClose }) {
 
         try {
             // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1500))
-
+            // await new Promise((resolve) => setTimeout(resolve, 1500))
+            const response = await postRequest('/request/create-request',formData);
             // Show success message
-            toast.success("Card request submitted successfully!")
+            console.log(response);
+            if (response.code === 200) {
+                toast.success("Card request submitted successfully!");
+                setFormData({
+                    card_type: "standard",
+                    vehicle_number: "",
+                    vehicle_type: "car",
+                    delivery_address: "",
+                    name: "",
+                    number: "",
+                });
+                setActiveStep(0);
+                onClose();
+            }
+            else{
+                toast.error(response.message);
+            }
 
             // Reset form and close dialog
-            setFormData({
-                cardType: "standard",
-                vehicleNumber: "",
-                vehicleType: "car",
-                deliveryAddress: "",
-                fullName: "",
-                contactNumber: "",
-            })
-            setActiveStep(0)
-            onClose()
+            // setFormData({
+            //     cardType: "standard",
+            //     vehicleNumber: "",
+            //     vehicleType: "car",
+            //     deliveryAddress: "",
+            //     fullName: "",
+            //     contactNumber: "",
+            // })
+            // setActiveStep(0)
+            // onClose()
         } catch (error) {
             toast.error("Failed to submit card request. Please try again.")
         } finally {
@@ -204,22 +221,22 @@ export default function NewCardDialog({ open, onClose }) {
                         </Typography>
 
                         <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {cardTypes.map((type) => (
+                            {card_types.map((type) => (
                                 <Grid item xs={12} key={type.value}>
                                     <Paper
-                                        elevation={formData.cardType === type.value ? 3 : 1}
+                                        elevation={formData._type === type.value ? 3 : 1}
                                         sx={{
                                             p: 2,
                                             cursor: "pointer",
                                             borderLeft: 4,
-                                            borderColor: formData.cardType === type.value ? type.color : "transparent",
-                                            bgcolor: formData.cardType === type.value ? `${type.color}10` : "background.paper",
+                                            borderColor: formData.card_type === type.value ? type.color : "transparent",
+                                            bgcolor: formData.card_type === type.value ? `${type.color}10` : "background.paper",
                                             transition: "all 0.2s ease",
                                             "&:hover": {
                                                 bgcolor: `${type.color}10`,
                                             },
                                         }}
-                                        onClick={() => setFormData({ ...formData, cardType: type.value })}
+                                        onClick={() => setFormData({ ...formData, card_type: type.value })}
                                     >
                                         <Box display="flex" alignItems="center" justifyContent="space-between">
                                             <Box display="flex" alignItems="center">
@@ -247,7 +264,7 @@ export default function NewCardDialog({ open, onClose }) {
                                                     </Typography>
                                                 </Box>
                                             </Box>
-                                            {formData.cardType === type.value && <CheckCircle sx={{ color: type.color }} />}
+                                            {formData.card_type === type.value && <CheckCircle sx={{ color: type.color }} />}
                                         </Box>
                                     </Paper>
                                 </Grid>
@@ -275,18 +292,18 @@ export default function NewCardDialog({ open, onClose }) {
                         <TextField
                             label="Vehicle Number"
                             fullWidth
-                            value={formData.vehicleNumber}
-                            onChange={handleChange("vehicleNumber")}
-                            error={Boolean(errors.vehicleNumber)}
-                            helperText={errors.vehicleNumber || "Enter your vehicle license plate number"}
+                            value={formData.vehicle_number}
+                            onChange={handleChange("vehicle_number")}
+                            error={Boolean(errors.vehicle_number)}
+                            helperText={errors.vehicle_number || "Enter your vehicle license plate number"}
                             sx={{ mt: 2, mb: 3 }}
                             placeholder="e.g., ABC-123"
                         />
 
                         <FormControl fullWidth sx={{ mb: 3 }}>
                             <InputLabel>Vehicle Type</InputLabel>
-                            <Select label="Vehicle Type" value={formData.vehicleType} onChange={handleChange("vehicleType")}>
-                                {vehicleTypes.map((type) => (
+                            <Select label="Vehicle Type" value={formData.vehicle_type} onChange={handleChange("vehicle_type")}>
+                                {vehicle_types.map((type) => (
                                     <MenuItem value={type.value} key={type.value}>
                                         <Box display="flex" alignItems="center">
                                             {React.cloneElement(type.icon, { sx: { mr: 1, fontSize: 20 } })}
@@ -318,10 +335,10 @@ export default function NewCardDialog({ open, onClose }) {
                         <TextField
                             label="Full Name"
                             fullWidth
-                            value={formData.fullName}
-                            onChange={handleChange("fullName")}
-                            error={Boolean(errors.fullName)}
-                            helperText={errors.fullName}
+                            value={formData.name}
+                            onChange={handleChange("name")}
+                            error={Boolean(errors.name)}
+                            helperText={errors.name}
                             sx={{ mt: 2, mb: 3 }}
                             InputProps={{
                                 startAdornment: <Person sx={{ mr: 1, color: "action.active" }} />,
@@ -331,10 +348,10 @@ export default function NewCardDialog({ open, onClose }) {
                         <TextField
                             label="Contact Number"
                             fullWidth
-                            value={formData.contactNumber}
-                            onChange={handleChange("contactNumber")}
-                            error={Boolean(errors.contactNumber)}
-                            helperText={errors.contactNumber}
+                            value={formData.contact_number}
+                            onChange={handleChange("contact_number")}
+                            error={Boolean(errors.contact_number)}
+                            helperText={errors.contact_number}
                             sx={{ mb: 3 }}
                             placeholder="e.g., 123-456-7890"
                         />
@@ -344,10 +361,10 @@ export default function NewCardDialog({ open, onClose }) {
                             fullWidth
                             multiline
                             rows={3}
-                            value={formData.deliveryAddress}
-                            onChange={handleChange("deliveryAddress")}
-                            error={Boolean(errors.deliveryAddress)}
-                            helperText={errors.deliveryAddress || "Enter your complete address including city and zip code"}
+                            value={formData.delivery_address}
+                            onChange={handleChange("delivery_address")}
+                            error={Boolean(errors.delivery_address)}
+                            helperText={errors.delivery_address || "Enter your complete address including city and zip code"}
                             InputProps={{
                                 startAdornment: <Home sx={{ mr: 1, mt: 1, color: "action.active" }} />,
                             }}
@@ -368,14 +385,14 @@ export default function NewCardDialog({ open, onClose }) {
                                     <Typography variant="body2" color="text.secondary">
                                         Card Type
                                     </Typography>
-                                    <Typography variant="body1">{cardTypes.find((t) => t.value === formData.cardType)?.label}</Typography>
+                                    <Typography variant="body1">{card_types.find((t) => t.value === formData.card_type)?.label}</Typography>
                                 </Grid2>
                                 <Grid2 item xs={6}>
                                     <Typography variant="body2" color="text.secondary">
                                         Vehicle Type
                                     </Typography>
                                     <Typography variant="body1">
-                                        {vehicleTypes.find((t) => t.value === formData.vehicleType)?.label}
+                                        {vehicle_types.find((t) => t.value === formData.vehicle_type)?.label}
                                     </Typography>
                                 </Grid2>
                                 <Grid2 item xs={12}>
@@ -385,25 +402,25 @@ export default function NewCardDialog({ open, onClose }) {
                                     <Typography variant="body2" color="text.secondary">
                                         Vehicle Number
                                     </Typography>
-                                    <Typography variant="body1">{formData.vehicleNumber}</Typography>
+                                    <Typography variant="body1">{formData.vehicle_number}</Typography>
                                 </Grid2>
                                 <Grid2 item xs={6}>
                                     <Typography variant="body2" color="text.secondary">
                                         Full Name
                                     </Typography>
-                                    <Typography variant="body1">{formData.fullName}</Typography>
+                                    <Typography variant="body1">{formData.name}</Typography>
                                 </Grid2>
                                 <Grid2 item xs={12}>
                                     <Typography variant="body2" color="text.secondary">
                                         Delivery Address
                                     </Typography>
-                                    <Typography variant="body1">{formData.deliveryAddress}</Typography>
+                                    <Typography variant="body1">{formData.delivery_address}</Typography>
                                 </Grid2>
                                 <Grid2 item xs={12}>
                                     <Typography variant="body2" color="text.secondary">
                                         Contact Number
                                     </Typography>
-                                    <Typography variant="body1">{formData.contactNumber}</Typography>
+                                    <Typography variant="body1">{formData.contact_number}</Typography>
                                 </Grid2>
                             </Grid2>
                         </Paper>

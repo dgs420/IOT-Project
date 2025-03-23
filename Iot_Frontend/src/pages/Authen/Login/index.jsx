@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import parkingImage from '../../../assets/parking-management-system.jpeg';
+import {toast} from "react-toastify";
+import {postRequest} from "../../../api/index.js";
 
 const Login = () => {
     const[email, setEmail] = useState('');
@@ -8,32 +10,23 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+            const response = await postRequest('/auth/login', {email, password });
 
-            if (!response.ok) {
+            if (response.code!==200) {
+                toast.error(response.message);
                 throw new Error('Login failed');
             }
-            if(response.ok) {
-                window.location.href = '/';
-            }
-            const data = await response.json();
 
-            // Extract token, uid, and role from the parsed data
-            const { token } = data.info;
-            const { uid } = data.info; // use uid directly from data.info
-            const { role } = data.info; // use role directly from data.info
-            const { username } = data.info;
+            const { token, uid, role, username } = response.info;
 
-            // Store the JWT and user information securely
+
+            // Store the JWT and user information
             localStorage.setItem('token', token);
             localStorage.setItem('uid', uid);
             localStorage.setItem('role', role);
             localStorage.setItem('username',username);
-            // Redirect user to a dashboard or protected route
+            // Redirect user
+            window.location.href = '/';
         } catch (error) {
             setError(error.message);
         }

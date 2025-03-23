@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const RfidCard = require('./rfidCardModel');
 
-const TrafficLog = sequelize.define('parking_session', {
+const ParkingSession = sequelize.define('parking_session', {
     session_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -59,4 +59,4 @@ const TrafficLog = sequelize.define('parking_session', {
     timestamps: false,
 });
 
-module.exports = TrafficLog;
+module.exports = ParkingSession;

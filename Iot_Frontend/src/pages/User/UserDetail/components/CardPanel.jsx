@@ -1,6 +1,7 @@
 // components/RfidCardsPanel.jsx
 import React, { useState, useEffect } from 'react';
 import { Button, Card, CardContent, Box, Modal, TextField, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Car, Truck, CreditCard, Plus, Edit, Trash2, MoreHorizontal, CheckCircle, XCircle, AlertCircle, Link2Icon as TwoWheeler, Search, Filter } from 'lucide-react';
 import { getRequest, postRequest, deleteRequest } from "../../../../api/index.js";
 import { toast } from "react-toastify";
 import CardItem from './CardItem';
@@ -92,9 +93,18 @@ const CardsPanel = ({ userId }) => {
 
     return (
         <div className="px-4 py-4">
-            <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
-                Add RFID Card
-            </Button>
+            {/*<Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>*/}
+            {/*    Add RFID Card*/}
+            {/*</Button>*/}
+            <button
+                onClick={() => {
+                    setOpenModal(true)
+                }}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+                <Plus className="h-4 w-4 mr-2"/>
+                Add New Card
+            </button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {rfidCards.length > 0 ? (
                     rfidCards.map(card => (
@@ -130,7 +140,7 @@ const CardsPanel = ({ userId }) => {
 
 // Modal for adding new RFID card
 // eslint-disable-next-line react/prop-types
-const AddCardModal = ({ open, onClose, newCard, onInputChange, onSubmit }) => {
+const AddCardModal = ({open, onClose, newCard, onInputChange, onSubmit}) => {
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={{

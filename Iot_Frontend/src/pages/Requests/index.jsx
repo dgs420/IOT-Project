@@ -1,7 +1,6 @@
 import React from 'react'
-import {LogHistory} from './Components/LogHistory.jsx'
 
-const Report = () => {
+const UsersRequests = () => {
     return (
         <div>
             <div className='px-4 py-4'>
@@ -15,4 +14,4 @@ const Report = () => {
     )
 }
 
-export default Report
+export default UsersRequests

@@ -25,7 +25,7 @@ axios.interceptors.response.use(
                 // Handle forbidden access (403)
                 console.log('Forbidden access - You do not have permission to access this resource.');
                 // Clear user session or show a notification
-                // clearUserSession();
+                clearUserSession();
                 // Optionally, redirect to a "403 Forbidden" page or show a message
             }
         }
@@ -113,5 +113,7 @@ function clearUserSession() {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
-    window.location.href = '/login';
+    if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+    }
 }

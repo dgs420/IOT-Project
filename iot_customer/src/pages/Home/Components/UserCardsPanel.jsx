@@ -2,8 +2,10 @@
 import React from 'react';
 import { Paper, Box, Typography, Button, Chip } from '@mui/material';
 import {ChevronRight, CreditCard} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserCardsPanel({ cards , onRequestNewCard}) {
+    const navigate = useNavigate();
     return (
         <Paper sx={{ p: 3, flex: 1, boxShadow: 3, borderRadius: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -40,6 +42,7 @@ export default function UserCardsPanel({ cards , onRequestNewCard}) {
                 variant="outlined" // Changed to outlined for distinction
                 endIcon={<ChevronRight />}
                 sx={{ mt: 2, borderColor: '#1976d2', color: '#1976d2', '&:hover': { borderColor: '#115293', color: '#115293' } }}
+                onClick={() => navigate('/your-cards')}
             >
                 View All Cards
             </Button>

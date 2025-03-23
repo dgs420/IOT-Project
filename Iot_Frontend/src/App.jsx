@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import Layout from "./layout/index.jsx";
 import { APP_ROUTES } from './router/index.jsx';
 import {ConfigProvider} from "antd";
+import {NotFoundPage} from "./pages/NotFound/index.jsx";
 
 export default function App() {
   return (
@@ -29,7 +30,7 @@ export default function App() {
                     }
                 />
             ))}
-            <Route path='*' element={<p>Not Found</p>} /> {/* You can replace with a NotFound component */}
+              <Route path='*' element={<NotFoundPage />} /> {/* You can replace with a NotFound component */}
           </Routes>
           <ToastContainer
               position="top-center"

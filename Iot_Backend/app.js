@@ -9,6 +9,9 @@ const cardRoutes = require('./routes/cardRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
 const homeRoutes = require('./routes/homeRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const sessionRoutes = require('./routes/sessionRoutes');
+const requestRoutes = require('./routes/requestRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const http = require('http');
 
 
@@ -20,6 +23,10 @@ const User = require('./models/userModel');
 const Device = require('./models/deviceModel');
 const RfidCard = require('./models/rfidCardModel');
 const TrafficLog = require('./models/trafficLogModel');
+const ParkingSession = require('./models/parkingSessionModel');
+const Request = require('./models/requestModel');
+const notification = require('./models/notificationModel');
+
 
 RfidCard.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(RfidCard, { foreignKey: 'user_id' });
@@ -59,9 +66,10 @@ app.use('/api/logs', trafficLogRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/card', cardRoutes);
 app.use('/api/device',deviceRoutes);
-app.use('/api/home', homeRoutes)
+app.use('/api/home', homeRoutes);
 app.use('/api/payment',paymentRoutes);
-
+app.use('/api/request',requestRoutes);
+app.use('/api/session', sessionRoutes);
 
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);

@@ -4,6 +4,7 @@ import Signup from "../pages/Auth/Signup/index.jsx";
 import Activity from "../pages/Activity/index.jsx";
 import PaymentSuccess from "../pages/PaymentResult/PaymentSuccess.jsx";
 import Transactions from "../pages/Transactions/index.jsx";
+import {UserCards} from "../pages/Cards/index.jsx";
 // import Statistics from '../pages/Statistics';
 // import PersonalProfile from '../pages/PersonalProfile';
 // import Report from '../pages/Report';
@@ -54,7 +55,7 @@ export const APP_ROUTES = [
     {
         key:'your-cards',
         path: '/your-cards',
-        element: <p>your-card</p>,
+        element: <UserCards />,
 
     },
     {
