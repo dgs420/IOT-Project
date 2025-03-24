@@ -70,6 +70,7 @@ app.use('/api/home', homeRoutes);
 app.use('/api/payment',paymentRoutes);
 app.use('/api/request',requestRoutes);
 app.use('/api/session', sessionRoutes);
+app.use('/api/notification', notificationRoutes);
 
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);

@@ -9,6 +9,7 @@ import DeviceList from "../pages/Device/DeviceList/index.jsx";
 import DeviceDetail from "../pages/Device/DeviceDetail/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
 import RegisteredCards from "../pages/RegisteredCards/index.jsx";
+import ParkingKiosk from "../pages/ParkingKiosk/index.jsx";
 
 export const APP_ROUTES = [
     {
@@ -75,5 +76,10 @@ export const APP_ROUTES = [
         key: 'users-cards',
         path: '/users-cards',
         element: <RegisteredCards />,
+    },
+    {
+        key: 'parky',
+        path: '/parky',
+        element: <ParkingKiosk />,
     }
 ];
