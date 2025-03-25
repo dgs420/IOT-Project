@@ -52,7 +52,8 @@ const Header = ({ toggleSidebar }) => {
       '/device': 'Devices List',
       '/details': 'Statistics',
       '/report': 'Log History',
-      '/users-list': 'Users List'
+      '/users-list': 'Users List',
+      '/users-requests':'Users Request'
     };
     return titles[location.pathname] || 'Page';
   }, [location.pathname]);
@@ -195,24 +196,7 @@ const Header = ({ toggleSidebar }) => {
                   </button>
               )}
 
-              {/* Notifications - keeping the original component */}
-              {/*<div className="relative notification-trigger">*/}
-              {/*    <button*/}
-              {/*        className={`p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none relative ${*/}
-              {/*            showNotification ? "bg-gray-100" : ""*/}
-              {/*        }`}*/}
-              {/*        onClick={toggleNotification}*/}
-              {/*    >*/}
-              {/*        <Bell className="h-5 w-5" />*/}
-              {/*        {unreadCount > 0 && (*/}
-              {/*            <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">*/}
-              {/*                {unreadCount}*/}
-              {/*            </span>*/}
-              {/*        )}*/}
-              {/*        <span className="sr-only">Notifications</span>*/}
-              {/*    </button>*/}
 
-              {/*    {showNotification && (*/}
               <NotificationDropdown
                   notifications={notifications}
                   toggleNotification={toggleNotification}
@@ -220,9 +204,6 @@ const Header = ({ toggleSidebar }) => {
                   showNotification={showNotification}
                   unreadCount={unreadCount}
               />
-              {/*    )}*/}
-              {/*</div>*/}
-
 
               <UserDropdown
                   username={username}

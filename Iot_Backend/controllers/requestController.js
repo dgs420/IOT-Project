@@ -1,9 +1,29 @@
 const Request = require('../models/requestModel');
 const RfidCard = require("../models/rfidCardModel");
+const User = require("../models/userModel");
 
 exports.getAllRequests = async (req, res) => {
     try {
         const requests = await Request.findAll();
+        res.status(200).json({
+            code: 200,
+            message: "All requests fetched",
+            info: requests
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: 500,
+            message: error.message
+        });
+    }
+}
+
+exports.getYourRequests = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const requests = await Request.findAll({
+            where: { user_id  }
+        });
         res.status(200).json({
             code: 200,
             message: "All requests fetched",
@@ -53,3 +73,62 @@ exports.createRequest = async (req, res) => {
             message: error.message});
     }
 }
+
+exports.rejectRequest = async (req, res) => {
+    const request_id = req.params.requestId;
+    try{
+        const request = await Request.findByPk(request_id );
+        if(!request){
+            return res.status(404).json({
+                code:404,
+                message:'Request not found'});
+        }
+
+        await request.update({ status: 'rejected' });
+
+        res.status(200).json({
+            code:200,
+            message:"Request rejected",
+            info:"hehe"});
+    } catch (error){
+        console.error(error);
+        res.status(500).json({ error: 'Failed to retrieve request' });
+    }
+}
+
+exports.approveRequest = async (req, res) => {
+    const { requestId } = req.params;
+    const { card_number } = req.body;  // Get card number from request body
+
+    try {
+        const request = await Request.findByPk(requestId);
+        if (!request) {
+            return res.status(404).json({
+                code: 404,
+                message: 'Request not found',
+            });
+        }
+
+        // Create a new RFID card entry
+        const newCard = await RfidCard.create({
+            card_number,
+            user_id: request.user_id,
+            vehicle_number: request.vehicle_number,
+            vehicle_type: request.vehicle_type,
+            status: 'exited', // Default status
+        });
+
+        // Update the request status to approved
+        await request.update({ status: 'approved' });
+
+        return res.status(200).json({
+            code: 200,
+            message: 'Request approved successfully',
+            info: newCard, // Send created card info
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to approve request' });
+    }
+};

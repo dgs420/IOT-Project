@@ -4,46 +4,43 @@ import { ChevronDown, ChevronRight, MapPin, Phone, User } from "lucide-react";
 import RequestDetailItem from "./RequestDetailItem.jsx";
 import StatusBadge from "../utils/StatusBadge.jsx";
 import ApproveModal from "./ApproveModal.jsx";
+import RejectModal from "./RejectModal.jsx";
+import {postRequest} from "../../../api/index.js";
+import {toast} from "react-toastify"; // Import the new RejectModal component
 
-const RequestCard = ({ request }) => {
+const RequestCard = ({ request, refreshRequest }) => {
     const [expanded, setExpanded] = useState(false);
     const [showApproveModal, setShowApproveModal] = useState(false);
+    const [showRejectModal, setShowRejectModal] = useState(false);
 
     const handleApprove = async (cardNumber) => {
         try {
-            const response = await fetch(`/api/requests/${request.request_id}/approve`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ card_number: cardNumber }),
-            });
-
-            if (response.ok) {
-                alert("Request approved successfully!");
+            const response = await postRequest(`/request/${request.request_id}/approve`, {card_number:cardNumber});
+            if (response.code === 200) {
+                toast.success(response.message);
                 setShowApproveModal(false);
+                // refreshRequest();
             } else {
-                alert("Failed to approve request.");
+                toast.error(response.message);
             }
+
+            // }
         } catch (error) {
             console.error("Error approving request:", error);
-            alert("An error occurred while approving.");
+            toast.error("An error occurred while approving.");
         }
     };
 
-    const handleReject = async () => {
-        if (!confirm("Are you sure you want to reject this request?")) return;
-
+    const handleReject = async (reason) => {
         try {
-            // const response = await fetch(`/api/requests/${request.request_id}/reject`, {
-            //     method: "POST",
-            // });
-            //
-            // if (response.ok) {
-            //     alert("Request rejected successfully!");
-            // } else {
-            //     alert("Failed to reject request.");
-            // }
+            const response = await postRequest(`/request/${request.request_id}/reject`);
+            if (response.code === 200) {
+                toast.success(response.message);
+                setShowRejectModal(false);
+                refreshRequest();
+            } else {
+                toast.error(response.message);
+            }
         } catch (error) {
             console.error("Error rejecting request:", error);
             alert("An error occurred while rejecting.");
@@ -89,7 +86,7 @@ const RequestCard = ({ request }) => {
                                 Approve
                             </button>
                             <button
-                                onClick={handleReject}
+                                onClick={() => setShowRejectModal(true)}
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
                             >
                                 Reject
@@ -141,6 +138,14 @@ const RequestCard = ({ request }) => {
                 isOpen={showApproveModal}
                 onClose={() => setShowApproveModal(false)}
                 onApprove={handleApprove}
+                request={request}
+            />
+
+            {/* Reject Modal */}
+            <RejectModal
+                isOpen={showRejectModal}
+                onClose={() => setShowRejectModal(false)}
+                onReject={handleReject}
                 request={request}
             />
         </li>

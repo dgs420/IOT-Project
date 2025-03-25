@@ -56,14 +56,14 @@ export const UserRequests = () => {
     useEffect(() => {
         const getUserRequests = async () => {
             try{
-                // const response = await getRequest('/card/recent-cards');
-                // console.log(response);
-                // if (response.code === 200) {
-                //     setRequests(response.info);
-                // } else
-                //     console.error(response.message);
+                const response = await getRequest('/request/your-requests');
+                console.log(response);
+                if (response.code === 200) {
+                    setRequests(response.info);
+                } else
+                    console.error(response.message);
 
-                setRequests(requestsData);
+                // setRequests(requestsData);
             } catch ( error){
                 console.error('Error fetching traffic logs:', error);
             }
