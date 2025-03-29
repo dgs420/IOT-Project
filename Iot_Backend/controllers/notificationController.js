@@ -30,3 +30,41 @@ exports.getYourNotification = async (req, res) => {
     }
 
 };
+
+exports.markAsRead = async (req, res) => {
+    const { notification_id } = req.params;
+    const user_id = req.user.user_id;
+
+    try {
+        const notification = await Notification.findOne({
+            where: {
+                notification_id,
+                user_id
+            }
+        });
+
+        if (!notification) {
+            return res.status(404).json({
+                code: 404,
+                message: 'Notification not found'
+            });
+        }
+        if (!notification.is_read) {
+            notification.is_read = true;
+            await notification.save();
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            message: 'Notification marked as read',
+            info: notification
+        });
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        res.status(500).json({
+            code: 500,
+            message: 'Server error'
+        });
+    }
+}

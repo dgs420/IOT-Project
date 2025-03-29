@@ -3,6 +3,7 @@ const RfidCard = require('../../models/rfidCardModel');
 const TrafficLog = require('../../models/trafficLogModel');
 const ParkingSession = require('../../models/parkingSessionModel'); // New table
 const User = require('../../models/userModel');
+const Notificartion = require('../../models/notificationModel');
 const Transaction = require('../../models/transactionModel');
 const { mqttEventEmitter } = require('../eventEmitter');
 const {getClient } = require('../mqttClient');
@@ -68,6 +69,8 @@ async function barrierHandler(client, topic,data) {
         const fee = calculateFee(session.entry_time, exit_time);
 
         if (user.balance < fee) {
+            await Notificartion.create({ user_id: user.user_id, type:'warning', message: `Insufficient balance for exit fee of ${fee} ${card.vehicle_number}` });
+            mqttEventEmitter.emit('notification', { user_id: user.user_id, type:'warning', message: `Insufficient balance for exit fee of ${fee} ${card.vehicle_number}` });
             return client.publish(`${topic}/response/${embed_id}`, JSON.stringify({ success: false, message: 'Insufficient balance' }));
         }
 
