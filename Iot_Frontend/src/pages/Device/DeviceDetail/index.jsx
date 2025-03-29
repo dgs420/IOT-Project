@@ -71,7 +71,7 @@ const DeviceDetail = () => {
     }, [embedId]);
 
     return (
-        <div className={'w-full p-4'}>
+        <>
             <div className="w-full h-12 mb-4 flex items-center justify-center">
                 {customToast && <CustomToast message={customToast.message} type={customToast.type} onClose={() => setCustomToast(null)}/>}
             </div>
@@ -160,7 +160,7 @@ const DeviceDetail = () => {
                     <DeviceActivity embedId={deviceDetails.embed_id}/>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

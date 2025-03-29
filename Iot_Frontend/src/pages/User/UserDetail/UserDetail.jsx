@@ -30,7 +30,7 @@ const UserDetail = () => {
     }, [user_id]);
 
     return (
-        <div className="flex-1 p-4">
+        <>
             <UserDetailsForm
                 userDetails={userDetails}
                 setUserDetails={setUserDetails}
@@ -62,7 +62,7 @@ const UserDetail = () => {
                     </div>
                 )}
             </Paper>
-        </div>
+        </>
     );
 };
 

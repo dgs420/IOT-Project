@@ -48,9 +48,9 @@ export default function HomeTransactionItem({ transaction }) {
             <Typography
                 variant="body1"
                 fontWeight="medium"
-                color={transaction.transaction_type === 'fee' ? 'success.main' : 'primary.main'}
+                color={transaction.transaction_type === 'top-up' ? 'success.main' : 'primary.main'}
             >
-                {transaction.transaction_type === 'fee'? ' + ' : ' - '}{transaction.amount}
+                {transaction.transaction_type === 'top-up'? ' + ' : ' - '}{transaction.amount}
             </Typography>
         </ListItem>
     );

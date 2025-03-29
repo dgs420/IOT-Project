@@ -46,12 +46,21 @@ exports.createRequest = async (req, res) => {
         const vehicleCard = await RfidCard.findOne({
             where: { vehicle_number }
         });
-
+        const existingRequest = await Request.findOne({
+            where: { vehicle_number, status :'pending' }
+        })
         if (vehicleCard) {
             return res.json({
                 code:400,
                 message: 'A card is already associated with this vehicle.' });
         }
+
+        if (existingRequest) {
+            return res.json({
+                code:400,
+                message: 'A request is already sent this vehicle.' });
+        }
+
 
         // Create a new card
         const newRequest = await Request.create({
@@ -107,6 +116,16 @@ exports.approveRequest = async (req, res) => {
                 code: 404,
                 message: 'Request not found',
             });
+        }
+
+        const vehicleCard = await RfidCard.findOne({
+            where: { vehicle_number: request.vehicle_number }
+        });
+
+        if (vehicleCard) {
+            return res.json({
+                code:400,
+                message: 'A card is already associated with this vehicle.' });
         }
 
         // Create a new RFID card entry

@@ -77,7 +77,7 @@ export default function TopUpDialogWrapper({ open, onClose, clientSecret, setCli
 }
 
 // Initial dialog to collect amount and create PaymentIntent
-function TopUpInitialDialog({ open, onClose, setClientSecret, currentBalance }) {
+function TopUpInitialDialog({ open, onClose, setClientSecret, currentBalance })  {
     const [topUpAmount, setTopUpAmount] = useState("20");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

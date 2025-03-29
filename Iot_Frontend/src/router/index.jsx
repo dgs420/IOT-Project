@@ -81,5 +81,10 @@ export const APP_ROUTES = [
         key: 'parky',
         path: '/parky',
         element: <ParkingKiosk />,
+    },
+    {
+        key:'parking-spaces',
+        path: '/parking-spaces',
+        element: <p>parking-spaces</p>,
     }
 ];

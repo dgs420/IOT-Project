@@ -164,7 +164,7 @@ exports.loginAdmin = async (req, res) => {
         if (user.role !== "admin") {
             return res.status(401).json({
                 code: 403,
-                message: 'Unauthorized accesses'
+                message: 'You do not have permission to access this resource'
             })
         }
 

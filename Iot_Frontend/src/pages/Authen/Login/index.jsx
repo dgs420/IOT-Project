@@ -10,7 +10,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await postRequest('/auth/login', {email, password });
+            const response = await postRequest('/auth/login-admin', {email, password });
 
             if (response.code!==200) {
                 toast.error(response.message);
