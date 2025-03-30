@@ -1,51 +1,12 @@
-import React, { useState } from "react";
-import getVehicleIcon from "../utils/VehicleIcon.jsx";
-import { ChevronDown, ChevronRight, MapPin, Phone, User } from "lucide-react";
+// Request Card Component
+import {StatusBadge} from "./StatusBadge.jsx";
 import RequestDetailItem from "./RequestDetailItem.jsx";
-import StatusBadge from "../utils/StatusBadge.jsx";
-import ApproveModal from "./ApproveModal.jsx";
-import RejectModal from "./RejectModal.jsx";
-import {postRequest} from "../../../api/index.js";
-import {toast} from "react-toastify"; // Import the new RejectModal component
+import {getVehicleIcon} from "./utils.jsx";
+import {useState} from "react";
+import {MoreVertical, User, Phone, MapPin, ChevronDown, ChevronRight, XCircle} from 'lucide-react';
 
-const RequestCard = ({ request, refreshRequest }) => {
+export const RequestCard = ({ request }) => {
     const [expanded, setExpanded] = useState(false);
-    const [showApproveModal, setShowApproveModal] = useState(false);
-    const [showRejectModal, setShowRejectModal] = useState(false);
-
-    const handleApprove = async (cardNumber) => {
-        try {
-            const response = await postRequest(`/request/${request.request_id}/approve`, {card_number:cardNumber});
-            if (response.code === 200) {
-                toast.success(response.message);
-                setShowApproveModal(false);
-                // refreshRequest();
-            } else {
-                toast.error(response.message);
-            }
-
-            // }
-        } catch (error) {
-            console.error("Error approving request:", error);
-            toast.error("An error occurred while approving.");
-        }
-    };
-
-    const handleReject = async (reason) => {
-        try {
-            const response = await postRequest(`/request/${request.request_id}/reject`,{reason});
-            if (response.code === 200) {
-                toast.success(response.message);
-                setShowRejectModal(false);
-                refreshRequest();
-            } else {
-                toast.error(response.message);
-            }
-        } catch (error) {
-            console.error("Error rejecting request:", error);
-            toast.error("An error occurred while rejecting.");
-        }
-    };
 
     return (
         <li className="bg-white hover:bg-gray-50 transition-colors">
@@ -76,22 +37,10 @@ const RequestCard = ({ request, refreshRequest }) => {
                             </div>
                         </div>
                     </div>
+                    <>
+                    </>
 
                     <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-3 mx-8">
-                            <button
-                                onClick={() => setShowApproveModal(true)}
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-                            >
-                                Approve
-                            </button>
-                            <button
-                                onClick={() => setShowRejectModal(true)}
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                            >
-                                Reject
-                            </button>
-                        </div>
                         <button
                             onClick={() => setExpanded(!expanded)}
                             className="p-1 rounded-full hover:bg-gray-200 focus:outline-none"
@@ -102,6 +51,12 @@ const RequestCard = ({ request, refreshRequest }) => {
                                 <ChevronRight className="h-5 w-5 text-gray-500" />
                             )}
                         </button>
+                        <div className="relative">
+                            <button className="p-1 rounded-full hover:bg-gray-200 focus:outline-none">
+                                <MoreVertical className="h-5 w-5 text-gray-500" />
+                            </button>
+                            {/* Dropdown menu would go here */}
+                        </div>
                     </div>
                 </div>
 
@@ -128,28 +83,20 @@ const RequestCard = ({ request, refreshRequest }) => {
                                 label="Delivery Address"
                                 value={request.delivery_address || "Not provided"}
                             />
+
+                            {request.status === 'rejected' && (
+                                <RequestDetailItem
+                                    icon={<XCircle className="h-4 w-4 text-gray-500" />}
+                                    label="Rejection Reason"
+                                    value={request.reason || "No reason provided"}
+                                />
+                            )}
                         </dl>
+
+
                     </div>
                 )}
             </div>
-
-            {/* Approve Modal */}
-            <ApproveModal
-                isOpen={showApproveModal}
-                onClose={() => setShowApproveModal(false)}
-                onApprove={handleApprove}
-                request={request}
-            />
-
-            {/* Reject Modal */}
-            <RejectModal
-                isOpen={showRejectModal}
-                onClose={() => setShowRejectModal(false)}
-                onReject={handleReject}
-                request={request}
-            />
         </li>
     );
 };
-
-export default RequestCard;

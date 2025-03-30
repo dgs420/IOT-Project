@@ -4,8 +4,8 @@ const requireAuth = require("../middleware/requireAuth");
 const router = express.Router();
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const User = require("../models/UserModel");
-const Transaction = require("../models/TransactionModel");
+const User = require("../models/userModel");
+const Transaction = require("../models/transactionModel");
 const {getYourTransactions} = require("../controllers/transactionController");
 const transactionController = require("../controllers/transactionController");
 

@@ -37,6 +37,9 @@ const Request = sequelize.define('request', {
     contact_number:{
         type: DataTypes.STRING,
     },
+    reason:{
+        type: DataTypes.STRING,
+    },
     delivery_address: {
         type: DataTypes.STRING,
     },
