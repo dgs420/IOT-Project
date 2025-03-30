@@ -1,6 +1,7 @@
 const Request = require('../models/requestModel');
 const RfidCard = require("../models/rfidCardModel");
 const User = require("../models/userModel");
+const { sendNotification } = require('./notificationController');
 
 exports.getAllRequests = async (req, res) => {
     try {
@@ -85,6 +86,7 @@ exports.createRequest = async (req, res) => {
 
 exports.rejectRequest = async (req, res) => {
     const request_id = req.params.requestId;
+    const reason = req.body.reason;
     try{
         const request = await Request.findByPk(request_id );
         if(!request){
@@ -93,7 +95,9 @@ exports.rejectRequest = async (req, res) => {
                 message:'Request not found'});
         }
 
-        await request.update({ status: 'rejected' });
+        await request.update({ status: 'rejected' , reason: reason});
+
+        sendNotification(user_id=request.user_id, message = `Your request for vehicle ${request.vehicle_number} has been rejected. Reason: ${reason}`, type = 'fail' );
 
         res.status(200).json({
             code:200,
@@ -139,6 +143,8 @@ exports.approveRequest = async (req, res) => {
 
         // Update the request status to approved
         await request.update({ status: 'approved' });
+        sendNotification(user_id=request.user_id, message = `Your request for vehicle ${request.vehicle_number} has been approved`, type = 'success' );
+
 
         return res.status(200).json({
             code: 200,

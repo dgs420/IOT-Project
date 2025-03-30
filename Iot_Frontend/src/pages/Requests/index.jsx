@@ -56,21 +56,22 @@ export const UserRequests = () => {
         }
     ];
     const [requests, setRequests] = useState([]);
-    useEffect(() => {
-        const getUserRequests = async () => {
-            try{
-                const response = await getRequest('/request/all-requests');
-                console.log(response);
-                if (response.code === 200) {
-                    setRequests(response.info);
-                } else
-                    console.error(response.message);
+    const getUserRequests = async () => {
+        try{
+            const response = await getRequest('/request/all-requests');
+            console.log(response);
+            if (response.code === 200) {
+                setRequests(response.info);
+            } else
+                console.error(response.message);
 
-                // setRequests(requestsData);
-            } catch ( error){
-                console.error('Error fetching traffic logs:', error);
-            }
+            // setRequests(requestsData);
+        } catch ( error){
+            console.error('Error fetching traffic logs:', error);
         }
+    }
+    useEffect(() => {
+
 
         getUserRequests();
     },[])
@@ -90,29 +91,8 @@ export const UserRequests = () => {
                 searchQuery={searchQuery}
                 statusFilter={statusFilter}
                 sortBy={sortBy}
+                refreshRequest={getUserRequests}
             />
         </div>
     );
 };
-
-// Page Header Component
-
-
-// Filter Bar Component
-
-
-// Request List Component
-
-
-// Request Card Component
-// eslint-disable-next-line react/prop-types
-
-
-// Request Detail Item Component
-
-// Status Badge Component
-
-
-
-
-// Helper function to get vehicle icon

@@ -89,11 +89,22 @@ mqttEventEmitter.on('deviceStatus', (data) => {
   console.log('Received MQTT Event:', data);
 });
 
+
+mqttEventEmitter.on('notification', (data) => {
+  io.to(`user_${data.user_id}`).emit('notification', data);
+  console.log(data);
+});
+
+
 io.on('connection', (socket) => {
   console.log('Client connected to WebSocket');
   socket.on("join_gate", (gate_id) => {
     socket.join(gate_id);
     console.log(`Kiosk joined gate: ${gate_id}`);
+  });
+  socket.on("join_notifications", (user_id) => {
+    socket.join(`user_${user_id}`);
+    console.log(`User ${user_id} joined notifications room`);
   });
   socket.on('disconnect', () => {
     console.log('Client disconnected from WebSocket');

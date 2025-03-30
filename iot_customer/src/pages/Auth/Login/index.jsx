@@ -17,12 +17,12 @@ const Login = () => {
                 throw new Error(response.message);
             }
 
-            const { token, uid, role, username } = response.info;
+            const { token, user_id, role, username } = response.info;
 
 
             // Store the JWT and user information
             localStorage.setItem('token', token);
-            localStorage.setItem('uid', uid);
+            localStorage.setItem('user_id', user_id);
             localStorage.setItem('role', role);
             localStorage.setItem('username',username);
             // Redirect user

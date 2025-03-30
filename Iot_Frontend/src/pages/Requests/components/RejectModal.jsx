@@ -29,7 +29,7 @@ const RejectModal = ({ isOpen, onClose, onReject, request }) => {
                     <button
                         onClick={() => onReject(reason)}
                         className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md"
-                        disabled={!reason.trim()} // Prevent empty reason
+                        disabled={!reason.trim()}
                     >
                         Reject
                     </button>

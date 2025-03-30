@@ -139,7 +139,7 @@ exports.login = async (req, res) => {
             message: "Log in success",
             info: {
                 token: token,
-                uid: user.user_id,
+                user_id: user.user_id,
                 username: user.username,
                 role: user.role,
             }
@@ -174,7 +174,7 @@ exports.loginAdmin = async (req, res) => {
             message: "Log in success",
             info: {
                 token: token,
-                uid: user.user_id,
+                user_id: user.user_id,
                 username: user.username,
                 role: user.role,
             }

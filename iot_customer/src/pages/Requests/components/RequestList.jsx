@@ -1,8 +1,9 @@
-import React from "react";
-import RequestCard from "./RequestCard.jsx";
+// Request List Component
 import RequestEmptyState from "./RequestEmptyState.jsx";
+import React from "react";
+import {RequestCard} from "./RequestCard.jsx";
 
-const RequestList = ({ requests, searchQuery, statusFilter, sortBy, refreshRequest }) => {
+const RequestList = ({ requests, searchQuery, statusFilter, sortBy }) => {
     // Filter and sort requests
     const filteredRequests = requests.filter(request => {
         // Filter by search query
@@ -34,7 +35,7 @@ const RequestList = ({ requests, searchQuery, statusFilter, sortBy, refreshReque
         <div className="bg-white rounded-lg shadow overflow-hidden">
             <ul className="divide-y divide-gray-200">
                 {sortedRequests.map(request => (
-                    <RequestCard key={request.request_id} request={request} refreshRequest={refreshRequest} />
+                    <RequestCard key={request.request_id} request={request} />
                 ))}
             </ul>
         </div>
