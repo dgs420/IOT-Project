@@ -10,8 +10,9 @@ import {
 import { NotificationPopper, NotificationHeader } from './styles';
 import { NotificationItem } from './NotificationItem';
 import { notifications as initialNotifications } from './mockData';
-import {getRequest} from "../../../api/index.jsx";
+import {getRequest, putRequest} from "../../../api/index.jsx";
 import {io} from "socket.io-client";
+import {toast} from "react-toastify";
 
 export default function NotificationDropdown() {
     const [open, setOpen] = useState(false);
@@ -29,13 +30,37 @@ export default function NotificationDropdown() {
         setOpen(false);
     };
 
-    const markAllAsRead = () => {
-        setNotificationsList(notificationsList.map(notification => ({
-            ...notification,
-            is_read: true
-        })));
+    const markAllAsRead = async () => {
+        try {
+            const response = await putRequest('/notification/read-all');
+            if (response.code === 200) {
+                setNotificationsList(notificationsList.map(notification => ({
+                    ...notification,
+                    is_read: true
+                })));
+            } else {
+                toast.error(response.message);
+                console.error('Failed to mark all notifications as read');
+            }
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+        }
     };
-
+    const markAsRead = async (notification_id) => {
+        try {
+            const response = await putRequest(`/notification/read/${notification_id}`);
+            if (response.code === 200) {
+                setNotificationsList(notificationsList.map(notification =>
+                    notification.notification_id === notification_id ? { ...notification, is_read: true } : notification
+                ));
+            } else {
+                toast.error(response.message);
+                console.error('Failed to mark notification as read');
+            }
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    };
     useEffect(() => {
         const getNotifications = async () => {
             try {
@@ -54,7 +79,7 @@ export default function NotificationDropdown() {
             };
 
         };
-        const newSocket = io('http://localhost:5000'); // Replace with your backend URL
+        const newSocket = io(import.meta.env.VITE_BASE_URL); // Replace with your backend URL
         setSocket(newSocket);
         newSocket.emit("join_notifications", user_id);
         console.log(user_id);
@@ -108,7 +133,7 @@ export default function NotificationDropdown() {
                                         {sortedNotifications.length > 0 ? (
                                             sortedNotifications.map((notification) => (
                                                 <React.Fragment key={notification.id}>
-                                                    <NotificationItem notification={notification} />
+                                                    <NotificationItem notification={notification} markAsRead={markAsRead} />
                                                     <Divider component="li" />
                                                 </React.Fragment>
                                             ))

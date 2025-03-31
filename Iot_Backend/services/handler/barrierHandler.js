@@ -112,15 +112,11 @@ async function barrierHandler(client, topic, data) {
     const fee = calculateFee(session.entry_time, exit_time);
 
     if (user.balance < fee) {
-      await Notificartion.create({
-        user_id: user.user_id,
-        type: "warning",
-        message: `Insufficient balance for exit fee of ${fee} ${card.vehicle_number}`,
-      });
+      
       sendNotification(
         (user_id = user.user_id),
-        (message = `Insufficient balance for exit fee of ${fee} vehicle ${card.vehicle_number} `),
-        (type = "fail")
+        (message = `Insufficient balance for exit fee of ${fee}$ vehicle ${card.vehicle_number} `),
+        (type = "warning")
       );
 
       return client.publish(

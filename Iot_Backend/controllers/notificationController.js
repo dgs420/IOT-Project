@@ -69,6 +69,34 @@ exports.markAsRead = async (req, res) => {
     }
 }
 
+exports.markAllAsRead = async (req, res) => {
+    const user_id = req.user.user_id;
+
+    try {
+        // Update all unread notifications for the user
+        const updatedCount = await Notification.update(
+            { is_read: true }, // Set `is_read` to true
+            {
+                where: {
+                    user_id,
+                    is_read: false, // Only update unread notifications
+                },
+            }
+        );
+
+        res.status(200).json({
+            code: 200,
+            message: `${updatedCount[0]} notifications marked as read.`,
+        });
+    } catch (error) {
+        console.error('Error marking all notifications as read:', error);
+        res.status(500).json({
+            code: 500,
+            message: 'Server error',
+        });
+    }
+};
+
 
 exports.sendNotification = async (user_id, message, type = {}) => {
     try {
