@@ -1,8 +1,6 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./userModel');
-const TrafficLog = require('./trafficLogModel');
-
 
 const Request = sequelize.define('request', {
     request_id: {
@@ -13,7 +11,7 @@ const Request = sequelize.define('request', {
     user_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'users',
+            model: User,
             key: 'user_id',
         },
         allowNull: false

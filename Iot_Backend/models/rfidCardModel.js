@@ -2,8 +2,7 @@ const {DataTypes} = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./userModel');
 const TrafficLog = require('./trafficLogModel');
-
-
+const Vehicle = require('./vehicleModel');
 const RfidCard = sequelize.define('rfid_card', {
     card_id: {
         type: DataTypes.INTEGER,
@@ -18,27 +17,34 @@ const RfidCard = sequelize.define('rfid_card', {
     user_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'users',
+            model: User,
             key: 'user_id',
         },
     },
-    status: {
-        type: DataTypes.ENUM('parking', 'exited','blocked'),
-        allowNull: false,
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
-    vehicle_number: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    vehicle_type: {
-        type: DataTypes.ENUM('car', 'bike', 'others'),
-    }
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        onUpdate: DataTypes.NOW}
+    // status: {
+    //     type: DataTypes.ENUM('parking', 'exited','blocked'),
+    //     allowNull: false,
+    // },
+    // vehicle_number: {
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    //     unique: true
+    // },
+    // vehicle_type: {
+    //     type: DataTypes.ENUM('car', 'bike', 'others'),
+    // }
 
 }, {
-    timestamps: true, // Enable automatic timestamp fields
-    createdAt: 'created_at', // Custom name for createdAt
-    updatedAt: 'updated_at',
+    timestamps: true, 
+    underscored: true
 });
 
 

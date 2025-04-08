@@ -10,6 +10,7 @@ import DeviceDetail from "../pages/Device/DeviceDetail/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
 import RegisteredCards from "../pages/RegisteredCards/index.jsx";
 import ParkingKiosk from "../pages/ParkingKiosk/index.jsx";
+import VehicleTypeAdmin from "../pages/VehicleType/index.jsx";
 
 export const APP_ROUTES = [
     {
@@ -86,5 +87,10 @@ export const APP_ROUTES = [
         key:'parking-spaces',
         path: '/parking-spaces',
         element: <p>parking-spaces</p>,
+    },
+    {
+        key:'vehicle-types',
+        path: '/vehicle-types',
+        element: <VehicleTypeAdmin />,
     }
 ];

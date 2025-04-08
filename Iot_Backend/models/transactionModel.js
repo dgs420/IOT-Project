@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('../models/userModel');
-
+const ParkingSession = require('../models/parkingSessionModel')
 const Transaction = sequelize.define('Transaction', {
     transaction_id: {
         type: DataTypes.INTEGER,
@@ -25,7 +25,7 @@ const Transaction = sequelize.define('Transaction', {
         allowNull: false
     },
     payment_method: {
-        type: DataTypes.ENUM('cash','credit', 'stripe'),
+        type: DataTypes.ENUM('cash','rfid_balance', 'stripe'),
         allowNull: false
     },
     payment_id: {
@@ -36,23 +36,30 @@ const Transaction = sequelize.define('Transaction', {
         type: DataTypes.ENUM('top-up', 'fee'),
         allowNull: false
     },
+    session_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: ParkingSession,
+            key: 'session_id',
+        },
+    },
     balance:{
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: false
     },
-    createdAt: {
+    created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     },
-    updatedAt: {
+    updated_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
-        onUpdate: DataTypes.NOW
-    }
+        onUpdate: DataTypes.NOW}
 }, {
     tableName: 'transactions',
-    timestamps: true
+    timestamps: true, // Enable automatic timestamp fields
+    underscored: true
 });
 
 module.exports = Transaction;

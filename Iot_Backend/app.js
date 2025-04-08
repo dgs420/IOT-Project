@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
-const trafficLogRoutes = require('./routes/trafficLogRoutes'); // Import the traffic log routes
+const trafficLogRoutes = require('./routes/trafficLogRoutes');
 const userRoutes = require('./routes/userRoutes');
 const cardRoutes = require('./routes/cardRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
@@ -12,6 +12,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
 const http = require('http');
 
 
@@ -25,11 +26,22 @@ const RfidCard = require('./models/rfidCardModel');
 const TrafficLog = require('./models/trafficLogModel');
 const ParkingSession = require('./models/parkingSessionModel');
 const Request = require('./models/requestModel');
-const notification = require('./models/notificationModel');
+const Notification = require('./models/notificationModel');
+const Transaction = require('./models/transactionModel');
+const ParkingSpace = require('./models/parkingSpaceModel');
+const Vehicle = require('./models/vehicleModel');
+const VehicleType = require('./models/vehicleTypeModel');
 
 
 RfidCard.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(RfidCard, { foreignKey: 'user_id' });
+
+// One RFID Card corresponds to one Vehicle
+RfidCard.hasOne(Vehicle, { foreignKey: 'card_id' });
+Vehicle.belongsTo(RfidCard, { foreignKey: 'card_id' });
+
+Vehicle.belongsTo(VehicleType, { foreignKey: "vehicle_type_id"});
+VehicleType.hasMany(Vehicle, { foreignKey: "vehicle_type_id" });
 
 RfidCard.hasMany(TrafficLog, { foreignKey: 'card_id' });
 TrafficLog.belongsTo(RfidCard, { foreignKey: 'card_id' });
@@ -71,6 +83,7 @@ app.use('/api/payment',paymentRoutes);
 app.use('/api/request',requestRoutes);
 app.use('/api/session', sessionRoutes);
 app.use('/api/notification', notificationRoutes);
+app.use('/api/vehicle', vehicleRoutes);
 
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);

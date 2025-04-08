@@ -197,13 +197,13 @@ const Header = ({ toggleSidebar }) => {
               )}
 
 
-              <NotificationDropdown
-                  notifications={notifications}
-                  toggleNotification={toggleNotification}
-                  markAsRead={markAsRead}
-                  showNotification={showNotification}
-                  unreadCount={unreadCount}
-              />
+              {/*<NotificationDropdown*/}
+              {/*    notifications={notifications}*/}
+              {/*    toggleNotification={toggleNotification}*/}
+              {/*    markAsRead={markAsRead}*/}
+              {/*    showNotification={showNotification}*/}
+              {/*    unreadCount={unreadCount}*/}
+              {/*/>*/}
 
               <UserDropdown
                   username={username}

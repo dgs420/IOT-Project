@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
     Home, Mail, ParkingSquare, CreditCard, BarChart,
-    Server, Users, FileText, Settings, Info, Microchip
+    Server, Users, FileText, Settings, Info, Microchip, Car
 } from "lucide-react";const Sidebar = ({ userRole }) => {
     const links =  [
             { to: "/", icon: <Home />, label: "Home" }, // 🏠 Home icon
@@ -13,6 +13,7 @@ import {
             { to: "/device", icon: <Microchip />, label: "Devices" }, // 🖥️ Server for hardware/devices
             { to: "/users-list", icon: <Users />, label: "Users" }, // 👥 Multiple users icon
             { to: "/report", icon: <FileText />, label: "Report" }, // 📄 Document for reports
+            { to: "/vehicle-types", icon: <Car/>, label: "Vehicle types" }, // 👤 Single user icon
             { to: "/settings", icon: <Settings />, label: "Settings" }, // ⚙️ Classic settings icon
             { to: "/about", icon: <Info />, label: "About Us" }
         ]

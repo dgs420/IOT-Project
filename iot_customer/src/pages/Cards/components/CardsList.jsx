@@ -13,7 +13,7 @@ export const CardsList = ({
     // Filter and search cards
     const filteredCards = cards.filter(card => {
         const matchesSearch =
-            card.card_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            // card.card_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
             card.vehicle_number.toLowerCase().includes(searchQuery.toLowerCase());
 
         const matchesStatus = statusFilter === 'all' || card.status.toLowerCase() === statusFilter.toLowerCase();
@@ -29,7 +29,7 @@ export const CardsList = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredCards.map((card) => (
                         <CardItem
-                            key={card.card_id}
+                            key={card.vehicle_id}
                             card={card}
                             onEdit={onEditCard}
                             onDelete={onDeleteCard}

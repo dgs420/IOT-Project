@@ -16,7 +16,7 @@ export const UserCards = () => {
     useEffect(() => {
         const getCards = async () => {
             try {
-                const response = await getRequest("/card/your-cards");
+                const response = await getRequest("/vehicle/your-vehicles");
 
                 if (response.code === 200) {
                     setCards(response.info);

@@ -41,7 +41,7 @@ export const CardItem = ({ card, onEdit, onDelete }) => {
                 <div className="mt-4 space-y-3">
                     <div className="flex items-center text-sm">
                         <div className="w-8">
-                            <VehicleIcon type={card.vehicle_type} />
+                            <VehicleIcon type={card.vehicle_type_id} />
                         </div>
                         <div>
                             <span className="text-gray-500">Vehicle:</span>{' '}

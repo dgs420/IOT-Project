@@ -76,7 +76,7 @@ export const UserRequests = () => {
         getUserRequests();
     },[])
     return (
-        <div className="max-w-8xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div >
             <RequestHeader />
             <RequestFilterBar
                 searchQuery={searchQuery}

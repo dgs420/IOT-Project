@@ -28,8 +28,13 @@ const Device = sequelize.define('device', {
         type: DataTypes.DATE,
         allowNull: true,
     },
+    
 }, {
     timestamps: false,
+    // underscored: true
+    // timestamps: true, 
+    // createdAt: "created_at", 
+    // updatedAt: "updated_at",
 });
 
 module.exports = Device;
