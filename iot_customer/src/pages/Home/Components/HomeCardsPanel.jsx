@@ -8,21 +8,21 @@ import HomeCardsItem from "./HomeCardsItem.jsx";
 export default function HomeCardsPanel({ onRequestNewCard}) {
     const navigate = useNavigate();
 
-    const [cards, setCards] = React.useState([]);
+    const [vehicles, setVehicles] = React.useState([]);
     useEffect( () => {
-            const getUserCards = async () => {
+            const getUserVehicles = async () => {
                 try {
-                    const response = await getRequest('/card/recent-cards');
+                    const response = await getRequest('/vehicle/recent-vehicles');
                     console.log(response);
                     if (response.code === 200) {
-                        setCards(response.info);
+                        setVehicles(response.info);
                     } else
                         console.error(response.message);
                 } catch (error) {
                     console.error('Error fetching traffic logs:', error);
                 }
             }
-            getUserCards();
+            getUserVehicles();
 
         },
         [])
@@ -30,9 +30,9 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
         <Paper sx={{ p: 3, flex: 1, boxShadow: 3, borderRadius: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Box>
-                    <Typography variant="h6" sx={{ mb: 1 }}>Your Cards</Typography>
+                    <Typography variant="h6" sx={{ mb: 1 }}>Your Vehicles</Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Your parking cards
+                        Your Registered Vehicles
                     </Typography>
                 </Box>
                 <Button
@@ -47,13 +47,13 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
                     startIcon={<CreditCard />}
                     onClick={onRequestNewCard}
                 >
-                    Request New Card
+                    Register New Vehicle
                 </Button>
             </Box>
 
             <Box sx={{ maxHeight: '200px', overflowY: 'auto',display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {cards.map((card) => (
-                    <HomeCardsItem key={card.id} card={card} />
+                {vehicles.map((vehicle) => (
+                    <HomeCardsItem key={vehicle.vehicle_id} card={vehicle} />
                 ))}
             </Box>
 
@@ -64,7 +64,7 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
                 sx={{ mt: 2, borderColor: '#1976d2', color: '#1976d2', '&:hover': { borderColor: '#115293', color: '#115293' } }}
                 onClick={() => navigate('/your-cards')}
             >
-                View All Cards
+                View All Registered Vehicles
             </Button>
         </Paper>
     );

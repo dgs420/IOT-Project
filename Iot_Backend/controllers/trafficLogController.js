@@ -4,6 +4,7 @@ const RfidCard = require('../models/rfidCardModel');
 const Device = require('../models/deviceModel');
 const {Op} = require('sequelize');
 const sequelize = require('../config/database');
+const Vehicle = require('../models/vehicleModel');
 
 // Get all logs
 exports.getAllLogs = async (req, res) => {
@@ -79,11 +80,10 @@ exports.getDetailedLogs = async (req, res) => {
             include: [
                 {
                     model: RfidCard,
-                    attributes: ['card_number', 'vehicle_number', 'vehicle_type'],
                     include: [
                         {
-                            model: User,
-                            attributes: ['user_id', 'username'],
+                            model: Vehicle,
+                            attributes: ['user_id', 'vehicle_number', 'vehicle_type_id'],
                         },
                     ],
                 },

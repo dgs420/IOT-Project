@@ -1,7 +1,6 @@
-const RfidCard = require('../models/rfidCardModel');
-const User = require('../models/userModel');
 const TrafficLog = require("../models/trafficLogModel");
-// const RfidCard=require("../models/rfidCardModel");
+const Vehicle=require("../models/vehicleModel");
+
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 const moment = require('moment');
@@ -9,15 +8,15 @@ const moment = require('moment');
 exports.getHomeCount = async (req, res) => {
     try {
         // Count total RFID cards
-        const vehiclesCount = await RfidCard.count();
+        const vehiclesCount = await Vehicle.count();
         const startOfDay = moment().startOf('day').toDate();
         // Count parking cards
-        const vehiclesIn = await RfidCard.count({
+        const vehiclesIn = await Vehicle.count({
             where: {status: 'parking'}
         });
 
         // Count exited cards
-        const vehiclesExited = await RfidCard.count({
+        const vehiclesExited = await Vehicle.count({
             where: {status: 'exited'}
         });
 
@@ -47,12 +46,12 @@ exports.getHomeCount = async (req, res) => {
 };
 exports.getVehicleCountsByType = async (req, res) => {
     try {
-        const vehicleCounts = await RfidCard.findAll({
+        const vehicleCounts = await Vehicle.findAll({
             attributes: [
-                'vehicle_type',
-                [sequelize.fn('COUNT', sequelize.col('vehicle_type')), 'count']
+                'vehicle_type_id',
+                [sequelize.fn('COUNT', sequelize.col('vehicle_type_id')), 'count']
             ],
-            group: ['vehicle_type']
+            group: ['vehicle_type_id']
         });
 
         res.status(200).json({

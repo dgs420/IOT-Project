@@ -35,6 +35,27 @@ exports.getVehiclesByUserId = async (req, res) => {
             message: 'Server error' });
     }
 };
+
+exports.getAllVehicles = async (req, res) => {
+    
+
+    try {
+        const vehicles = await Vehicle.findAll();
+        if (vehicles.length === 0) {
+            return res.status(404).json({ message: 'No vehicles found' });
+        }
+
+        res.status(200).json({
+            code:200,
+            message: "All vehicles Successfully Fetched",
+            info: vehicles});
+    } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        res.status(500).json({
+            code:500,
+            message: 'Server error' });
+    }
+};
 exports.getYourVehicles = async (req, res) => {
     const user_id = req.user.user_id;
 
@@ -61,11 +82,11 @@ exports.getYourVehicles = async (req, res) => {
             message: 'Server error' });
     }
 };
-exports.getYourRecentRfidCards = async (req, res) => {
+exports.getYourRecentVehicles = async (req, res) => {
     const user_id = req.user.user_id;
 
     try {
-        const cards = await RfidCard.findAll({
+        const cards = await Vehicle.findAll({
             where: {
                 user_id
             },
@@ -75,71 +96,58 @@ exports.getYourRecentRfidCards = async (req, res) => {
         if (cards.length === 0) {
             return res.status(404).json({
                 code: 404,
-                message: 'You have not registered any RFID cards.' });
+                message: 'You have not registered any vehicles.' });
         }
 
         res.status(200).json({
             code:200,
-            message: "RFID Successfully Fetched",
+            message: "Vehicles Successfully Fetched",
             info: cards});
     } catch (error) {
-        console.error('Error fetching RFID cards:', error);
+        console.error('Error fetching vehicles:', error);
         res.status(500).json({
             code:500,
             message: 'Server error' });
     }
 }
-exports.createRfidCard = async (req, res) => {
-    const { card_number, user_id, vehicle_number, vehicle_type } = req.body;
+exports.createVehicle = async (req, res) => {
+    const { user_id, vehicle_number, vehicle_type_id } = req.body;
 
     try {
-        // Check if the card already exists
-        const existingCard = await RfidCard.findOne({
-            where: { card_number }
-        });
-
-        if (existingCard) {
-            return res.json({
-                code:400,
-                message: 'Card number already exists.' });
-        }
-
-        // Check if a card is already associated with this vehicle
-        const vehicleCard = await RfidCard.findOne({
+        const existingVehicle = await Vehicle.findOne({
             where: { vehicle_number }
         });
 
-        if (vehicleCard) {
+        if (existingVehicle) {
             return res.json({
                 code:400,
-                message: 'A card is already associated with this vehicle.' });
+                message: 'This vehicle is already registered.' });
         }
 
         // Create a new card
-        const newCard = await RfidCard.create({
-            card_number,
+        const newVehicle = await Vehicle.create({
             user_id,
             vehicle_number,
-            vehicle_type,
+            vehicle_type_id,
             status: 'exited', // Default status
         });
 
         res.status(201).json({
             code:200,
-            message: 'RFID card created successfully.',
-            info: newCard,
+            message: 'Vehicle created successfully.',
+            info: newVehicle,
         });
     } catch (error) {
-        console.error('Error creating RFID card:', error);
+        console.error('Error creating Vehicle:', error);
         res.json({
             code:500,
             message: 'Server error.' });
     }
 };
 
-exports.deleteCard = async (req, res) => {
+exports.deleteVehicle = async (req, res) => {
     const { cardId } = req.params;
-
+    //todo
     try {
         // Find the user by primary key
         const card = await RfidCard.findByPk(cardId);

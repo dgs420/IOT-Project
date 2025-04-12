@@ -13,6 +13,8 @@ const sessionRoutes = require('./routes/sessionRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
+const vehicleTypeRoutes = require('./routes/vehicleTypeRoutes');
+
 const http = require('http');
 
 
@@ -84,6 +86,8 @@ app.use('/api/request',requestRoutes);
 app.use('/api/session', sessionRoutes);
 app.use('/api/notification', notificationRoutes);
 app.use('/api/vehicle', vehicleRoutes);
+app.use('/api/vehicle-type', vehicleTypeRoutes);
+
 
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);

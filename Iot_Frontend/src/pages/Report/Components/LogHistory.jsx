@@ -37,6 +37,8 @@ export const LogHistory = () => {
             const response = await getRequest(
                 `/logs/all-logs-details?page=${page}&size=${pageSize}&startDate=${startDate}&endDate=${endDate}`
             ); // Adjust URL as needed
+
+            console.log(response.info);
             if (response.code === 200) {
                 setLogs(response.info.logs);
                 setTotalPages(response.info.pagination.totalPages); // Assuming backend provides total pages
@@ -71,11 +73,10 @@ export const LogHistory = () => {
                 new Date(log.time).toLocaleString(),
                 log.action,
                 log.rfid_card?.card_number || "N/A",
-                log.rfid_card?.vehicle_number || "N/A",
-                log.rfid_card?.vehicle_type || "N/A",
+                log.rfid_card?.Vehicle?.vehicle_number || "N/A",  // Use "Vehicle" with uppercase "V"
+                log.rfid_card?.Vehicle?.vehicle_type || "N/A",    // Make sure vehicle_type exists
                 log.device_id,
-                log.rfid_card?.user?.user_id || "N/A",
-                log.rfid_card?.user?.username || "N/A"
+                log.rfid_card?.Vehicle?.user_id || "N/A",
             ]),
         });
         doc.save("Activity_Log_Report_All.pdf");
@@ -147,9 +148,18 @@ export const LogHistory = () => {
                                             {log.action}
                                     </span>
                                 </td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.card_number : 'N/A'}</td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_number : 'N/A'}</td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_type : 'N/A'}</td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card ? log.rfid_card.card_number : 'N/A'}
+                                </td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card?.Vehicle ? log.rfid_card.Vehicle.vehicle_number : 'N/A'}
+                                </td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card?.Vehicle ? log.rfid_card.Vehicle.vehicle_type_id : 'N/A'}
+                                </td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.device ? log.device.embed_id : 'N/A'}
+                                </td>
                                 <td className="py-2 px-4 border-b text-center">{log.device ? (
                                         <Link to={`/device/${log.device.embed_id}`}>
                                             {log.device.embed_id}

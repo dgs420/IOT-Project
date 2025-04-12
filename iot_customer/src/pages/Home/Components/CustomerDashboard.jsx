@@ -4,8 +4,8 @@ import BalanceCard from './BalanceCard';
 import HomeCardsPanel from './HomeCardsPanel';
 import ParkingMap from './ParkingMap';
 import HomeTransactionPanel from './HomeTransactionPanel';
-import TopUpDialogWrapper from './dialogs/TopUpDialogWrapper'; // Import the wrapper instead
-import NewCardDialog from './dialogs/NewCardDialog';
+import TopUpDialogWrapper from '../../../Common/Components/Dialogs/TopUpDialogWrapper'; // Import the wrapper instead
+import NewCardDialog from '../../../Common/Components/Dialogs/NewCardDialog';
 import {loadStripe} from "@stripe/stripe-js";
 // import process from "process";
 

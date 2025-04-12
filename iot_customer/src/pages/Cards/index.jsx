@@ -4,7 +4,7 @@ import { getRequest } from "../../api/index.jsx";
 import { CardListHeader } from './components/CardListHeader';
 import { CardSearch } from './components/CardSearch';
 import { CardsList } from './components/CardsList';
-import NewCardDialog from "../Home/Components/Dialogs/NewCardDialog.jsx";
+import NewCardDialog from "../../Common/Components/Dialogs/NewCardDialog.jsx";
 
 export const UserCards = () => {
     const [searchQuery, setSearchQuery] = useState('');

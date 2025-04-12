@@ -39,7 +39,7 @@ import {
     Info,
 } from "@mui/icons-material"
 import { toast } from "react-toastify"
-import {postRequest} from "../../../../api/index.jsx";
+import {postRequest} from "../../../api/index.jsx";
 
 // Card type definitions with additional info
 const card_types = [
@@ -68,9 +68,9 @@ const card_types = [
 
 // Vehicle type definitions with icons
 const vehicle_types = [
-    { value: "car", label: "Car", icon: <DirectionsCar /> },
-    { value: "bike", label: "Motorcycle", icon: <TwoWheeler /> },
-    { value: "truck", label: "Truck", icon: <LocalShipping /> },
+    { value: 2, label: "Car", icon: <DirectionsCar /> },
+    { value: 1, label: "Motorcycle", icon: <TwoWheeler /> },
+    { value: 4, label: "Truck", icon: <LocalShipping /> },
 ]
 
 export default function NewCardDialog({ open, onClose }) {
@@ -80,7 +80,7 @@ export default function NewCardDialog({ open, onClose }) {
     const [formData, setFormData] = useState({
         card_type: "standard",
         vehicle_number: "",
-        vehicle_type: "car",
+        vehicle_type_id: 2,
         delivery_address: "",
         name: "",
         contact_number: "",
@@ -302,7 +302,7 @@ export default function NewCardDialog({ open, onClose }) {
 
                         <FormControl fullWidth sx={{ mb: 3 }}>
                             <InputLabel>Vehicle Type</InputLabel>
-                            <Select label="Vehicle Type" value={formData.vehicle_type} onChange={handleChange("vehicle_type")}>
+                            <Select label="Vehicle Type" value={formData.vehicle_type_id} onChange={handleChange("vehicle_type_id")}>
                                 {vehicle_types.map((type) => (
                                     <MenuItem value={type.value} key={type.value}>
                                         <Box display="flex" alignItems="center">
@@ -392,7 +392,7 @@ export default function NewCardDialog({ open, onClose }) {
                                         Vehicle Type
                                     </Typography>
                                     <Typography variant="body1">
-                                        {vehicle_types.find((t) => t.value === formData.vehicle_type)?.label}
+                                        {vehicle_types.find((t) => t.value === formData.vehicle_type_id)?.label}
                                     </Typography>
                                 </Grid2>
                                 <Grid2 item xs={12}>

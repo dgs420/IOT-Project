@@ -1,6 +1,7 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./userModel');
+const VehicleType = require('./vehicleTypeModel');
 
 const Request = sequelize.define('request', {
     request_id: {
@@ -26,8 +27,13 @@ const Request = sequelize.define('request', {
         allowNull: false,
         // unique: true
     },
-    vehicle_type: {
-        type: DataTypes.ENUM('car', 'bike', 'others'),
+    vehicle_type_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: VehicleType,
+            key: 'vehicle_type_id',
+        },
+        allowNull: false
     },
     name:{
         type: DataTypes.STRING,
