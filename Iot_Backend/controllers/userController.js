@@ -87,8 +87,8 @@ exports.deleteUser = async (req, res) => {
         }
 
         // Check if the user has associated RFID cards
-        const cards = await Card.findAll({ where: { user_id: userId } });
-        if (cards.length > 0) {
+        const card = await Card.findOne({ where: { user_id: userId } });
+        if (card) {
             return res.status(400).json({
                 code: 400,
                 message: 'User cannot be deleted while having associated RFID cards.',

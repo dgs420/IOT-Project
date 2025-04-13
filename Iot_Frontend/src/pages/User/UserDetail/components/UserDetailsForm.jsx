@@ -7,7 +7,7 @@ import {
     TextField,
     Button,
     Box,
-    Grid,
+    Grid2,
     InputAdornment,
     FormControl,
     InputLabel,
@@ -111,8 +111,8 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
 
             <CardContent sx={{ p: 3 }}>
                 <form onSubmit={handleUserUpdate}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
+                    <Grid2 container spacing={3}>
+                        <Grid2 item xs={12} sm={6}>
                             <TextField
                                 fullWidth
                                 label="Username"
@@ -129,9 +129,9 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     ),
                                 }}
                             />
-                        </Grid>
+                        </Grid2>
 
-                        <Grid item xs={12} sm={6}>
+                        <Grid2 item xs={12} sm={6}>
                             <TextField
                                 fullWidth
                                 label="Email"
@@ -149,9 +149,9 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     ),
                                 }}
                             />
-                        </Grid>
+                        </Grid2>
 
-                        <Grid item xs={12} sm={6}>
+                        <Grid2 item xs={12} sm={6}>
                             <TextField
                                 fullWidth
                                 label="First Name"
@@ -168,9 +168,9 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     ),
                                 }}
                             />
-                        </Grid>
+                        </Grid2>
 
-                        <Grid item xs={12} sm={6}>
+                        <Grid2 item xs={12} sm={6}>
                             <TextField
                                 fullWidth
                                 label="Last Name"
@@ -187,9 +187,9 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     ),
                                 }}
                             />
-                        </Grid>
+                        </Grid2>
 
-                        <Grid item xs={12} sm={6}>
+                        <Grid2 item xs={12} sm={6}>
                             <FormControl fullWidth variant={editMode ? "outlined" : "filled"} disabled={!editMode}>
                                 <InputLabel id="role-label">Role</InputLabel>
                                 <Select
@@ -208,8 +208,8 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     <MenuItem value="user">User</MenuItem>
                                 </Select>
                             </FormControl>
-                        </Grid>
-                    </Grid>
+                        </Grid2>
+                    </Grid2>
 
                     {editMode && (
                         <>

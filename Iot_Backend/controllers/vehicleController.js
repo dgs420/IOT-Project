@@ -3,39 +3,6 @@ const User = require('../models/userModel');
 const Vehicle = require('../models/vehicleModel');
 // const RfidCard=require("../models/rfidCardModel");
 
-exports.getVehiclesByUserId = async (req, res) => {
-    const { userId } = req.params;
-
-    try {
-        const cards = await RfidCard.findAll({
-            where: {
-                user_id: userId // Filter by card IDs
-            }
-        });
-        if (cards.length === 0) {
-            return res.status(404).json({ message: 'No RFID cards found for this user ID.' });
-        }
-        // Fetch the user and include RFID cards
-        // const user = await User.findByPk(userId, {
-        //     include: [{ model: RfidCard, as: 'rfid_cards' }],
-        // });
-        //
-        // if (!user) {
-        //     return res.status(404).json({ message: 'User not found' });
-        // }
-
-        res.status(200).json({
-            code:200,
-            message: "RFID Successfully Fetched",
-            info: cards});
-    } catch (error) {
-        console.error('Error fetching RFID cards:', error);
-        res.status(500).json({
-            code:500,
-            message: 'Server error' });
-    }
-};
-
 exports.getAllVehicles = async (req, res) => {
     
 
@@ -56,19 +23,20 @@ exports.getAllVehicles = async (req, res) => {
             message: 'Server error' });
     }
 };
-exports.getYourVehicles = async (req, res) => {
-    const user_id = req.user.user_id;
+
+exports.getVehiclesByUserId = async (req, res) => {
+    const userId = req.params;;
 
     try {
         const vehicles = await Vehicle.findAll({
             where: {
-                user_id // Filter by card IDs
+                user_id: userId
             }
         });
         if (vehicles.length === 0) {
             return res.status(404).json({
                 code: 404,
-                message: 'You have not registered any RFID cards.' });
+                message: 'User have not registered any vehicles.' });
         }
 
         res.status(200).json({
@@ -82,6 +50,35 @@ exports.getYourVehicles = async (req, res) => {
             message: 'Server error' });
     }
 };
+
+exports.getYourVehicles = async (req, res) => {
+    const user_id = req.user.user_id;
+
+    try {
+        const vehicles = await Vehicle.findAll({
+            where: {
+                user_id // Filter by card IDs
+            }
+        });
+        if (vehicles.length === 0) {
+            return res.status(404).json({
+                code: 404,
+                message: 'You have not registered any Vehicles.' });
+        }
+
+        res.status(200).json({
+            code:200,
+            message: "Vehicles Successfully Fetched",
+            info: vehicles});
+    } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        res.status(500).json({
+            code:500,
+            message: 'Server error' });
+    }
+};
+
+
 exports.getYourRecentVehicles = async (req, res) => {
     const user_id = req.user.user_id;
 

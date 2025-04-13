@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import HomeAdmin from "./Components/HomeAdmin.jsx";
 import HomeUser from "./Components/HomeUser.jsx";
+import {ForbiddenPage} from "../Forbidden/index.jsx";
 
 
 const Home = () => {
@@ -11,7 +12,7 @@ const Home = () => {
             {role === 'admin' ? (
                 <HomeAdmin/>
             ) : (
-                <HomeUser/>
+                <ForbiddenPage/>
             )}
         </>
     );

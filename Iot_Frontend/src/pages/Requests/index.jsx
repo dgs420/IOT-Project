@@ -5,6 +5,7 @@ import RequestFilterBar from "./components/RequestFilterBar.jsx";
 import getVehicleIcon from "./utils/VehicleIcon.jsx";
 import RequestList from "./components/RequestList.jsx";
 import {getRequest} from "../../api/index.js";
+import {fetchData} from "../../api/fetchData.js";
 // import {getRequest} from "../../api/index.jsx";
 
 // Main Page Component
@@ -56,24 +57,9 @@ export const UserRequests = () => {
         }
     ];
     const [requests, setRequests] = useState([]);
-    const getUserRequests = async () => {
-        try{
-            const response = await getRequest('/request/all-requests');
-            console.log(response);
-            if (response.code === 200) {
-                setRequests(response.info);
-            } else
-                console.error(response.message);
 
-            // setRequests(requestsData);
-        } catch ( error){
-            console.error('Error fetching traffic logs:', error);
-        }
-    }
     useEffect(() => {
-
-
-        getUserRequests();
+        void fetchData('/request/all-requests', setRequests, null, null);
     },[])
     return (
         <div >
@@ -91,7 +77,7 @@ export const UserRequests = () => {
                 searchQuery={searchQuery}
                 statusFilter={statusFilter}
                 sortBy={sortBy}
-                refreshRequest={getUserRequests}
+                refreshRequest={fetchData('/request/all-requests', setRequests, null, null)}
             />
         </div>
     );

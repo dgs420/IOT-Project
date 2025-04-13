@@ -2,7 +2,7 @@ import {Box, Button, Container, Grid2, Typography} from '@mui/material';
 
 import { Link } from 'react-router-dom';
 
-export const NotFoundPage = () => {
+export const ForbiddenPage = () => {
     return (
         <Box
             sx={{

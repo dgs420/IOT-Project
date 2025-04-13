@@ -5,6 +5,7 @@ import {Box, Button, MenuItem, Modal, TextField} from "@mui/material";
 import { Modal as AntModal } from 'antd';
 import {toast} from "react-toastify";
 import {io} from "socket.io-client";
+import {fetchData} from "../../../api/fetchData.js";
 
 function DeviceList(props) {
     const [devices, setDevices] = useState([]);
@@ -21,27 +22,13 @@ function DeviceList(props) {
         setNewDevice({ ...newDevice, [name]: value });
     };
 
-    const getAllDevices = async () => {
-        try {
-            const response = await getRequest('/device'); // Adjust URL as needed
-            console.log(response);
-            if (response.code===200){
-                setDevices(response.info);
-            } else
-                console.error(response.message);
-            // Set the fetched data to the logs state
-        } catch (error) {
-            console.error('Error fetching traffic logs:', error);
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response= await postRequest('/device/create-device', newDevice); // Adjust the endpoint as necessary
             console.log("Here" + response);
             if (response.code===200){
-                await getAllDevices();
+                await  fetchData('/device', setDevices, null, null);
             } else
                 console.error(response.message);
             handleModalClose(); // Close the modal
@@ -62,7 +49,7 @@ function DeviceList(props) {
                     const response = await deleteRequest(`/device/${deviceId}`); // Adjust the endpoint as necessary
                     if (response.code === 200) {
                         toast.success('Device deleted successfully');
-                        await getAllDevices(); // Refresh the list after successful deletion
+                        await  fetchData('/device', setDevices, null, null);
                     } else {
                         toast.error(response.message || 'Failed to delete device');
                     }
@@ -78,13 +65,13 @@ function DeviceList(props) {
     };
 
     useEffect(() => {
-        getAllDevices();
+        void fetchData('/device', setDevices, null, null);
         const socket = io('http://localhost:5000'); // Replace with your backend URL
 
         socket.on('deviceStatus', (data) => {
             console.log('Received MQTT Message:', data);
 
-            getAllDevices();
+            void fetchData('/device', setDevices, null, null);
         });
 
         return () => {

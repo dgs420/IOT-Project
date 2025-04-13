@@ -171,7 +171,7 @@ const VehicleTypeAdmin = () => {
             showSnackbar('Vehicle type deleted successfully');
             handleDeleteConfirmClose();
         } catch (error) {
-            showSnackbar('Delete operation failed', 'error');
+            showSnackbar('Delete operation failed', error);
         }
     };
 
@@ -193,7 +193,7 @@ const VehicleTypeAdmin = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <div >
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                 <Typography variant="h4" component="h1" gutterBottom>
                     Vehicle Types Management
@@ -351,7 +351,7 @@ const VehicleTypeAdmin = () => {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
-        </Container>
+        </div>
     );
 };
 

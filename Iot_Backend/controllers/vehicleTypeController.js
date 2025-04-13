@@ -1,3 +1,4 @@
+const Vehicle = require("../models/vehicleModel");
 const VehicleType = require("../models/vehicleTypeModel");
 // const RfidCard=require("../models/rfidCardModel");
 
@@ -65,33 +66,39 @@ exports.createVehicleType = async (req, res) => {
   }
 };
 
-exports.deleteCard = async (req, res) => {
-  const { cardId } = req.params;
+exports.deleteVehicleType = async (req, res) => {
+  const { vehicleTypeId } = req.params;
 
   try {
     // Find the user by primary key
-    const card = await RfidCard.findByPk(cardId);
-    if (!card) {
+    const vehicleType = await VehicleType.findByPk(vehicleTypeId);
+    if (!vehicleType) {
       return res.status(404).json({
         code: 404,
-        message: "Card not found.",
+        message: "Vehicle type not found.",
       });
     }
 
-    // Check if the user has associated RFID cards
-
-    // Delete the user
-    await card.destroy();
+    // Check if the type has associated vehicles
+    const vehicle = await Vehicle.findOne({ where: { vehicle_type_id: vehicleTypeId } });
+    if (vehicle) {
+        return res.status(400).json({
+            code: 400,
+            message: 'Vehicle type cannot be deleted while having associated vehicles.',
+        });
+    }
+    // Delete the type
+    await vehicleType.destroy();
 
     res.status(200).json({
       code: 200,
-      message: "Card deleted successfully.",
+      message: "Vehicle type deleted successfully.",
     });
   } catch (error) {
-    console.error("Error deleting Card:", error);
+    console.error("Error deleting Vehicle type:", error);
     res.json({
       code: 500,
-      error: "Failed to delete Card.",
+      error: "Failed to delete Vehicle type.",
     });
   }
 };

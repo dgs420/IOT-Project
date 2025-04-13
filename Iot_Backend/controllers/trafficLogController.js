@@ -16,41 +16,6 @@ exports.getAllLogs = async (req, res) => {
     }
 };
 
-// exports.getDetailedLogs = async (req, res) => {
-//   try {
-//     const logs = await TrafficLog.findAll({
-//       include: [
-//         {
-//           model: RfidCard,
-//           attributes: ['card_number', 'vehicle_number', 'vehicle_type'], // Fields from RfidCard
-//           include: [
-//             {
-//               model: User,
-//               attributes: ['user_id', 'username'] // Fields from User
-//             }
-//           ]
-//         }
-//       ],
-//       order: [['time', 'DESC']] // Optional: Order by time, descending
-//     });
-//
-//     if (logs.length === 0) {
-//       return res.status(404).json({
-//         code: 404,
-//         message: 'No logs found.' });
-//     }
-//
-//     res.status(200).json({
-//       code: 200,
-//       message: 'All logs fetched successfully',
-//       info: logs
-//     });z
-//   } catch (error) {
-//     console.error('Error fetching detailed logs:', error);
-//     res.status(500).json({ message: 'Server error', error: error.message });
-//   }
-// };
-
 exports.getDetailedLogs = async (req, res) => {
     try {
         const { page = 1, limit = 20, startDate, endDate, all = false } = req.query;
@@ -147,9 +112,6 @@ exports.getDetailedLogs = async (req, res) => {
             message: 'Server error', error: error.message });
     }
 };
-
-
-
 
 
 exports.getTrafficByHour = async (req, res) => {

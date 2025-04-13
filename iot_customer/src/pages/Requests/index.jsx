@@ -31,7 +31,7 @@ export const UserRequests = () => {
         getUserRequests();
     },[])
     return (
-        <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <>
             <RequestFilterBar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
@@ -46,7 +46,7 @@ export const UserRequests = () => {
                 statusFilter={statusFilter}
                 sortBy={sortBy}
             />
-        </div>
+        </>
     );
 };
 

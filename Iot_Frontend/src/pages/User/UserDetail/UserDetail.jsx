@@ -46,7 +46,7 @@ const UserDetail = () => {
                     variant="fullWidth"
                     sx={{ borderBottom: 1, borderColor: 'divider' }}
                 >
-                    <Tab label="RFID Cards"/>
+                    <Tab label="Registered vehicles"/>
                     <Tab label="User Logs"/>
                 </Tabs>
 

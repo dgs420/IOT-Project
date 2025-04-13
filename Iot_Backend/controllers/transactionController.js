@@ -1,4 +1,4 @@
-const Transaction = require('../models/TransactionModel');
+const Transaction = require('../models/transactionModel');
 // Get user transaction history
 exports.getYourTransactions = async (req, res) => {
     try {

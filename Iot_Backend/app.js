@@ -45,6 +45,9 @@ Vehicle.belongsTo(RfidCard, { foreignKey: 'card_id' });
 Vehicle.belongsTo(VehicleType, { foreignKey: "vehicle_type_id"});
 VehicleType.hasMany(Vehicle, { foreignKey: "vehicle_type_id" });
 
+ParkingSession.belongsTo(Vehicle, {foreignKey: "vehicle_id"});
+Vehicle.hasMany(ParkingSession, { foreignKey: "vehicle_id"});
+
 RfidCard.hasMany(TrafficLog, { foreignKey: 'card_id' });
 TrafficLog.belongsTo(RfidCard, { foreignKey: 'card_id' });
 Device.hasMany(TrafficLog, { foreignKey: 'device_id' });

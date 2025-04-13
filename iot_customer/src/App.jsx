@@ -25,12 +25,14 @@ export default function App() {
                             route.path === '/login' || route.path === '/register' ?  (
                                 route.element
                             ) : (
-                                <Layout>{route.element}</Layout>
-                            )
-                        }
-                    />
-                ))}
-                <Route path='*' element={<NotFoundPage/>} />
+                                <Layout>
+                                    {route.element}
+                                </Layout>
+                                    )
+                                }
+                                    />
+                                    ))}
+                                    <Route path='*' element={<NotFoundPage/>} />
             </Routes>
 
             <ToastContainer
