@@ -14,6 +14,7 @@ const requestRoutes = require('./routes/requestRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
 const vehicleTypeRoutes = require('./routes/vehicleTypeRoutes');
+const spaceRoutes = require('./routes/spaceRoutes');
 
 const http = require('http');
 
@@ -44,6 +45,8 @@ Vehicle.belongsTo(RfidCard, { foreignKey: 'card_id' });
 
 Vehicle.belongsTo(VehicleType, { foreignKey: "vehicle_type_id"});
 VehicleType.hasMany(Vehicle, { foreignKey: "vehicle_type_id" });
+
+ParkingSpace.belongsTo(VehicleType, { foreignKey: 'vehicle_type_id' });
 
 ParkingSession.belongsTo(Vehicle, {foreignKey: "vehicle_id"});
 Vehicle.hasMany(ParkingSession, { foreignKey: "vehicle_id"});
@@ -90,7 +93,7 @@ app.use('/api/session', sessionRoutes);
 app.use('/api/notification', notificationRoutes);
 app.use('/api/vehicle', vehicleRoutes);
 app.use('/api/vehicle-type', vehicleTypeRoutes);
-
+app.use('/api/parking-spaces',spaceRoutes)
 
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);

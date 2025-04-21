@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getRequest, postRequest, deleteRequest } from "../../../api/index.js"; // Ensure your API functions are defined
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField,Select} from "@mui/material";
 import {toast} from "react-toastify";
+import {fetchData} from "../../../api/fetchData.js";
 // import {Select} from "antd";
 
 function UserList(props) {
@@ -16,23 +17,8 @@ function UserList(props) {
         role: ''
     });
 
-    // Fetch all users
-    const getAllUsers = async () => {
-        try {
-            const response = await getRequest('/user/all-user'); // Adjust URL as needed
-            if (response.code === 200) {
-                setUsers(response.info);
-            } else {
-                console.error(response.message);
-            }
-        } catch (error) {
-            console.error('Error fetching users:', error);
-        }
-    };
     useEffect(() => {
-
-
-        getAllUsers();
+        void fetchData('/user/all-user', setUsers);
     }, []);
 
     // Open Add User Dialog
@@ -68,7 +54,7 @@ function UserList(props) {
         try {
             const response = await postRequest('/auth/create-user', newUser); // Adjust API endpoint as needed
             if (response.code === 200) {
-                getAllUsers();
+                void fetchData('/user/all-user', setUsers);
                 toast.success("New user created");// Add new user to the state
                 handleAddUserClose();
             } else {
@@ -87,7 +73,7 @@ function UserList(props) {
                 const response = await deleteRequest(`/user/${userId}`); // Adjust API endpoint as needed
                 if (response.code === 200) {
                     toast.success("User deleted");
-                    getAllUsers(); // Remove user from the state
+                    void fetchData('/user/all-user', setUsers); // Remove user from the state
                 } else {
                     toast.error(response.message);
                     console.error(response.message);

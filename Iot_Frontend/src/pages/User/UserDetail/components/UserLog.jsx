@@ -3,27 +3,15 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button } from "@mui/material";
 import {getRequest} from "../../../../api/index.js";
+import {fetchData} from "../../../../api/fetchData.js";
 
 export const UserLog = ({ userId }) => {
-    const [logs, setLogs] = useState([]);
+    const [sessions, setSessions] = useState([]);
 
-    // Fetch user logs
-    const getUserLogs = async () => {
-        try {
-            const response = await getRequest(`/logs/logs-by-user/${userId}`);
-            if (response.code === 200) {
-                setLogs(response.info); // Assuming the response structure
-            } else {
-                toast.error(response.message);
-                console.error(response.message);
-            }
-        } catch (error) {
-            console.error('Error fetching user logs:', error);
-        }
-    };
+
 
     useEffect(() => {
-        getUserLogs();
+        fetchData(`/session/user-sessions/${userId}`, setSessions, null, null);
     }, [userId]);
 
     return (
@@ -46,8 +34,8 @@ export const UserLog = ({ userId }) => {
                     <tbody>
                     {logs.map((log) => (
                         <tr key={log.log_id} className="hover:bg-gray-100">
-                            <td className="py-2 px-4 border-b text-center">{log.log_id}</td>
-                            <td className="py-2 px-4 border-b text-center">{new Date(log.time).toLocaleString()}</td>
+                            <td className="py-2 px-4 border-b text-center">{sessions.log_id}</td>
+                            <td className="py-2 px-4 border-b text-center">{new Date(sessions.time).toLocaleString()}</td>
                             <td className="py-2 px-4 border-b text-center">
                                     <span
                                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -58,12 +46,12 @@ export const UserLog = ({ userId }) => {
                                             {log.action}
                                     </span>
                             </td>
-                            <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.card_number : 'N/A'}</td>
-                            <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_number : 'N/A'}</td>
-                            <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_type : 'N/A'}</td>
-                            <td className="py-2 px-4 border-b text-center">{log.device_id ? (
+                            <td className="py-2 px-4 border-b text-center">{sessions.rfid_card ? log.rfid_card.card_number : 'N/A'}</td>
+                            <td className="py-2 px-4 border-b text-center">{sessions.rfid_card ? log.rfid_card.vehicle_number : 'N/A'}</td>
+                            <td className="py-2 px-4 border-b text-center">{sessions.rfid_card ? log.rfid_card.vehicle_type : 'N/A'}</td>
+                            <td className="py-2 px-4 border-b text-center">{sessions.device_id ? (
                                     <Link to={`/device/${log.device_id}`}>
-                                        {log.device_id}
+                                        {sessions.device_id}
                                     </Link>)
                                 : 'N/A'}
                             </td>

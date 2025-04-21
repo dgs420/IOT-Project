@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import { Search, Filter, Clock, CheckCircle, XCircle, Car, Truck, MoreVertical, User, Phone, MapPin, Calendar, ChevronDown, ChevronRight, Link2Icon as TwoWheeler } from 'lucide-react';
 import RequestHeader from "./components/RequestHeader.jsx";
 import RequestFilterBar from "./components/RequestFilterBar.jsx";
-import getVehicleIcon from "./utils/VehicleIcon.jsx";
 import RequestList from "./components/RequestList.jsx";
 import {getRequest} from "../../api/index.js";
 import {fetchData} from "../../api/fetchData.js";
+import PageContentHeader from "../../common/components/PageContentHeader.jsx";
 // import {getRequest} from "../../api/index.jsx";
 
 // Main Page Component
@@ -57,6 +57,9 @@ export const UserRequests = () => {
         }
     ];
     const [requests, setRequests] = useState([]);
+    const  onClick  = () =>{
+        console.log('clicked');
+    }
 
     useEffect(() => {
         void fetchData('/request/all-requests', setRequests, null, null);
@@ -64,6 +67,12 @@ export const UserRequests = () => {
     return (
         <div >
             <RequestHeader />
+            <PageContentHeader
+                onClick={onClick}
+                label = "Card Requests"
+                description = "Card Requests"
+                buttonLabel = "Export request"
+            />
             <RequestFilterBar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
@@ -77,7 +86,7 @@ export const UserRequests = () => {
                 searchQuery={searchQuery}
                 statusFilter={statusFilter}
                 sortBy={sortBy}
-                refreshRequest={fetchData('/request/all-requests', setRequests, null, null)}
+                refreshRequest={() => fetchData('/request/all-requests', setRequests, null, null)}
             />
         </div>
     );

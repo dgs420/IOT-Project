@@ -4,6 +4,7 @@ import {ChevronRight, CreditCard} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import {getRequest} from "../../../api/index.jsx";
 import HomeCardsItem from "./HomeCardsItem.jsx";
+import {CustomButton} from "../../../Common/Components/CustomButton.jsx";
 
 export default function HomeCardsPanel({ onRequestNewCard}) {
     const navigate = useNavigate();
@@ -35,20 +36,15 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
                         Your Registered Vehicles
                     </Typography>
                 </Box>
-                <Button
-                    variant="contained"
-                    sx={{
-                        backgroundColor: '#ff4081', // Custom color
-                        color: 'white',
-                        '&:hover': {
-                            backgroundColor: '#e91e63', // Darker shade on hover
-                        },
-                    }}
-                    startIcon={<CreditCard />}
+                <CustomButton
+                    variant='success'
                     onClick={onRequestNewCard}
+                    icon = {CreditCard}
                 >
-                    Register New Vehicle
-                </Button>
+                    {/*<CreditCard  className="h-4 w-4 mr-2" />*/}
+                    REGISTER NEW VEHICLE
+                </CustomButton>
+
             </Box>
 
             <Box sx={{ maxHeight: '200px', overflowY: 'auto',display: 'flex', flexDirection: 'column', gap: 2 }}>

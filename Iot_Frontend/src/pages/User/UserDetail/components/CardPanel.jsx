@@ -5,6 +5,8 @@ import { Car, Truck, CreditCard, Plus, Edit, Trash2, MoreHorizontal, CheckCircle
 import { getRequest, postRequest, deleteRequest } from "../../../../api/index.js";
 import { toast } from "react-toastify";
 import CardItem from './CardItem';
+import {fetchData} from "../../../../api/fetchData.js";
+import {ConfirmModal} from "../../../../common/components/ConfirmModal.jsx";
 
 const CardsPanel = ({ userId }) => {
     const [rfidCards, setRfidCards] = useState([]);
@@ -19,21 +21,8 @@ const CardsPanel = ({ userId }) => {
         vehicle_type: 'car'
     });
 
-    const fetchRfidCards = async () => {
-        try {
-            const response = await getRequest(`/card/user-card/${userId}`);
-            if (response.code === 200) {
-                setRfidCards(response.info);
-            } else {
-                console.error(response.message);
-            }
-        } catch (error) {
-            console.error('Error:', error.response?.data?.message || error);
-        }
-    };
-
     useEffect(() => {
-        fetchRfidCards();
+        void fetchData(`/vehicle/user-vehicles/${userId}`, setRfidCards, null, null);
     }, [userId]);
 
     const handleInputChange = (e) => {
@@ -46,7 +35,7 @@ const CardsPanel = ({ userId }) => {
         try {
             const response = await postRequest('/card/create-card', newCard);
             if (response.code === 200) {
-                await fetchRfidCards();
+                await  fetchData(`/card/user-cards/${userId}`, setRfidCards, null, null);;
                 setOpenModal(false);
                 toast.success("New card added successfully.");
                 // Reset form
@@ -77,7 +66,7 @@ const CardsPanel = ({ userId }) => {
             const response = await deleteRequest(`/card/${cardToDelete}`);
             if (response.code === 200) {
                 toast.success("Card deleted successfully.");
-                await fetchRfidCards();
+                await fetchData(`/card/user-cards/${userId}`, setRfidCards, null, null);;
             } else {
                 toast.error(response.message);
                 console.error(response.message);
@@ -109,7 +98,7 @@ const CardsPanel = ({ userId }) => {
                 {rfidCards.length > 0 ? (
                     rfidCards.map(card => (
                         <CardItem
-                            key={card.card_id}
+                            key={card.vehicle_id}
                             card={card}
                             onDelete={handleDeleteCard}
                         />
@@ -129,10 +118,12 @@ const CardsPanel = ({ userId }) => {
             />
 
             {/* Confirmation Delete Modal */}
-            <ConfirmDeleteModal
+            <ConfirmModal
                 open={confirmDeleteModal}
                 onClose={() => setConfirmDeleteModal(false)}
                 onConfirm={confirmDelete}
+                title="Confirm Deletion"
+                message="Are you sure you want to delete this card?"
             />
         </div>
     );

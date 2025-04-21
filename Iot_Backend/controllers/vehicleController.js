@@ -25,7 +25,7 @@ exports.getAllVehicles = async (req, res) => {
 };
 
 exports.getVehiclesByUserId = async (req, res) => {
-    const userId = req.params;;
+    const {userId} = req.params;;
 
     try {
         const vehicles = await Vehicle.findAll({

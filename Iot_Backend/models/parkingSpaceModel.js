@@ -20,11 +20,6 @@ const ParkingSpace = sequelize.define('ParkingSpace', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    occupied_spaces: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-    },
     created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW

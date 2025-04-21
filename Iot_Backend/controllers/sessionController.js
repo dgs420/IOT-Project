@@ -21,7 +21,7 @@ exports.getAllSessions = async (req, res) => {
 
 exports.getUserSessions = async (req, res) => {
   try {
-    const user_id = req.params;
+    const { userId } = req.params;
     // const sessions = await Session.findAll({
     //   where: { user_id },
     // });
@@ -30,7 +30,7 @@ exports.getUserSessions = async (req, res) => {
       include: [
         {
           model: Vehicle,
-          where: { user_id: user_id },
+          where: { user_id: userId },
           attributes: ["vehicle_number"], 
         },
       ],
