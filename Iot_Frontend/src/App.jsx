@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -11,8 +11,15 @@ import Layout from "./layout/index.jsx";
 import { APP_ROUTES } from './router/index.jsx';
 import {ConfigProvider} from "antd";
 import {NotFoundPage} from "./pages/NotFound/index.jsx";
+import {useVehicleTypeStore} from "./store/useVehicleTypeStore.js";
+import {fetchData} from "./api/fetchData.js";
 
 export default function App() {
+    const setVehicleTypes = useVehicleTypeStore((state) => state.setVehicleTypes);
+
+    useEffect(() => {
+        void fetchData('/vehicle-type', setVehicleTypes, null, null)
+    }, []);
   return (
 
         <Router>

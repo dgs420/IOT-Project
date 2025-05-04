@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { Paper, Box, Typography, Button, Chip } from '@mui/material';
 import {ChevronRight, CreditCard} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import {getRequest} from "../../../api/index.jsx";
+import {getRequest} from "../../../api/index.js";
 import HomeCardsItem from "./HomeCardsItem.jsx";
 import {CustomButton} from "../../../Common/Components/CustomButton.jsx";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     BrowserRouter as Router,
     Route,
@@ -10,9 +10,16 @@ import { ToastContainer } from 'react-toastify';
 import Layout from "./layout/index.jsx";
 import { APP_ROUTES } from './router/index.jsx';
 import {NotFoundPage} from "./pages/NotFound/index.jsx";
+import {useVehicleTypeStore} from "./store/useVehicleTypeStore.js";
+import {fetchData} from "./api/fetchData.js";
 // import {ConfigProvider} from "antd";
 
 export default function App() {
+    const setVehicleTypes = useVehicleTypeStore((state) => state.setVehicleTypes);
+
+    useEffect(() => {
+        void fetchData('/vehicle-type', setVehicleTypes, null, null)
+    }, []);
     return (
 
         <Router>

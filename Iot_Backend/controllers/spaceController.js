@@ -6,23 +6,21 @@ const VehicleType = require("../models/vehicleTypeModel");
 exports.createParkingSpace = async (req, res) => {
   const { vehicle_type_id, total_spaces } = req.body;
 
-  // Validate input
   if (!vehicle_type_id || isNaN(vehicle_type_id)) {
-    return res.status(400).json({
+    return res.json({
       code: 400,
       message: "Vehicle type ID is required and must be a number.",
     });
   }
 
   if (!total_spaces || isNaN(total_spaces) || total_spaces <= 0) {
-    return res.status(400).json({
+    return res.json({
       code: 400,
       message: "Total spaces must be a valid positive number.",
     });
   }
 
   try {
-    // Check if vehicle type exists
     const vehicleType = await VehicleType.findByPk(vehicle_type_id);
     if (!vehicleType) {
       return res.status(404).json({
@@ -31,25 +29,23 @@ exports.createParkingSpace = async (req, res) => {
       });
     }
 
-    // Check if a parking space already exists for this type
     const existingSpace = await ParkingSpace.findOne({
       where: { vehicle_type_id },
     });
 
     if (existingSpace) {
-      return res.status(400).json({
+      return res.json({
         code: 400,
         message: "Parking space already exists for this vehicle type.",
       });
     }
 
-    // Create the parking space
     const newSpace = await ParkingSpace.create({
       vehicle_type_id,
       total_spaces,
     });
 
-    return res.status(201).json({
+    return res.json({
       code: 200,
       message: "Parking space created successfully.",
       info: newSpace,
@@ -64,23 +60,21 @@ exports.createParkingSpace = async (req, res) => {
 exports.updateParkingSpace = async (req, res) => {
   const { space_id, total_spaces } = req.body;
 
-  // Validate input
   if (!space_id || isNaN(space_id)) {
-    return res.status(400).json({
+    return res.json({
       code: 400,
       message: "Vehicle type ID is required and must be a number.",
     });
   }
 
   if (!total_spaces || isNaN(total_spaces) || total_spaces <= 0) {
-    return res.status(400).json({
+    return res.json({
       code: 400,
       message: "Total spaces must be a valid positive number.",
     });
   }
 
   try {
-    // Check if vehicle type exists
     const space = await ParkingSpace.findByPk(space_id);
     if (!space) {
       return res.status(404).json({
@@ -124,10 +118,8 @@ exports.updateParkingSpace = async (req, res) => {
 
 exports.getParkingSpaces = async (req, res) => {
   try {
-    // Get all parking space configs
     const spaces = await ParkingSpace.findAll();
 
-    // Count occupied vehicles grouped by vehicle_type_id
     const occupiedCounts = await Vehicle.findAll({
       attributes: [
         'vehicle_type_id',
@@ -138,13 +130,11 @@ exports.getParkingSpaces = async (req, res) => {
       raw: true,
     });
 
-    // Map occupied counts by vehicle_type_id for easy lookup
     const countMap = {};
     occupiedCounts.forEach(row => {
       countMap[row.vehicle_type_id] = parseInt(row.occupied);
     });
 
-    // Build final result with dynamic occupied counts
     const info = spaces.map(space => {
       const occupied = countMap[space.vehicle_type_id] || 0;
       return {
@@ -167,39 +157,83 @@ exports.getParkingSpaces = async (req, res) => {
   }
 };
 
-exports.updateTotalSpaces = async (req, res) => {
-    const { space_id } = req.params;
-    const { total_spaces } = req.body;
-  
-    if (typeof total_spaces !== 'number') {
-      return res.json({ 
-        code: 400,
-        message: 'Total spaces must be a number' });
-    }
-  
-    try {
-      const space = await ParkingSpace.findByPk(space_id);
-      if (!space) {
-        return res.status(404).json({ 
-            code: 404,
-            message: 'Parking space not found' });
-      }
-  
-      space.total_spaces = total_spaces;
-      await space.save();
-  
-      res.json({
-        code: 200,
-        message: 'Parking space updated successfully.',
-        info: {
-          space_id: space.space_id,
-          vehicle_type_id: space.vehicle_type_id,
-          total_spaces: space.total_spaces,
-        }
+exports.deleteParkingSpace = async (req, res) => {
+  const { space_id } = req.body;
+
+  if (!space_id || isNaN(space_id)) {
+    return res.json({
+      code: 400,
+      message: "Space ID is required and must be a number.",
+    });
+  }
+  try {
+    const space = await ParkingSpace.findByPk(space_id);
+    if (!space) {
+      return res.status(404).json({
+        code: 404,
+        message: "Parking space not found.",
       });
-    } catch (error) {
-      console.error("Error updating parking space:", error);
-      res.status(500).json({ error: "Internal server error" });
     }
-  };
+
+    const occupiedVehicle = await Vehicle.findOne({
+      where: {
+        vehicle_type_id: space.vehicle_type_id,
+        status: 'parking',
+      }
+    });
+
+    if (occupiedVehicle) {
+      return res.status(400).json({
+        code: 400,
+        message: `Cannot delete while vehicles are parking.`,
+      });
+    }
+
+    await space.destroy();
+
+    return res.status(200).json({
+      code: 200,
+      message: "Parking space deleted successfully.",
+    });
+
+  } catch (error) {
+    console.error("Error deleting parking space:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+// exports.updateTotalSpaces = async (req, res) => {
+//     const { space_id } = req.params;
+//     const { total_spaces } = req.body;
+  
+//     if (typeof total_spaces !== 'number') {
+//       return res.json({ 
+//         code: 400,
+//         message: 'Total spaces must be a number' });
+//     }
+  
+//     try {
+//       const space = await ParkingSpace.findByPk(space_id);
+//       if (!space) {
+//         return res.status(404).json({ 
+//             code: 404,
+//             message: 'Parking space not found' });
+//       }
+  
+//       space.total_spaces = total_spaces;
+//       await space.save();
+  
+//       res.json({
+//         code: 200,
+//         message: 'Parking space updated successfully.',
+//         info: {
+//           space_id: space.space_id,
+//           vehicle_type_id: space.vehicle_type_id,
+//           total_spaces: space.total_spaces,
+//         }
+//       });
+//     } catch (error) {
+//       console.error("Error updating parking space:", error);
+//       res.status(500).json({ error: "Internal server error" });
+//     }
+//   };
   

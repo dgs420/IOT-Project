@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import parkingImage from '../../../assets/parking-management-system.jpeg';
 import {toast} from "react-toastify";
-import {postRequest} from "../../../api/index.jsx";
+import {postRequest} from "../../../api/index.js";
 
 const Login = () => {
     const[email, setEmail] = useState('');

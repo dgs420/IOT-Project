@@ -1,5 +1,5 @@
 // File: src/components/CustomerDashboard/TransactionsPanel.jsx
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 import {
     Box, Card, CardHeader, CardContent, CardActions,
     Button, List, Typography, Avatar
@@ -9,28 +9,16 @@ import {
 } from '@mui/icons-material';
 import HomeTransactionItem from './HomeTransactionItem';
 import {useNavigate} from "react-router-dom";
-import {getRequest} from "../../../api/index.jsx";
+import {getRequest} from "../../../api/index.js";
+import {fetchData} from "../../../api/fetchData.js";
 
-export default function HomeTransactionPanel() {
+export default function HomeTransactionPanel({ transactions = [] }) {
     const navigate = useNavigate();
-    const [transactions, setTransactions] = React.useState([]);
-    useEffect(() => {
-        const getRecentTransactions = async () => {
-            try {
-                const response = await getRequest('/payment/recent-transactions');
-                console.log(response);
-                if (response.code === 200) {
-                    setTransactions(response.info);
-                } else {
-
-                    console.error(response.message);
-                }
-            } catch (error) {
-                console.error('Error fetching traffic logs:', error);
-            }
-        }
-        getRecentTransactions();
-    }, []);
+    // const [transactions, setTransactions] = useState([]);
+    // useEffect(() => {
+    //     void fetchData('/payment/recent-transactions', setTransactions, null,null);
+    //
+    // }, []);
     return (
         <Box sx={{ p: 3 }}>
             <Card>

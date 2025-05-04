@@ -11,6 +11,8 @@ import {UserRequests} from "../pages/Requests/index.jsx";
 import RegisteredCards from "../pages/RegisteredCards/index.jsx";
 import ParkingKiosk from "../pages/ParkingKiosk/index.jsx";
 import VehicleTypeAdmin from "../pages/VehicleType/index.jsx";
+import ParkingSpaceManagement from "../pages/ParkingSpace/ParkingSpace.jsx";
+import { RegisteredVehicles } from '../pages/RegisteredVehicles/index.jsx';
 
 export const APP_ROUTES = [
     {
@@ -76,7 +78,7 @@ export const APP_ROUTES = [
     {
         key: 'users-cards',
         path: '/users-cards',
-        element: <RegisteredCards />,
+        element: <RegisteredVehicles />,
     },
     {
         key: 'parky',
@@ -86,7 +88,7 @@ export const APP_ROUTES = [
     {
         key:'parking-spaces',
         path: '/parking-spaces',
-        element: <p>parking-spaces</p>,
+        element: <ParkingSpaceManagement/>,
     },
     {
         key:'vehicle-types',

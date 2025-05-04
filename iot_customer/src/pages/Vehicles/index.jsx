@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from "react-toastify";
-import { getRequest } from "../../api/index.jsx";
+import { getRequest } from "../../api/index.js";
 import { CardListHeader } from './components/CardListHeader';
 import { CardSearch } from './components/CardSearch';
 import { CardsList } from './components/CardsList';
@@ -32,29 +32,9 @@ export const UserCards = () => {
         getCards();
     }, []);
 
-    // Handle card actions
-    const handleEditCard = (card) => {
-        setSelectedCard(card);
-        setShowAddCardModal(true);
-    };
-
-    const handleDeleteCard = (cardId) => {
-        // Implement delete functionality
-        console.log(`Delete card with ID: ${cardId}`);
-        // In a real app, you would call an API to delete the card
-        // and then update the state
-    };
-
     const handleAddCard = () => {
         setSelectedCard(null);
         setShowAddCardModal(true);
-    };
-
-    const handleSaveCard = () => {
-        // Implement save functionality
-        console.log("Save card", selectedCard);
-        // In a real app, you would call an API to save the card
-        setShowAddCardModal(false);
     };
 
     return (
@@ -72,8 +52,6 @@ export const UserCards = () => {
                     cards={cards}
                     searchQuery={searchQuery}
                     statusFilter={statusFilter}
-                    onEditCard={handleEditCard}
-                    onDeleteCard={handleDeleteCard}
                     onAddNewCard={handleAddCard}
                 />
 

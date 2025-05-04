@@ -1,7 +1,7 @@
 const Device = require("../../models/deviceModel.js");
 const RfidCard = require("../../models/rfidCardModel");
 const TrafficLog = require("../../models/trafficLogModel");
-const ParkingSession = require("../../models/parkingSessionModel"); // New table
+const ParkingSession = require("../../models/parkingSessionModel");
 const User = require("../../models/userModel");
 const Notification = require("../../models/notificationModel");
 const Vehicle = require("../../models/vehicleModel");
@@ -12,6 +12,7 @@ const { getClient } = require("../mqttClient");
 const {
   sendNotification,
 } = require("../../controllers/notificationController.js");
+const { isParkingFull } = require("../helper/helper.js");
 // const EventEmitter = require("events");
 // const client  = getClient ();
 async function calculateFee(entryTime, exitTime, vehicleTypeId) {
@@ -19,7 +20,7 @@ async function calculateFee(entryTime, exitTime, vehicleTypeId) {
   const vehicleType = await VehicleType.findByPk(vehicleTypeId);
 
   if (!vehicleType) {
-      throw new Error("Vehicle type not found");
+    throw new Error("Vehicle type not found");
   }
 
   const ratePerHour = vehicleType.fee_per_hour;
@@ -28,6 +29,7 @@ async function calculateFee(entryTime, exitTime, vehicleTypeId) {
 
   return durationHours * ratePerHour;
 }
+
 async function barrierHandler(client, topic, data) {
   const { card_number, embed_id, action } = data;
 
@@ -85,14 +87,11 @@ async function barrierHandler(client, topic, data) {
       })
     );
   }
+
   const user = card.user;
 
-  if (user.balance <=0) {
-    sendNotification(
-      user.user_id,
-      `Insufficient balance to park`,
-      "warning"
-    );
+  if (user.balance <= 0) {
+    sendNotification(user.user_id, `Insufficient balance to park`, "warning");
 
     return client.publish(
       `${topic}/response/${embed_id}`,
@@ -110,7 +109,20 @@ async function barrierHandler(client, topic, data) {
     if (vehicle.status !== "exited") {
       return client.publish(
         `${topic}/response/${embed_id}`,
-        JSON.stringify({ status: "invalid", message: "Vehicle is already inside" })
+        JSON.stringify({
+          status: "invalid",
+          message: "Vehicle is already inside",
+        })
+      );
+    }
+
+    if (await isParkingFull(vehicle.vehicle_type_id)) {
+      return client.publish(
+        `${topic}/response/${embed_id}`,
+        JSON.stringify({
+          status: "invalid",
+          message: "Parking space full",
+        })
       );
     }
 
@@ -125,7 +137,7 @@ async function barrierHandler(client, topic, data) {
 
     client.publish(
       `${topic}/response/${embed_id}`,
-      JSON.stringify({ status: "success", message: "Entry logged" })
+      JSON.stringify({ status: "valid", message: "Entry logged" })
     );
   } else if (action === "exit") {
     const session = await ParkingSession.findOne({
@@ -143,7 +155,11 @@ async function barrierHandler(client, topic, data) {
     }
 
     const exit_time = new Date();
-    const fee = await calculateFee(session.entry_time, exit_time, vehicle.vehicle_type_id);
+    const fee = await calculateFee(
+      session.entry_time,
+      exit_time,
+      vehicle.vehicle_type_id
+    );
 
     if (user.balance < fee) {
       sendNotification(
@@ -177,14 +193,14 @@ async function barrierHandler(client, topic, data) {
       status: "completed",
       payment_method: "rfid_balance",
       transaction_type: "fee",
-      session_id: session.session_id
+      session_id: session.session_id,
     });
 
     await vehicle.update({ status: "exited" });
 
     client.publish(
       `${topic}/response/${embed_id}`,
-      JSON.stringify({ status: "success", message: "Exit logged" })
+      JSON.stringify({ status: "valid", message: "Exit logged" })
     );
   }
 
@@ -195,6 +211,5 @@ async function barrierHandler(client, topic, data) {
     time: new Date(),
   });
 }
-
 
 module.exports = { barrierHandler };

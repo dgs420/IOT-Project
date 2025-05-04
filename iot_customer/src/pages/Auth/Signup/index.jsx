@@ -8,7 +8,7 @@ import {
     Alert,
 } from '@mui/material';
 import {toast} from "react-toastify";
-import {postRequest} from "../../../api/index.jsx";
+import {postRequest} from "../../../api/index.js";
 
 const Signup = () => {
     const [email, setEmail] = useState('');

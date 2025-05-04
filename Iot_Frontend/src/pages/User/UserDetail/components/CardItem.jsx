@@ -20,7 +20,6 @@ const CardItem = ({ card, onDelete }) => {
             }}
         >
             <CardContent sx={{ p: 0 }}>
-                {/* Card Header */}
                 <Box sx={{
                     p: 2,
                     bgcolor: 'primary.light',
@@ -37,7 +36,6 @@ const CardItem = ({ card, onDelete }) => {
                     </Typography>
                 </Box>
 
-                {/* Status Indicator */}
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'flex-end',
@@ -54,9 +52,7 @@ const CardItem = ({ card, onDelete }) => {
 
                 <Divider />
 
-                {/* Card Details */}
                 <Box sx={{ p: 2 }}>
-                    {/* Vehicle Details */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -76,7 +72,6 @@ const CardItem = ({ card, onDelete }) => {
                         </Box>
                     </Box>
 
-                    {/* Action Button */}
                     <Button
                         variant="contained"
                         color="error"

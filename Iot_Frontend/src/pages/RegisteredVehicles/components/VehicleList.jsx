@@ -1,22 +1,20 @@
 import React from 'react';
-import { CardItem } from './CardItem';
-import { EmptyCardList } from './EmptyCardList';
+import { VehicleItem } from './VehicleItem';
+import { EmptyVehicleList } from './EmptyVehicleList';
 
-export const CardsList = ({
-                              cards,
+export const VehicleList = ({
+                              vehicles,
                               searchQuery,
                               statusFilter,
                               onEditCard,
                               onDeleteCard,
                               onAddNewCard
                           }) => {
-    // Filter and search cards
-    const filteredCards = cards.filter(card => {
+    const filteredVehicles = vehicles.filter(vehicle => {
         const matchesSearch =
-            // card.card_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            card.vehicle_number.toLowerCase().includes(searchQuery.toLowerCase());
+            vehicle.vehicle_number.toLowerCase().includes(searchQuery.toLowerCase());
 
-        const matchesStatus = statusFilter === 'all' || card.status.toLowerCase() === statusFilter.toLowerCase();
+        const matchesStatus = statusFilter === 'all' || vehicle.status.toLowerCase() === statusFilter.toLowerCase();
 
         return matchesSearch && matchesStatus;
     });
@@ -25,19 +23,19 @@ export const CardsList = ({
 
     return (
         <div className="p-6">
-            {filteredCards.length > 0 ? (
+            {filteredVehicles.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredCards.map((card) => (
-                        <CardItem
-                            key={card.vehicle_id}
-                            card={card}
+                    {filteredVehicles.map((vehicle) => (
+                        <VehicleItem
+                            key={vehicle.vehicle_id}
+                            card={vehicle}
                             onEdit={onEditCard}
                             onDelete={onDeleteCard}
                         />
                     ))}
                 </div>
             ) : (
-                <EmptyCardList
+                <EmptyVehicleList
                     searchActive={searchActive}
                     onAddNewCard={onAddNewCard}
                 />

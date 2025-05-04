@@ -287,7 +287,6 @@ const ParkingKiosk = () => {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    {/* Gate Control Panel */}
                     <div className="bg-white rounded-lg shadow-sm p-4 lg:col-span-1">
                         <h2 className="text-lg font-medium mb-4 pb-2 border-b">Gate Control</h2>
 

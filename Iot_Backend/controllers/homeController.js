@@ -1,6 +1,6 @@
 const TrafficLog = require("../models/trafficLogModel");
 const Vehicle=require("../models/vehicleModel");
-
+const Request=require("../models/requestModel")
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 const moment = require('moment');
@@ -20,6 +20,10 @@ exports.getHomeCount = async (req, res) => {
             where: {status: 'exited'}
         });
 
+        const pendingRequests = await Request.count({
+            where: {status: 'pending'}
+        });
+
         const trafficToday = await TrafficLog.count({
             where: {
                 time: {
@@ -33,6 +37,7 @@ exports.getHomeCount = async (req, res) => {
             code: 200,
             message: 'RFID card created successfully.',
             info: {
+                pending_requests: pendingRequests,
                 total_vehicles: vehiclesCount,
                 vehicles_in: vehiclesIn,
                 vehicles_exited: vehiclesExited,

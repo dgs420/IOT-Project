@@ -39,7 +39,7 @@ import {
     Info,
 } from "@mui/icons-material"
 import { toast } from "react-toastify"
-import {postRequest} from "../../../api/index.jsx";
+import {postRequest} from "../../../api/index.js";
 
 // Card type definitions with additional info
 const card_types = [
@@ -171,7 +171,7 @@ export default function NewCardDialog({ open, onClose }) {
                 setFormData({
                     card_type: "standard",
                     vehicle_number: "",
-                    vehicle_type: "car",
+                    vehicle_type_id: 1,
                     delivery_address: "",
                     name: "",
                     number: "",

@@ -4,7 +4,7 @@ import Signup from "../pages/Auth/Signup/index.jsx";
 import Activity from "../pages/Activity/index.jsx";
 import PaymentSuccess from "../pages/PaymentResult/PaymentSuccess.jsx";
 import Transactions from "../pages/Transactions/index.jsx";
-import {UserCards} from "../pages/Cards/index.jsx";
+import {UserCards} from "../pages/Vehicles/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
 // import Statistics from '../pages/Statistics';
 // import PersonalProfile from '../pages/PersonalProfile';
@@ -12,8 +12,8 @@ import {UserRequests} from "../pages/Requests/index.jsx";
 // import Login from '../pages/Authen/Login';
 // import UserList from "../pages/User/UserList/UserList.jsx";
 // import UserDetail from "../pages/User/UserDetail/UserDetail.jsx";
-// import DeviceList from "../pages/Device/DeviceList/index.jsx";
-// import DeviceDetail from "../pages/Device/DeviceDetail/index.jsx";
+// import DeviceList from "../pages/Device/DeviceList/index.js";
+// import DeviceDetail from "../pages/Device/DeviceDetail/index.js";
 
 export const APP_ROUTES = [
     {

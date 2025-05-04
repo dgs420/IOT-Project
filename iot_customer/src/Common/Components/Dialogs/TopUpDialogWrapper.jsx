@@ -28,7 +28,7 @@ import {
 } from "@mui/icons-material";
 import { Elements } from "@stripe/react-stripe-js";
 import TopUpDialog from './TopUpDialog.jsx';
-import { postRequest } from "../../../api/index.jsx";
+import { postRequest } from "../../../api/index.js";
 import { toast } from "react-toastify";
 
 export default function TopUpDialogWrapper({ open, onClose, clientSecret, setClientSecret, stripePromise, currentBalance }) {

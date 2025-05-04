@@ -4,7 +4,7 @@ import {Plus} from 'lucide-react';
 
 const PageContentHeader = ({onClick, label, description, buttonLabel}) => {
     return (
-        <div className="px-6 py-5 border-b border-gray-200">
+        <div className="px-6 py-5 border-b rounded-lg border-gray-200 bg-white mb-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div className="mb-4 sm:mb-0">
                     <h1 className="text-2xl font-bold text-gray-900"> {label}</h1>

@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 const requireAuth = async (req, res, next) => {
-    // Verify authentication
     const { authorization } = req.headers;
 
     if (!authorization) {
@@ -22,7 +21,7 @@ const requireAuth = async (req, res, next) => {
 
         const user = await User.findOne({
             where: { user_id: req.user.user_id },
-            attributes: ["user_id","role"] // Fetch only the user_id field
+            attributes: ["user_id","role"]
         });
 
         if (!user) {

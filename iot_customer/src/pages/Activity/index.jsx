@@ -6,7 +6,7 @@ import { Box, Typography, Alert } from "@mui/material"
 import { calculateDuration } from "../../utils/formatters"
 import ParkingSessionFilters from "./components/ParkingSessionFilter"
 import ParkingSessionTable from "./components/ParkingSessionTable"
-import {getRequest} from "../../api/index.jsx";
+import {getRequest} from "../../api/index.js";
 
 const Activity = () => {
     // State for sessions data

@@ -103,8 +103,8 @@ function patchRequest(url, body, type = 'json') {
     return apiRequest('PATCH', url, body, type);
 }
 
-export function deleteRequest(url) {
-    return apiRequest('DELETE', url);
+export function deleteRequest(url, body, type = 'json') {
+    return apiRequest('DELETE', url, body, type);
 }
 
 function clearUserSession() {

@@ -1,9 +1,11 @@
 import React from 'react';
 import { CreditCard, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import { StatusBadge } from '../utils/StatusBadge';
-import { VehicleIcon } from '../utils/VehicleIcon';
+import {VehicleIcon} from '../../../utils/VehicleIcon.jsx';
+import {useVehicleTypeStore} from "../../../store/useVehicleTypeStore.js";
 
-export const CardItem = ({ card, onEdit, onDelete }) => {
+export const CardItem = ({ card }) => {
+    const getTypeNameById = useVehicleTypeStore(state => state.getTypeNameById);
     return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
             <div className="p-5">
@@ -41,12 +43,12 @@ export const CardItem = ({ card, onEdit, onDelete }) => {
                 <div className="mt-4 space-y-3">
                     <div className="flex items-center text-sm">
                         <div className="w-8">
-                            <VehicleIcon type={card.vehicle_type_id} />
+                            {VehicleIcon(card.vehicle_type_id)}
                         </div>
                         <div>
                             <span className="text-gray-500">Vehicle:</span>{' '}
                             <span className="font-medium">{card.vehicle_number}</span>
-                            <span className="ml-1 text-xs text-gray-500 capitalize">({card.vehicle_type})</span>
+                            <span className="ml-1 text-xs text-gray-500 capitalize">({getTypeNameById(card.vehicle_type_id)})</span>
                         </div>
                     </div>
 

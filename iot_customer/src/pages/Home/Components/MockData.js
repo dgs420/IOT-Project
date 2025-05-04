@@ -1,8 +1,26 @@
 // Sample parking lot data
 export const parkingLots = [
-    { id: 1, name: "Downtown Parking", totalSpots: 120, availableSpots: 45, location: "123 Main St" },
-    { id: 2, name: "Central Plaza", totalSpots: 80, availableSpots: 12, location: "456 Park Ave" },
-    { id: 3, name: "Riverside Garage", totalSpots: 200, availableSpots: 78, location: "789 River Rd" },
+    {
+        space_id: 1,
+        vehicle_type_id: 1,
+        total_spaces: 2,
+        occupied_spaces: 0,
+        available_spaces: 2
+    },
+    {
+        space_id: 2,
+        vehicle_type_id: 2,
+        total_spaces: 5,
+        occupied_spaces: 0,
+        available_spaces: 5
+    },
+    {
+        space_id: 3,
+        vehicle_type_id: 3,
+        total_spaces: 5,
+        occupied_spaces: 0,
+        available_spaces: 5
+    },
 ];
 
 // Sample user cards data

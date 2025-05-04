@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import { Paper, Box, Typography, Button } from '@mui/material';
 import { CreditCard, Add } from '@mui/icons-material';
-import {getRequest} from "../../../api/index.jsx";
+import {getRequest} from "../../../api/index.js";
 
 export default function BalanceCard({ balance, onTopUp, onRequestNewCard }) {
     // const [balance, setBalance] = useState(0);

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Search, Filter, Clock, CheckCircle, XCircle, Car, Truck, MoreVertical, User, Phone, MapPin, Calendar, ChevronDown, ChevronRight, Link2Icon as TwoWheeler } from 'lucide-react';
-import {getRequest} from "../../api/index.jsx";
+import {getRequest} from "../../api/index.js";
 import RequestFilterBar from "./components/RequestFilterBar.jsx";
 import RequestEmptyState from "./components/RequestEmptyState.jsx";
 import RequestList from "./components/RequestList.jsx";

@@ -10,7 +10,7 @@ import {
 import { NotificationPopper, NotificationHeader } from './styles';
 import { NotificationItem } from './NotificationItem';
 import { notifications as initialNotifications } from './mockData';
-import {getRequest, putRequest} from "../../../api/index.jsx";
+import {getRequest, putRequest} from "../../../api/index.js";
 import {io} from "socket.io-client";
 import {toast} from "react-toastify";
 
