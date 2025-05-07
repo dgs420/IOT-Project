@@ -106,7 +106,7 @@ const ParkingSpaceManagement = () => {
   };
 
   return (
-    <Box>
+    <Box className="">
       <PageContentHeader
         label="Parking Space Management"
         description="Manage parking spaces for different vehicle types"

@@ -1,10 +1,11 @@
-import React from "react";
-import { CreditCard, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { CreditCard, MoreHorizontal, Edit, Trash2, EyeOff, Eye } from "lucide-react";
 import { StatusBadge } from "../utils/StatusBadge.jsx";
 import { useVehicleTypeStore } from "../../../store/useVehicleTypeStore.js";
 import { getVehicleIcon } from "../../../utils/helpers.jsx";
 
 export const VehicleItem = ({ card, onEdit, onDelete }) => {
+  const [showCardNumber, setShowCardNumber] = useState(false);
   const getTypeNameById = useVehicleTypeStore((state) => state.getTypeNameById);
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -59,7 +60,7 @@ export const VehicleItem = ({ card, onEdit, onDelete }) => {
           </div>
 
           <div className="flex items-center text-sm">
-            <div className="w-8">
+            {/* <div className="w-8">
               <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
                 ID
               </span>
@@ -67,16 +68,36 @@ export const VehicleItem = ({ card, onEdit, onDelete }) => {
             <div>
               <span className="text-gray-500">Card ID:</span>{" "}
               <span className="font-mono font-medium">{card.card_id}</span>
-            </div>
+            </div> */}
 
-            <div className="w-8">
-              <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
-                ID
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-500">Card Number:</span>{" "}
-              <span className="font-mono font-medium">{card.rfid_card.card_number}</span>
+            <div className="flex items-center text-sm">
+              <div className="w-8">
+                <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
+                  ID
+                </span>
+              </div>
+
+              <div>
+                <span className="text-gray-500">Card Number:</span>{" "}
+                {showCardNumber ? (
+                  <span className="font-mono font-medium">
+                    {card.rfid_card.card_number}
+                  </span>
+                ) : (
+                  <span className="font-mono font-medium">••••••••</span>
+                )}
+              </div>
+
+              <button
+                onClick={() => setShowCardNumber(!showCardNumber)}
+                className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              >
+                {showCardNumber ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
             </div>
           </div>
         </div>

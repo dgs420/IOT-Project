@@ -47,7 +47,7 @@ exports.getPersonalDetail = async (req, res) => {
     const user_id = req.user.user_id;
     try{
         const user = await User.findByPk(user_id, {
-            attributes: { exclude: ['password'] } // Excludes the password field
+            attributes: { exclude: ['password'] }
         });
         if(!user){
             return res.status(404).json({
@@ -167,6 +167,72 @@ exports.updateUser = async (req, res) => {
             code: 200,
             message: 'User updated successfully',
             user: {
+                id: user.user_id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                first_name: user.first_name,
+                last_name: user.last_name,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            code: 500,
+            message: 'Server error',
+        });
+    }
+};
+
+exports.updateProfile = async (req, res) => {
+    const user_id = req.user.user_id;
+    const { email, username, first_name, last_name } = req.body;
+
+    try {
+        const user = await User.findByPk(user_id);
+        if (!user) {
+            return res.status(404).json({
+                code: 404,
+                message: 'User asnot found',
+            });
+        }
+
+        if (email && email !== user.email) {
+            const existingEmail = await User.findOne({ where: { email } });
+            if (existingEmail) {
+                return res.json({
+                    code: 400,
+                    message: 'Email already taken',
+                });
+            }
+        }
+
+        if (username && username !== user.username) {
+            const existingUsername = await User.findOne({ where: { username } });
+            if (existingUsername) {
+                return res.json({
+                    code: 400,
+                    message: 'Username already taken',
+                });
+            }
+        }
+
+        const updatedFields = {};
+        if (email) updatedFields.email = email;
+        if (username) updatedFields.username = username;
+        if (first_name) updatedFields.first_name = first_name;
+        if (last_name) updatedFields.last_name = last_name;
+
+        // if (password) {
+        //     updatedFields.password = await bcrypt.hash(password, 10);
+        // }
+
+        await user.update(updatedFields);
+
+        res.json({
+            code: 200,
+            message: 'User updated successfully',
+            info: {
                 id: user.user_id,
                 email: user.email,
                 username: user.username,

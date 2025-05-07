@@ -58,7 +58,11 @@ async function barrierHandler(client, topic, data) {
   if (!card || !card.user) {
     return client.publish(
       `${topic}/response/${embed_id}`,
-      JSON.stringify({ status: "invalid", message: "Card or user not found" })
+      JSON.stringify({
+        status: "invalid",
+        vehicle_number: 'N/A',
+        message: "Card or user not found",
+      })
     );
   }
 
@@ -73,6 +77,7 @@ async function barrierHandler(client, topic, data) {
       `${topic}/response/${embed_id}`,
       JSON.stringify({
         status: "invalid",
+        vehicle_number: 'N/A',
         message: `Vehicle not found for card ${card_number}`,
       })
     );
@@ -83,6 +88,7 @@ async function barrierHandler(client, topic, data) {
       `${topic}/response/${embed_id}`,
       JSON.stringify({
         status: "invalid",
+        vehicle_number: vehicle.vehicle_number,
         message: "Vehicle is blocked",
       })
     );
@@ -97,8 +103,9 @@ async function barrierHandler(client, topic, data) {
       `${topic}/response/${embed_id}`,
       JSON.stringify({
         status: "invalid",
+        vehicle_number: vehicle.vehicle_number,
         message: "Insufficient balance",
-        // fee: fee,
+        fee: fee,
       })
     );
   }
@@ -111,6 +118,7 @@ async function barrierHandler(client, topic, data) {
         `${topic}/response/${embed_id}`,
         JSON.stringify({
           status: "invalid",
+          vehicle_number: vehicle.vehicle_number,
           message: "Vehicle is already inside",
         })
       );
@@ -121,6 +129,7 @@ async function barrierHandler(client, topic, data) {
         `${topic}/response/${embed_id}`,
         JSON.stringify({
           status: "invalid",
+          vehicle_number: vehicle.vehicle_number,
           message: "Parking space full",
         })
       );
@@ -137,7 +146,11 @@ async function barrierHandler(client, topic, data) {
 
     client.publish(
       `${topic}/response/${embed_id}`,
-      JSON.stringify({ status: "valid", message: "Entry logged" })
+      JSON.stringify({
+        status: "valid",
+        message: "Entry logged",
+        vehicle_number: vehicle.vehicle_number,
+      })
     );
   } else if (action === "exit") {
     const session = await ParkingSession.findOne({
@@ -149,6 +162,7 @@ async function barrierHandler(client, topic, data) {
         `${topic}/response/${embed_id}`,
         JSON.stringify({
           status: "invalid",
+          vehicle_number: vehicle.vehicle_number,
           message: "No active parking session found",
         })
       );
@@ -173,6 +187,7 @@ async function barrierHandler(client, topic, data) {
         JSON.stringify({
           status: "Invalid",
           message: "Insufficient balance",
+          vehicle_number: vehicle.vehicle_number,
           fee: fee,
         })
       );
@@ -200,7 +215,12 @@ async function barrierHandler(client, topic, data) {
 
     client.publish(
       `${topic}/response/${embed_id}`,
-      JSON.stringify({ status: "valid", message: "Exit logged" })
+      JSON.stringify({
+        status: "valid",
+        message: "Exit logged",
+        vehicle_number: vehicle.vehicle_number,
+        fee: fee,
+      })
     );
   }
 

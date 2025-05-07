@@ -6,9 +6,10 @@ const requireRole = require("../middleware/requireRole");
 
 router.use(requireAuth);
 
-router.get('/all-user', userController.getAllUsers);
-router.get('/user-detail/:userId',userController.getUserDetail)
-router.get('/personal-detail',userController.getUserDetail)
-router.put('/user-update/:userId',userController.updateUser)
-router.delete('/:userId',userController.deleteUser);
+router.get('/all-user',requireRole(['manager','admin']), userController.getAllUsers);
+router.get('/user-detail/:userId',requireRole(['manager','admin']),userController.getUserDetail)
+router.put('/user-update/:userId',requireRole(['manager','admin']),userController.updateUser)
+router.delete('/:userId',requireRole(['manager','admin']),userController.deleteUser);
+router.get('/profile',userController.getPersonalDetail)
+router.put('/update', userController.updateProfile);
 module.exports = router;

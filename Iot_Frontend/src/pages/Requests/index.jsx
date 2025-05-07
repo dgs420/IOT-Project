@@ -1,51 +1,68 @@
-import React, {useEffect, useState} from 'react';
-import { Search, Filter, Clock, CheckCircle, XCircle, Car, Truck, MoreVertical, User, Phone, MapPin, Calendar, ChevronDown, ChevronRight, Link2Icon as TwoWheeler } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import {
+  Search,
+  Filter,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Car,
+  Truck,
+  MoreVertical,
+  User,
+  Phone,
+  MapPin,
+  Calendar,
+  ChevronDown,
+  ChevronRight,
+  Link2Icon as TwoWheeler,
+} from "lucide-react";
 import RequestHeader from "./components/RequestHeader.jsx";
 import RequestFilterBar from "./components/RequestFilterBar.jsx";
 import RequestList from "./components/RequestList.jsx";
-import {getRequest} from "../../api/index.js";
-import {fetchData} from "../../api/fetchData.js";
+import { getRequest } from "../../api/index.js";
+import { fetchData } from "../../api/fetchData.js";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
 // import {getRequest} from "../../api/index.jsx";
 
 // Main Page Component
 export const UserRequests = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState('pending');
-    const [sortBy, setSortBy] = useState('newest');
-    
-    const [requests, setRequests] = useState([]);
-    const  onClick  = () =>{
-        console.log('clicked');
-    }
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("pending");
+  const [sortBy, setSortBy] = useState("newest");
 
-    useEffect(() => {
-        void fetchData('/request/all-requests', setRequests, null, null);
-    },[])
-    return (
-        <div >
-            {/* <RequestHeader /> */}
-            <PageContentHeader
-                onClick={onClick}
-                label = "Vehicles Requests"
-                description = "Vehicles Requests"
-                buttonLabel = "Export request"
-            />
-            <RequestFilterBar
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-            />
-            <RequestList
-                requests={requests}
-                searchQuery={searchQuery}
-                statusFilter={statusFilter}
-                sortBy={sortBy}
-                refreshRequest={() => fetchData('/request/all-requests', setRequests, null, null)}
-            />
-        </div>
-    );
+  const [requests, setRequests] = useState([]);
+  const onClick = () => {
+    console.log("clicked");
+  };
+
+  useEffect(() => {
+    void fetchData("/request/all-requests", setRequests, null, null);
+  }, []);
+  return (
+    <div className="bg-white rounded-lg shadow">
+      <PageContentHeader
+        onClick={onClick}
+        label="Vehicles Requests"
+        description="Vehicles Requests"
+        buttonLabel="Export request"
+      />
+      <RequestFilterBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
+      <RequestList
+        requests={requests}
+        searchQuery={searchQuery}
+        statusFilter={statusFilter}
+        sortBy={sortBy}
+        refreshRequest={() =>
+          fetchData("/request/all-requests", setRequests, null, null)
+        }
+      />
+    </div>
+  );
 };

@@ -37,6 +37,13 @@ exports.getVehiclesByUserId = async (req, res) => {
 
   try {
     const vehicles = await Vehicle.findAll({
+      include: [
+        {
+          model: RfidCard,
+          as: "rfid_card",
+          attributes: ["card_number"],
+        },
+      ],
       where: {
         user_id: userId,
       },
@@ -173,7 +180,6 @@ exports.deleteVehicle = async (req, res) => {
         message: "Vehicle not found.",
       });
     }
-
 
     await vehicle.destroy();
 
