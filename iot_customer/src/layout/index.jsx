@@ -1,11 +1,18 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Sidebar from './components/Sidebar.jsx'
 import { Outlet } from 'react-router-dom'
 import Header from './components/Header.jsx'
+import {useVehicleTypeStore} from "../store/useVehicleTypeStore.js";
+import {fetchData} from "../api/fetchData.js";
 
 const role = localStorage.getItem('role');
 // eslint-disable-next-line react/prop-types
 const Layout = ({ children }) => {
+    const setVehicleTypes = useVehicleTypeStore((state) => state.setVehicleTypes);
+
+    useEffect(() => {
+        void fetchData('/vehicle-type', setVehicleTypes, null, null)
+    }, []);
     return (
         <div className="flex h-screen bg-gray-100">
             <Sidebar userRole={role} />

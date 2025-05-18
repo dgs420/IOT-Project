@@ -4,7 +4,7 @@ import { StatusBadge } from '../utils/StatusBadge';
 import {VehicleIcon} from '../../../utils/VehicleIcon.jsx';
 import {useVehicleTypeStore} from "../../../store/useVehicleTypeStore.js";
 
-export const CardItem = ({ card }) => {
+export const VehicleItem = ({ card }) => {
     const getTypeNameById = useVehicleTypeStore(state => state.getTypeNameById);
     return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">

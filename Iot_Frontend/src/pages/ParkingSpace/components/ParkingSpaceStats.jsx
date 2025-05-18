@@ -1,4 +1,4 @@
-"use client"
+import React from "react";
 
 import { Grid, Card, CardContent, Box, Typography, useTheme } from "@mui/material"
 import { Car, CircleDashed, CircleCheck, CircleX } from "lucide-react"

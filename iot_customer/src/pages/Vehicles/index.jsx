@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { getRequest } from "../../api/index.js";
 import { CardListHeader } from './components/CardListHeader';
 import { CardSearch } from './components/CardSearch';
-import { CardsList } from './components/CardsList';
+import { VehicleList } from './components/VehicleList.jsx';
 import NewCardDialog from "../../Common/Components/Dialogs/NewCardDialog.jsx";
 
 export const UserCards = () => {
@@ -48,7 +48,7 @@ export const UserCards = () => {
                     onStatusFilterChange={(e) => setStatusFilter(e.target.value)}
                 />
 
-                <CardsList
+                <VehicleList
                     cards={cards}
                     searchQuery={searchQuery}
                     statusFilter={statusFilter}

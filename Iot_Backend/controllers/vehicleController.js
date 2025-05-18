@@ -1,6 +1,9 @@
 const RfidCard = require("../models/rfidCardModel");
 const User = require("../models/userModel");
 const Vehicle = require("../models/vehicleModel");
+const ParkingSession = require("../models/parkingSessionModel");
+const sequelize = require("../config/database");
+
 // const RfidCard=require("../models/rfidCardModel");
 
 exports.getAllVehicles = async (req, res) => {
@@ -78,12 +81,12 @@ exports.getYourVehicles = async (req, res) => {
         user_id, // Filter by card IDs
       },
     });
-    if (vehicles.length === 0) {
-      return res.status(404).json({
-        code: 404,
-        message: "You have not registered any Vehicles.",
-      });
-    }
+    // if (vehicles.length === 0) {
+    //   return res.status(404).json({
+    //     code: 404,
+    //     message: "You have not registered any Vehicles.",
+    //   });
+    // }
 
     res.status(200).json({
       code: 200,
@@ -131,34 +134,66 @@ exports.getYourRecentVehicles = async (req, res) => {
   }
 };
 exports.createVehicle = async (req, res) => {
-  const { user_id, vehicle_number, vehicle_type_id } = req.body;
-
+  const { user_id, vehicle_number, vehicle_type_id, card_number } = req.body;
+  const t = await sequelize.transaction();
+  if (!user_id || !vehicle_number || !vehicle_type_id || !card_number) {
+    return res
+      .status(400)
+      .json({ code: 400, message: "Missing required fields." });
+  }
   try {
     const existingVehicle = await Vehicle.findOne({
       where: { vehicle_number },
+      transaction: t,
     });
 
     if (existingVehicle) {
+      await t.rollback();
       return res.json({
         code: 400,
         message: "This vehicle is already registered.",
       });
     }
 
-    // Create a new card
-    const newVehicle = await Vehicle.create({
-      user_id,
-      vehicle_number,
-      vehicle_type_id,
-      status: "exited", // Default status
+    const existingCard = await RfidCard.findOne({
+      where: { card_number: card_number },
+      transaction: t,
     });
 
+    if (existingCard) {
+      await t.rollback();
+      return res.json({
+        code: 400,
+        message: "This card is already registered",
+      });
+    }
+
+    const newCard = await RfidCard.create(
+      {
+        card_number,
+        user_id,
+      },
+      { transaction: t }
+    );
+    const newVehicle = await Vehicle.create(
+      {
+        user_id,
+        vehicle_number,
+        vehicle_type_id,
+        status: "exited",
+        card_id: newCard.card_id,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
     res.status(201).json({
       code: 200,
       message: "Vehicle created successfully.",
       info: newVehicle,
     });
   } catch (error) {
+    await t.rollback();
     console.error("Error creating Vehicle:", error);
     res.json({
       code: 500,
@@ -169,11 +204,11 @@ exports.createVehicle = async (req, res) => {
 
 exports.deleteVehicle = async (req, res) => {
   const { vehicleId } = req.params;
+  console.log(vehicleId);
   //todo
   try {
-    // Find the user by primary key
     const vehicle = await Vehicle.findByPk(vehicleId);
-    const card = await RfidCard.findByPk(vehicle.card_id);
+
     if (!vehicle) {
       return res.status(404).json({
         code: 404,
@@ -181,7 +216,25 @@ exports.deleteVehicle = async (req, res) => {
       });
     }
 
+    const card = await RfidCard.findByPk(vehicle.card_id);
+    const activeSession = await ParkingSession.findOne({
+      where: {
+        vehicle_id: vehicle.vehicle_id,
+        status: "active",
+      },
+    });
+
+    if (activeSession) {
+      return res.status(400).json({
+        code: 400,
+        message: "Vehicle has active parking session.",
+      });
+    }
+
     await vehicle.destroy();
+    if (card) {
+      await card.destroy();
+    }
 
     res.status(200).json({
       code: 200,
@@ -191,7 +244,7 @@ exports.deleteVehicle = async (req, res) => {
     console.error("Error deleting Vehicle:", error);
     res.json({
       code: 500,
-      error: "Failed to delete Vehicle.",
+      message: "Failed to delete Vehicle.",
     });
   }
 };

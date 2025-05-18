@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import VehiclesPieChart from "./VehiclesPieChart.jsx";
 import {
   Car,
-  Users,
   ClipboardList,
-  DollarSign,
   LogOut,
   LogIn,
 } from "lucide-react";

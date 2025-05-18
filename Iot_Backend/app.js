@@ -34,7 +34,7 @@ const Transaction = require('./models/transactionModel');
 const ParkingSpace = require('./models/parkingSpaceModel');
 const Vehicle = require('./models/vehicleModel');
 const VehicleType = require('./models/vehicleTypeModel');
-
+require('./models/modelHooks');
 
 RfidCard.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(RfidCard, { foreignKey: 'user_id' });

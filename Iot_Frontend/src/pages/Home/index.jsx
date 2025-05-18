@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import HomeAdmin from "./Components/HomeAdmin.jsx";
-import HomeUser from "./Components/HomeUser.jsx";
 import {ForbiddenPage} from "../Forbidden/index.jsx";
 
 

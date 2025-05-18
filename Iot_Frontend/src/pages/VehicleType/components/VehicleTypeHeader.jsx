@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Button, Box } from "@mui/material";
+import { Button} from "@mui/material";
 import { Plus } from "lucide-react";
 
 const VehicleTypeHeader = ({ onAddNew }) => {

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import {deleteRequest, getRequest, postRequest} from "../../../api/index.js";
+import {deleteRequest, postRequest} from "../../../api/index.js";
 import {Box, Button, MenuItem, Modal, TextField} from "@mui/material";
 import { Modal as AntModal } from 'antd';
 import {toast} from "react-toastify";
 import {io} from "socket.io-client";
 import {fetchData} from "../../../api/fetchData.js";
 
-function DeviceList(props) {
+function DeviceList() {
     const [devices, setDevices] = useState([]);
     const [openModal, setOpenModal] = useState(false);
 

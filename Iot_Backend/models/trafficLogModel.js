@@ -25,7 +25,7 @@ const TrafficLog = sequelize.define(
         model: "devices",
         key: "device_id",
       },
-      onDelete: "SET NULL", // Set to NULL when the device is deleted
+      onDelete: "SET NULL",
       allowNull: true,
     },
     time: {
@@ -33,9 +33,17 @@ const TrafficLog = sequelize.define(
       allowNull: false,
     },
     action: {
-      type: DataTypes.ENUM("enter", "exit", "admin enter", "admin exit"),
+      type: DataTypes.ENUM("enter", "exit","exit-cash", "admin enter", "admin exit"),
       allowNull: false,
     },
+    is_valid:{
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    details:{
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   },
   {   
     timestamps: false

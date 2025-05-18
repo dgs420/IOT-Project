@@ -31,9 +31,7 @@ export const CardSearch = ({
                         onChange={onStatusFilterChange}
                     >
                         <option value="all">All Statuses</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="entered">Entered</option>
+                        <option value="parking">Parking</option>
                         <option value="exited">Exited</option>
                     </select>
                 </div>

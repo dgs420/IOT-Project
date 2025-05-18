@@ -8,7 +8,7 @@ const User = require("../models/userModel");
 const Transaction = require("../models/transactionModel");
 const {getYourTransactions} = require("../controllers/transactionController");
 const transactionController = require("../controllers/transactionController");
-
+const requireRole = require("../middleware/requireRole");
 // Use requireAuth middleware for all routes except webhook
 router.use('/webhook', express.raw({ type: "application/json" }));
 
@@ -69,6 +69,7 @@ router.get("/balance",requireAuth, async (req, res) => {
     }
 });
 
+router.get("/all-transactions",requireAuth, requireRole(['manager','admin']), transactionController.getAllTransactions);
 router.get("/transactions",requireAuth, transactionController.getYourTransactions);
 router.get("/recent-transactions",requireAuth, transactionController.getRecentTransactions);
 

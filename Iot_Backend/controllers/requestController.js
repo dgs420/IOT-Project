@@ -106,6 +106,13 @@ exports.rejectRequest = async (req, res) => {
       });
     }
 
+    if (request.status !== 'pending') {
+      return res.status(403).json({
+        code: 404,
+        message: "Request already resolved",
+      });
+    }
+
     await request.update({ status: "rejected", reason: reason });
 
     sendNotification(
@@ -136,6 +143,13 @@ exports.approveRequest = async (req, res) => {
         code: 404,
         message: "Request not found",
       });
+    } 
+
+    if (request.status !== 'pending') {
+      return res.status(403).json({
+        code: 404,
+        message: "Request already resolved",
+      });
     }
 
     const existingVehicle = await Vehicle.findOne({
@@ -160,7 +174,6 @@ exports.approveRequest = async (req, res) => {
       });
     }
 
-    // Create a new RFID card entry
     const newCard = await RfidCard.create({
       card_number,
       user_id: request.user_id,
@@ -173,7 +186,6 @@ exports.approveRequest = async (req, res) => {
       card_id: newCard.card_id,
     });
 
-    // Update the request status to approved
     await request.update({ status: "approved" });
     sendNotification(
       (user_id = request.user_id),
@@ -184,7 +196,7 @@ exports.approveRequest = async (req, res) => {
     return res.status(200).json({
       code: 200,
       message: "Request approved successfully",
-      info: newVehicle, // Send created card info
+      info: newVehicle,
     });
   } catch (error) {
     console.error(error);

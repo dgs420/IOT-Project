@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from '@mui/material';
-import { getRequest } from "../../../api/index.js";
 import {fetchData} from "../../../api/fetchData.js";
 
 // Colors for each vehicle type

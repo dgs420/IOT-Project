@@ -1,4 +1,3 @@
-// src/features/vehicle-type/hooks/useVehicleType.js
 import { toast } from 'react-toastify';
 import { deleteRequest, postRequest, putRequest } from '../api';
 import {useVehicleTypeStore} from "../store/useVehicleTypeStore.js";

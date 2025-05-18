@@ -128,12 +128,12 @@ const RequestCard = ({ request, refreshRequest }) => {
               />
               <RequestDetailItem
                 icon={getVehicleIcon(
-                  request.vehicle_type,
+                  request.vehicle_type_id,
                   "h-4 w-4 text-gray-500"
                 )}
                 label="Vehicle Information"
                 value={`${request.vehicle_number || "No number"} (${
-                  request.vehicle_type || "Unknown type"
+                  request.vehicle_type_id || "Unknown type"
                 })`}
               />
               <RequestDetailItem

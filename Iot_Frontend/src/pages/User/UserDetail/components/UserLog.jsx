@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Button } from "@mui/material";
-import { getRequest } from "../../../../api/index.js";
 import { fetchData } from "../../../../api/fetchData.js";
 
 export const UserLog = ({ userId }) => {
@@ -10,7 +6,11 @@ export const UserLog = ({ userId }) => {
   useEffect(() => {
     fetchData(`/session/user-sessions/${userId}`, setSessions, null, null);
   }, [userId]);
-
+  const sortedSessions = [...sessions].sort((a, b) => {
+    if (!a.exit_time && b.exit_time) return -1;
+    if (a.exit_time && !b.exit_time) return 1;
+    return new Date(b.exit_time || b.entry_time) - new Date(a.exit_time || a.entry_time);
+  });
   return (
     <div className="bg-white rounded-lg shadow border px-4 py-4">
       <h2 className="text-xl font-semibold pb-4">User History</h2>
@@ -31,7 +31,7 @@ export const UserLog = ({ userId }) => {
             </tr>
           </thead>
           <tbody>
-            {sessions.map((session) => (
+            {sortedSessions.map((session) => (
               <tr key={session.session_id} className="hover:bg-gray-100">
                 <td className="py-2 px-4 border-b text-center">
                   {session.Vehicle.vehicle_number}

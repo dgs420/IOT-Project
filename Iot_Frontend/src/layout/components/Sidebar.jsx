@@ -6,7 +6,6 @@ import {
   ParkingSquare,
   CreditCard,
   BarChart,
-  Server,
   Users,
   FileText,
   Settings,

@@ -12,12 +12,12 @@ export const VehicleListHeader = ({ onRequestCard }) => {
                         Manage all vehicles registered by users
                     </p>
                 </div>
-                <Button
-                    onClick={onRequestCard}
-                >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create New Vehicle
-                </Button>
+                {/*<Button*/}
+                {/*    onClick={onRequestCard}*/}
+                {/*>*/}
+                {/*    <Plus className="h-4 w-4 mr-2" />*/}
+                {/*    Create New Vehicle*/}
+                {/*</Button>*/}
 
             </div>
         </div>

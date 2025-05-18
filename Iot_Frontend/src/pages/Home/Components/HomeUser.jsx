@@ -1,9 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import VehiclesPieChart from "./VehiclesPieChart.jsx";
-import { Car, Users, ClipboardList, DollarSign, LogOut, LogIn } from 'lucide-react'
-import {Card, CardContent} from "@mui/material";
-import {FaCar} from "react-icons/fa";
-import {getRequest} from "../../../api/index.js";
 import {fetchData} from "../../../api/fetchData.js";
 // import {getRequest} from "../../api/index.jsx";
 

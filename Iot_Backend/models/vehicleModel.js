@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const User = require("./userModel");
-const RfidCard = require("./rfidCardModel");
+// const ParkingSession = require("./parkingSessionModel");
 const VehicleType = require("./vehicleTypeModel");
 
 const Vehicle = sequelize.define(
@@ -63,4 +63,18 @@ const Vehicle = sequelize.define(
   }
 );
 
+// Vehicle.beforeUpdate(async (vehicle, options) => {
+//   if (vehicle.status === 'exited') {
+//     const activeSession = await ParkingSession.findOne({
+//       where: {
+//         vehicle_id: vehicle.vehicle_id,
+//         status: 'active',
+//       },
+//     });
+
+//     if (activeSession) {
+//       throw new Error('Cannot set vehicle to exited with an active parking session');
+//     }
+//   }
+// });
 module.exports = Vehicle;

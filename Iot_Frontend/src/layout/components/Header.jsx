@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Bell, ChevronDown, Search, Menu, X, Home, ChevronRight } from 'lucide-react';
+import { Search, Menu, X, Home, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import NotificationDropdown from "./NotificationDropdown.jsx";
 import UserDropdown from "./UserDropdown.jsx";
 
 const mockNotifications = [

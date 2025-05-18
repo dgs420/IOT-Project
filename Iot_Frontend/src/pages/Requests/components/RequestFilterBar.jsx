@@ -6,7 +6,6 @@ const RequestFilterBar = ({ searchQuery, setSearchQuery, statusFilter, setStatus
         <div className="bg-white rounded-lg shadow mb-6">
             <div className="p-4 sm:p-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    {/* Search Input */}
                     <div className="relative flex-grow">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Search className="h-4 w-4 text-gray-400" />
@@ -20,7 +19,6 @@ const RequestFilterBar = ({ searchQuery, setSearchQuery, statusFilter, setStatus
                         />
                     </div>
 
-                    {/* Status Filter */}
                     <div className="flex items-center space-x-2">
                         <Filter className="h-4 w-4 text-gray-500" />
                         <select
@@ -35,8 +33,6 @@ const RequestFilterBar = ({ searchQuery, setSearchQuery, statusFilter, setStatus
                             <option value="completed">Completed</option>
                         </select>
                     </div>
-
-                    {/* Sort By */}
                     <div className="flex items-center space-x-2">
                         <Calendar className="h-4 w-4 text-gray-500" />
                         <select

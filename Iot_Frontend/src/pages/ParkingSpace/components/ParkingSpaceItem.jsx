@@ -1,5 +1,4 @@
-"use client"
-
+import React from "react";
 import { useState } from "react"
 import {
     Card,
@@ -13,7 +12,7 @@ import {
     Chip,
     useTheme,
 } from "@mui/material"
-import { Edit, Trash2, Car, Truck, Bike, Bus } from "lucide-react"
+import { Edit, Trash2} from "lucide-react"
 import { getVehicleIcon } from "../../../utils/helpers"
 
 const ParkingSpaceItem = ({ space, vehicleType, onEdit, onDelete }) => {

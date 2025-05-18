@@ -1,22 +1,19 @@
-"use client";
+import React from 'react'
+
 
 import { useState, useEffect } from "react";
 import {
   Box,
-  Typography,
   Paper,
   Button,
-  Alert,
   TextField,
   InputAdornment,
-  Grid,
   Grid2,
 } from "@mui/material";
-import { Plus, Search, RefreshCw } from "lucide-react";
+import { Search, RefreshCw } from "lucide-react";
 import {
   createParkingSpace,
   updateParkingSpace,
-  deleteParkingSpace,
 } from "../../api/parkingSpaceApi";
 import ParkingSpaceStats from "./components/ParkingSpaceStats";
 import ParkingSpaceList from "./components/ParkingSpaceList";

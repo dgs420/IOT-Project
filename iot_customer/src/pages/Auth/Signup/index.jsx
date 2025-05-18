@@ -38,6 +38,8 @@ const Signup = () => {
             if (response.code !== 200) {
                 toast.error(response.message);
                 throw new Error(response.message);
+            } else {
+                window.location.href = '/login';
             }
             // if(response.code === 200) {
             //     window.location.href = '/login';

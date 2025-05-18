@@ -77,7 +77,6 @@ exports.deleteUser = async (req, res) => {
 
 
     try {
-        // Find the user by primary key
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).json({
@@ -86,7 +85,6 @@ exports.deleteUser = async (req, res) => {
             });
         }
 
-        // Check if the user has associated RFID cards
         const card = await Card.findOne({ where: { user_id: userId } });
         if (card) {
             return res.status(400).json({
@@ -95,7 +93,6 @@ exports.deleteUser = async (req, res) => {
             });
         }
 
-        // Delete the user
         await user.destroy();
 
         res.status(200).json({

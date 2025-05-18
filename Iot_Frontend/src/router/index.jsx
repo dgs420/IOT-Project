@@ -1,3 +1,5 @@
+import React from "react";
+
 import Home from '../pages/Home';
 import Statistics from '../pages/Statistics';
 import PersonalProfile from '../pages/PersonalProfile';
@@ -8,10 +10,10 @@ import UserDetail from "../pages/User/UserDetail/UserDetail.jsx";
 import DeviceList from "../pages/Device/DeviceList/index.jsx";
 import DeviceDetail from "../pages/Device/DeviceDetail/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
-import RegisteredCards from "../pages/RegisteredCards/index.jsx";
 import VehicleTypeAdmin from "../pages/VehicleType/index.jsx";
 import ParkingSpaceManagement from "../pages/ParkingSpace/ParkingSpace.jsx";
 import { RegisteredVehicles } from '../pages/RegisteredVehicles/index.jsx';
+import ParkingSessions from "../pages/ParkingSessions/index.jsx";
 
 export const APP_ROUTES = [
     {
@@ -83,6 +85,11 @@ export const APP_ROUTES = [
         key:'parking-spaces',
         path: '/parking-spaces',
         element: <ParkingSpaceManagement/>,
+    },
+    {
+      key:'parking-sessions',
+      path: '/parking-sessions',
+      element: <ParkingSessions/>,
     },
     {
         key:'vehicle-types',

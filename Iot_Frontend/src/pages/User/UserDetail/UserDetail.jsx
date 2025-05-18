@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Paper, Tab, Tabs } from "@mui/material";
 import { getRequest } from "../../../api/index.js";
 import UserDetailsForm from "./components/UserDetailsForm";
-import RfidCardsPanel from "./components/CardPanel";
+import UserVehiclesList from "./components/UserVehiclesList.jsx";
 import { UserLog } from "./components/UserLog.jsx";
 
 const UserDetail = () => {
@@ -50,7 +50,7 @@ const UserDetail = () => {
           <Tab label="User Logs" />
         </Tabs>
 
-        {tabIndex === 0 && <RfidCardsPanel userId={user_id} />}
+        {tabIndex === 0 && <UserVehiclesList userId={user_id} />}
 
         {tabIndex === 1 && <UserLog userId={user_id} />}
       </Paper>

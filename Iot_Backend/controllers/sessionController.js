@@ -5,7 +5,13 @@ const Vehicle = require("../models/vehicleModel");
 
 exports.getAllSessions = async (req, res) => {
   try {
-    const sessions = await Session.findAll();
+    const sessions = await Session.findAll({
+      include: [
+        {
+          model: Vehicle,
+        },
+      ],
+    });
     res.status(200).json({
       code: 200,
       message: "All sessions fetched",
@@ -77,4 +83,21 @@ exports.getYourSessions = async (req, res) => {
   }
 };
 
-
+exports.closeActiveSession = async(req,res) => {
+  try {
+    const { sessionId } = req.params;
+    const session = await ParkingSession.findByPk(sessionId);
+    if (!session) {
+      return res.status(404).json({
+        code: 404,
+        message: "Session not found",
+      });
+    }
+    await session.update({ status: "completed" });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: error.message,
+    });
+  }
+}

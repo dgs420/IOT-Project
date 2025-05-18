@@ -1,5 +1,4 @@
-"use client"
-
+import React from "react"
 import { useState, useEffect } from "react"
 import { Box, Typography, Alert } from "@mui/material"
 // import { getParkingSessions, exportSessionsToCSV } from "../../api/parkingSessionApi"
@@ -42,7 +41,7 @@ const Activity = () => {
         setError(null)
 
         try {
-            const response = await  await getRequest("/session/your-sessions");
+            const response = await getRequest("/session/your-sessions");
             if (response.code === 200) {
                 setSessions(response.info)
             } else {

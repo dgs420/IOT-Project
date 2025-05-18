@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { Card, CardContent } from "@mui/material";
-import {Link} from "react-router-dom";
 
 const DeviceActivity = ({ embedId }) => {
     const [events, setEvents] = useState([]); // State to store MQTT events

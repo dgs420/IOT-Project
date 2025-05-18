@@ -11,6 +11,7 @@ const Transactions = () => {
     const [filters, setFilters] = useState({
         status: 'all',
         type: 'all',
+        method:'all',
         dateRange: {start: null, end: null}
     });
 
@@ -20,7 +21,8 @@ const Transactions = () => {
     const filteredTransactions = transactions.filter(transaction => {
         const matchesStatus = filters.status === 'all' || transaction.status === filters.status;
         const matchesType = filters.type === 'all' || transaction.transaction_type === filters.type;
-        return matchesStatus && matchesType;
+        const matchesMethod = filters.method === 'all' || transaction.payment_method === filters.method;
+        return matchesStatus && matchesType && matchesMethod;
     });
 
     return (

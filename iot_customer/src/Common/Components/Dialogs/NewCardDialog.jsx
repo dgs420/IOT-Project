@@ -40,6 +40,7 @@ import {
 } from "@mui/icons-material"
 import { toast } from "react-toastify"
 import {postRequest} from "../../../api/index.js";
+import {useVehicleTypeStore} from "../../../store/useVehicleTypeStore.js";
 
 // Card type definitions with additional info
 const card_types = [
@@ -73,6 +74,7 @@ const vehicle_types = [
     { value: 4, label: "Truck", icon: <LocalShipping /> },
 ]
 
+
 export default function NewCardDialog({ open, onClose }) {
     // Form state
     const [activeStep, setActiveStep] = useState(0)
@@ -86,9 +88,10 @@ export default function NewCardDialog({ open, onClose }) {
         contact_number: "",
     })
     const [errors, setErrors] = useState({})
+    const vehicleTypes = useVehicleTypeStore((state) => state.vehicleTypes);
 
     // Steps for the stepper
-    const steps = ["Card Details", "Vehicle Information", "Delivery Information"]
+    const steps = [ "Vehicle Information", "Delivery Information"]
 
     // Handle form field changes
     const handleChange = (field) => (event) => {
@@ -112,7 +115,7 @@ export default function NewCardDialog({ open, onClose }) {
 
         if (activeStep === 0) {
             // No validation needed for card type
-        } else if (activeStep === 1) {
+        // } else if (activeStep === 1) {
             if (!formData.vehicle_number.trim()) {
                 newErrors.vehicle_number = "Vehicle number is required"
             } else if (!/^[A-Z0-9-]{3,10}$/i.test(formData.vehicle_number.trim())) {
@@ -214,75 +217,75 @@ export default function NewCardDialog({ open, onClose }) {
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return (
-                    <Box>
-                        <Typography variant="subtitle1" gutterBottom fontWeight="medium">
-                            Select Card Type
-                        </Typography>
-
-                        <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {card_types.map((type) => (
-                                <Grid item xs={12} key={type.value}>
-                                    <Paper
-                                        elevation={formData._type === type.value ? 3 : 1}
-                                        sx={{
-                                            p: 2,
-                                            cursor: "pointer",
-                                            borderLeft: 4,
-                                            borderColor: formData.card_type === type.value ? type.color : "transparent",
-                                            bgcolor: formData.card_type === type.value ? `${type.color}10` : "background.paper",
-                                            transition: "all 0.2s ease",
-                                            "&:hover": {
-                                                bgcolor: `${type.color}10`,
-                                            },
-                                        }}
-                                        onClick={() => setFormData({ ...formData, card_type: type.value })}
-                                    >
-                                        <Box display="flex" alignItems="center" justifyContent="space-between">
-                                            <Box display="flex" alignItems="center">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        width: 40,
-                                                        height: 40,
-                                                        borderRadius: "50%",
-                                                        bgcolor: `${type.color}20`,
-                                                        color: type.color,
-                                                        mr: 2,
-                                                    }}
-                                                >
-                                                    {type.icon}
-                                                </Box>
-                                                <Box>
-                                                    <Typography variant="subtitle1" fontWeight="medium">
-                                                        {type.label}
-                                                    </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {type.description}
-                                                    </Typography>
-                                                </Box>
-                                            </Box>
-                                            {formData.card_type === type.value && <CheckCircle sx={{ color: type.color }} />}
-                                        </Box>
-                                    </Paper>
-                                </Grid>
-                            ))}
-                        </Grid>
-
-                        <Box sx={{ mt: 3, p: 2, bgcolor: "info.light", borderRadius: 1 }}>
-                            <Box display="flex" alignItems="flex-start">
-                                <Info sx={{ color: "info.main", mr: 1, mt: 0.5 }} />
-                                <Typography variant="body2" color="info.main">
-                                    Card processing fee may apply depending on the card type. Standard cards have a $5 processing fee,
-                                    Premium cards have a $10 fee, and Business cards have a $15 fee.
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                )
-            case 1:
+            //     return (
+            //         <Box>
+            //             <Typography variant="subtitle1" gutterBottom fontWeight="medium">
+            //                 Select Card Type
+            //             </Typography>
+            //
+            //             <Grid container spacing={2} sx={{ mt: 1 }}>
+            //                 {card_types.map((type) => (
+            //                     <Grid item xs={12} key={type.value}>
+            //                         <Paper
+            //                             elevation={formData._type === type.value ? 3 : 1}
+            //                             sx={{
+            //                                 p: 2,
+            //                                 cursor: "pointer",
+            //                                 borderLeft: 4,
+            //                                 borderColor: formData.card_type === type.value ? type.color : "transparent",
+            //                                 bgcolor: formData.card_type === type.value ? `${type.color}10` : "background.paper",
+            //                                 transition: "all 0.2s ease",
+            //                                 "&:hover": {
+            //                                     bgcolor: `${type.color}10`,
+            //                                 },
+            //                             }}
+            //                             onClick={() => setFormData({ ...formData, card_type: type.value })}
+            //                         >
+            //                             <Box display="flex" alignItems="center" justifyContent="space-between">
+            //                                 <Box display="flex" alignItems="center">
+            //                                     <Box
+            //                                         sx={{
+            //                                             display: "flex",
+            //                                             alignItems: "center",
+            //                                             justifyContent: "center",
+            //                                             width: 40,
+            //                                             height: 40,
+            //                                             borderRadius: "50%",
+            //                                             bgcolor: `${type.color}20`,
+            //                                             color: type.color,
+            //                                             mr: 2,
+            //                                         }}
+            //                                     >
+            //                                         {type.icon}
+            //                                     </Box>
+            //                                     <Box>
+            //                                         <Typography variant="subtitle1" fontWeight="medium">
+            //                                             {type.label}
+            //                                         </Typography>
+            //                                         <Typography variant="body2" color="text.secondary">
+            //                                             {type.description}
+            //                                         </Typography>
+            //                                     </Box>
+            //                                 </Box>
+            //                                 {formData.card_type === type.value && <CheckCircle sx={{ color: type.color }} />}
+            //                             </Box>
+            //                         </Paper>
+            //                     </Grid>
+            //                 ))}
+            //             </Grid>
+            //
+            //             <Box sx={{ mt: 3, p: 2, bgcolor: "info.light", borderRadius: 1 }}>
+            //                 <Box display="flex" alignItems="flex-start">
+            //                     <Info sx={{ color: "info.main", mr: 1, mt: 0.5 }} />
+            //                     <Typography variant="body2" color="info.main">
+            //                         Card processing fee may apply depending on the card type. Standard cards have a $5 processing fee,
+            //                         Premium cards have a $10 fee, and Business cards have a $15 fee.
+            //                     </Typography>
+            //                 </Box>
+            //             </Box>
+            //         </Box>
+            //     )
+            // case 1:
                 return (
                     <Box>
                         <Typography variant="subtitle1" gutterBottom fontWeight="medium">
@@ -303,11 +306,11 @@ export default function NewCardDialog({ open, onClose }) {
                         <FormControl fullWidth sx={{ mb: 3 }}>
                             <InputLabel>Vehicle Type</InputLabel>
                             <Select label="Vehicle Type" value={formData.vehicle_type_id} onChange={handleChange("vehicle_type_id")}>
-                                {vehicle_types.map((type) => (
-                                    <MenuItem value={type.value} key={type.value}>
+                                {vehicleTypes.map((type) => (
+                                    <MenuItem value={type.vehicle_type_id} key={type.vehicle_type_id}>
                                         <Box display="flex" alignItems="center">
-                                            {React.cloneElement(type.icon, { sx: { mr: 1, fontSize: 20 } })}
-                                            {type.label}
+                                            {/*{React.cloneElement(type.icon, { sx: { mr: 1, fontSize: 20 } })}*/}
+                                            {type.vehicle_type_name}
                                         </Box>
                                     </MenuItem>
                                 ))}
@@ -325,7 +328,7 @@ export default function NewCardDialog({ open, onClose }) {
                         </Box>
                     </Box>
                 )
-            case 2:
+            case 1:
                 return (
                     <Box>
                         <Typography variant="subtitle1" gutterBottom fontWeight="medium">
@@ -457,7 +460,7 @@ export default function NewCardDialog({ open, onClose }) {
             >
                 <Box display="flex" alignItems="center">
                     <CreditCard sx={{ mr: 1 }} />
-                    <Typography variant="h6">Request a New Parking Card</Typography>
+                    <Typography variant="h6">Regíter a Vehicle</Typography>
                 </Box>
                 <IconButton
                     edge="end"
@@ -485,7 +488,7 @@ export default function NewCardDialog({ open, onClose }) {
                 ) : (
                     <>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                            Fill in the details to request a new parking card. Processing may take 1-2 business days.
+                            Fill in the details to register a vehicle. Processing may take 1-2 business days.
                         </Typography>
 
                         {getStepContent(activeStep)}

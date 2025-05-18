@@ -1,21 +1,17 @@
-// Mock API functions for parking spaces
 
 import { toast } from "react-toastify"
 import { deleteRequest, postRequest, putRequest } from "."
-import { fetchData } from "./fetchData"
 
-// Get all parking spaces
-export const getParkingSpaces = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 800))
+// export const getParkingSpaces = async () => {
+//     await new Promise((resolve) => setTimeout(resolve, 800))
 
-    return {
-        code: 200,
-        message: "Parking space information fetched successfully.",
-        info: [...mockParkingSpaces],
-    }
-}
+//     return {
+//         code: 200,
+//         message: "Parking space information fetched successfully.",
+//         info: [...mockParkingSpaces],
+//     }
+// }
 
-// Create a new parking space
 export const createParkingSpace = async (spaceData) => {
     const res = await postRequest('/parking-spaces/create',spaceData)
     if (res.code !== 200) {

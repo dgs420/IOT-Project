@@ -1,7 +1,7 @@
 // components/RfidCardItem.jsx
 import React from 'react';
 import { Card, CardContent, Button, Chip, Divider, Typography, Box } from "@mui/material";
-import { CreditCard, LocalTaxi, DirectionsCar, TwoWheeler } from '@mui/icons-material';
+import { CreditCard } from '@mui/icons-material';
 import {getVehicleIcon} from "../../../../utils/helpers.jsx";
 
 // eslint-disable-next-line react/prop-types
