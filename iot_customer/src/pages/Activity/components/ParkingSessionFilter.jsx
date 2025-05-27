@@ -43,7 +43,7 @@ const ParkingSessionFilters = ({
                             },
                         }}
                         size="small"
-                        sx={{ minWidth: 400 }}
+                        sx={{ minWidth: 600 }}
                     />
                 </Grid2>
                 {/* Left side: Filters + Buttons */}
@@ -94,17 +94,6 @@ const ParkingSessionFilters = ({
                                 <MenuItem value="pending">Pending</MenuItem>
                             </Select>
                         </FormControl>
-                    </Grid2>
-
-                    <Grid2 item md="auto">
-                        <Button
-                            variant="outlined"
-                            startIcon={<Download size={18} />}
-                            onClick={onExport}
-                            disabled={loading || !hasData}
-                        >
-                            Export
-                        </Button>
                     </Grid2>
 
                     <Grid2 item md="auto">

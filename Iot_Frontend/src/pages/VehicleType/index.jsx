@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 
-import VehicleTypeHeader from './components/VehicleTypeHeader';
 import VehicleTypeTable from './components/VehicleTypeTable';
 import VehicleTypeForm from "./components/VehicleTypeForm.jsx";
 import {ConfirmModal} from "../../common/components/ConfirmModal.jsx";
 import {useVehicleType} from "../../hooks/useVehicleType.js";
 import Loading from "../../common/components/Loading.jsx";
+import PageContentHeader from "../../common/components/PageContentHeader.jsx";
+import {Box} from "@mui/material"
 
 const VehicleTypeAdmin = () => {
-    // Use the custom hook for vehicle type operations
     const {
         vehicleTypes,
         isLoading,
@@ -19,14 +19,12 @@ const VehicleTypeAdmin = () => {
         validateVehicleType
     } = useVehicleType();
 
-    // Local UI state
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentVehicleType, setCurrentVehicleType] = useState(initialVehicleType);
     const [isEditMode, setIsEditMode] = useState(false);
     const [formErrors, setFormErrors] = useState({});
 
-    // Form handling
     const handleAddNew = () => {
         setCurrentVehicleType(initialVehicleType);
         setFormErrors({});
@@ -51,7 +49,6 @@ const VehicleTypeAdmin = () => {
         });
     };
 
-    // Form submission
     const handleSubmit = () => {
         const {isValid, errors} = validateVehicleType(currentVehicleType);
 
@@ -69,7 +66,6 @@ const VehicleTypeAdmin = () => {
         }
     };
 
-    // Delete handling
     const handleDeleteConfirm = (vehicleType) => {
         setCurrentVehicleType(vehicleType);
         setIsDeleteModalOpen(true);
@@ -83,8 +79,14 @@ const VehicleTypeAdmin = () => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow">
-            <VehicleTypeHeader onAddNew={handleAddNew}/>
+        <Box>
+            <PageContentHeader
+                label="Vehicle Types"
+                description="Manage vehicle types and their associated fees."
+                buttonLabel='Add Vehicle Type'
+                onClick={handleAddNew}
+                className="mb-4"
+            />
             {
                 isLoading ? (
                     <Loading/>
@@ -96,7 +98,6 @@ const VehicleTypeAdmin = () => {
                     />
                 )
             }
-
 
             <VehicleTypeForm
                 open={isFormOpen}
@@ -115,7 +116,7 @@ const VehicleTypeAdmin = () => {
                 title="Delete Vehicle Type"
                 message={`Are you sure you want to delete the vehicle type "${currentVehicleType.vehicle_type_name}"? This action cannot be undone.`}
             />
-        </div>
+        </Box>
     );
 };
 

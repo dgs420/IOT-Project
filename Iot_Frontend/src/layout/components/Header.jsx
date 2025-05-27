@@ -57,16 +57,6 @@ const Header = ({ toggleSidebar }) => {
     return titles[location.pathname] || 'Page';
   }, [location.pathname]);
 
-  const handleSearch = useCallback((e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      console.log(`Searching for: ${searchQuery}`);
-      // Implement search functionality
-      // navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  }, [searchQuery]);
-
-  // Generate breadcrumbs
   const generateBreadcrumbs = useCallback(() => {
     const pathSegments = location.pathname.split('/').filter(Boolean);
     if (pathSegments.length === 0) return null;
@@ -108,7 +98,6 @@ const Header = ({ toggleSidebar }) => {
     );
   }, [location.pathname]);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
@@ -121,7 +110,6 @@ const Header = ({ toggleSidebar }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle window resize for responsive behavior
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768 && showMobileSearch) {
@@ -140,9 +128,7 @@ const Header = ({ toggleSidebar }) => {
       >
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Left section: Menu toggle, title and breadcrumbs */}
             <div className="flex items-center">
-              {/* Mobile menu toggle */}
               <button
                   className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
                   onClick={toggleSidebar}
@@ -151,38 +137,13 @@ const Header = ({ toggleSidebar }) => {
                 <span className="sr-only">Toggle menu</span>
               </button>
 
-              {/* Title and breadcrumbs */}
               <div className="ml-2 md:ml-0">
                 <h1 className="text-xl font-semibold text-gray-800">{getHeaderTitle()}</h1>
                 {!isMobile && generateBreadcrumbs()}
               </div>
             </div>
 
-            {/* Right section: Search, notifications, user */}
             <div className="flex items-center space-x-4">
-              {/* Search - hide on mobile unless expanded */}
-              <div className={`transition-all duration-200 ease-in-out ${
-                  isMobile && !showMobileSearch ? "w-0 overflow-hidden opacity-0" : "w-auto opacity-100"
-              }`}>
-                <form onSubmit={handleSearch} className="relative">
-                  <input
-                      type="search"
-                      placeholder="Search..."
-                      className="w-full md:w-64 pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <button
-                      type="submit"
-                      className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
-                  >
-                    <Search className="h-4 w-4" />
-                    <span className="sr-only">Search</span>
-                  </button>
-                </form>
-              </div>
-
-              {/* Mobile search toggle */}
               {isMobile && (
                   <button
                       className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"

@@ -70,9 +70,15 @@ router.get("/balance",requireAuth, async (req, res) => {
 });
 
 router.get("/all-transactions",requireAuth, requireRole(['manager','admin']), transactionController.getAllTransactions);
+router.get("/all-transactions-orm",requireAuth, requireRole(['manager','admin']), transactionController.getAllTransactionsORM);
+router.get("/transactions-summary",requireAuth, requireRole(['manager','admin']), transactionController.getTransactionSummary);
+router.get("/transactions-cash",requireAuth, requireRole(['manager','admin']), transactionController.getDeviceCashFlow);
+router.get("/transactions-daily",requireAuth, requireRole(['manager','admin']), transactionController.getDailyRevenue);
+router.get("/device-cash-daily",requireAuth, requireRole(['manager','admin']), transactionController.getDeviceCashByDay);
+router.get("/device-transactions",requireAuth, requireRole(['manager','admin']), transactionController.getDeviceTransactions);
 router.get("/transactions",requireAuth, transactionController.getYourTransactions);
 router.get("/recent-transactions",requireAuth, transactionController.getRecentTransactions);
-
+router.get("/export-transactions",requireAuth, transactionController.exportTransactionsExcel); 
 
 // This route should be exempt from requireAuth middleware
 router.post("/webhook", async (req, res) => {

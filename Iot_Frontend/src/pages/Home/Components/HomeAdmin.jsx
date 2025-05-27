@@ -27,8 +27,6 @@ const HomeAdmin = () => {
     const newSocket = io("http://localhost:5000"); // Replace with your backend URL
     setSocket(newSocket);
     void fetchData("/home", setHomeData, null, null);
-    // const socketInstance = io('http://localhost:5000'); // Adjust the URL as needed
-    // setSocket(socketInstance);
     const handleMqttMessage = () => {
       void fetchData("/home", setHomeData, null, null); // Call your function here
     };
@@ -90,11 +88,11 @@ const HomeAdmin = () => {
           </Link>
         ))}
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-1">
           <VehiclesPieChart />
         </div>
+
         <div className="col-span-2 ">
           {socket && <ActivityLog socket={socket} />}
           {/*<ActivityLog/>*/}

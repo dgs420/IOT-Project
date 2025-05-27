@@ -3,6 +3,7 @@ import RequestFilterBar from "./components/RequestFilterBar.jsx";
 import RequestList from "./components/RequestList.jsx";
 import { fetchData } from "../../api/fetchData.js";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
+import {Box} from "@mui/material";
 // import {getRequest} from "../../api/index.jsx";
 
 // Main Page Component
@@ -12,20 +13,17 @@ export const UserRequests = () => {
   const [sortBy, setSortBy] = useState("newest");
 
   const [requests, setRequests] = useState([]);
-  const onClick = () => {
-    console.log("clicked");
-  };
+
 
   useEffect(() => {
     void fetchData("/request/all-requests", setRequests, null, null);
   }, []);
   return (
-    <div className="bg-white rounded-lg shadow">
+    <Box>
       <PageContentHeader
-        onClick={onClick}
         label="Vehicles Requests"
         description="Vehicles Requests"
-        buttonLabel="Export request"
+        className="mb-4"
       />
       <RequestFilterBar
         searchQuery={searchQuery}
@@ -44,6 +42,6 @@ export const UserRequests = () => {
           fetchData("/request/all-requests", setRequests, null, null)
         }
       />
-    </div>
+    </Box>
   );
 };

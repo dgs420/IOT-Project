@@ -6,6 +6,7 @@ const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 const {getClient,connectMqtt } = require('../services/mqttClient');
 const EventEmitter = require("events");
+const { is } = require('express/lib/request');
 const client  = connectMqtt ();
 const mqttEventEmitter   = new EventEmitter();
 
@@ -282,9 +283,10 @@ exports.commandDevice =async (req,res) =>{
             mqttEventEmitter.emit('mqttMessage', { embed_id, card_number: null,vehicle_number:null, action:actionType, message: `${actionType} logged` });
 
             await TrafficLog.create({
-                card_id: null, // Assuming no RFID card for admin actions
+                card_id: null,
                 device_id: device.device_id,
                 action: actionType,
+                is_valid: true,
                 time: new Date(),
             });
             res.status(200).json({code: 200, message: 'Command sent successfully'});

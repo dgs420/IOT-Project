@@ -16,30 +16,108 @@ exports.getAllLogs = async (req, res) => {
   }
 };
 
+exports.getLogs = async (req, res) => {
+  try {
+    const { limit = 20, offset = 0, embed_id } = req.query;
+
+    let query = `
+      SELECT 
+        traffic_logs.log_id,
+        traffic_logs.card_id,
+        traffic_logs.device_id,
+        traffic_logs.time,
+        traffic_logs.action,
+        traffic_logs.is_valid,
+        traffic_logs.details,
+
+        rfid_cards.card_number,
+        rfid_cards.user_id,
+
+        vehicles.vehicle_number,
+        vehicles.vehicle_type_id,
+
+        devices.embed_id
+
+      FROM traffic_logs
+      LEFT JOIN rfid_cards ON traffic_logs.card_id = rfid_cards.card_id
+      LEFT JOIN vehicles ON rfid_cards.card_id = vehicles.card_id
+      LEFT JOIN devices ON traffic_logs.device_id = devices.device_id
+    `;
+
+    // Add WHERE clause if embed_id is present
+    if (embed_id) {
+      query += ` WHERE devices.embed_id = :embed_id `;
+    }
+
+    query += ` ORDER BY traffic_logs.time DESC LIMIT :limit OFFSET :offset;`;
+
+    const logs = await sequelize.query(query, {
+      replacements: {
+        embed_id,
+        limit: Number(limit),
+        offset: Number(offset),
+      },
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.status(200).json({
+      code: 200,
+      message: "Logs fetched successfully",
+      info: logs,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: 500,
+      message: "Failed to fetch logs",
+      error: error.message,
+    });
+  }
+};
 exports.getDetailedLogs = async (req, res) => {
   try {
-    const { page = 1, limit = 20, startDate, endDate, all = false } = req.query;
+    const {
+      page = 1,
+      limit = 20,
+      startDate,
+      endDate,
+      all = false,
+      deviceId,
+    } = req.query;
 
-    // Ensure time alignment for date range using JS Date
-    const whereCondition = { is_valid: true };
+    const whereCondition = {};
+
+    // Filter by date range
     if (startDate && endDate) {
       whereCondition.time = {
         [Op.between]: [
-          new Date(new Date(startDate).setHours(0, 0, 0, 0)), // Start of startDate
-          new Date(new Date(endDate).setHours(23, 59, 59, 999)), // End of endDate
+          new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+          new Date(new Date(endDate).setHours(23, 59, 59, 999)),
         ],
       };
     } else if (startDate) {
       whereCondition.time = {
-        [Op.gte]: new Date(new Date(startDate).setHours(0, 0, 0, 0)), // Start of startDate
+        [Op.gte]: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
       };
     } else if (endDate) {
       whereCondition.time = {
-        [Op.lte]: new Date(new Date(endDate).setHours(23, 59, 59, 999)), // End of endDate
+        [Op.lte]: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
       };
     }
 
-    // Check if `all` is true
+    if (deviceId) {
+      const device = await Device.findByPk(deviceId);
+      if (!device) {
+        return res.status(404).json({
+          code: 404,
+          message: `Device with ID ${deviceId} not found.`,
+        });
+      }
+
+      // Add filter condition if device exists
+      whereCondition.device_id = deviceId;
+    }
+
     let queryOptions = {
       where: whereCondition,
       include: [
@@ -53,15 +131,14 @@ exports.getDetailedLogs = async (req, res) => {
           ],
         },
         {
-          model: Device, // Include the Device model
-          attributes: ["embed_id"], // Fetch the embed_id
+          model: Device,
+          attributes: ["embed_id"],
         },
       ],
       order: [["time", "DESC"]],
     };
 
     if (all === "true") {
-      // Fetch all logs without pagination
       const logs = await TrafficLog.findAll(queryOptions);
 
       if (logs.length === 0) {
@@ -74,12 +151,9 @@ exports.getDetailedLogs = async (req, res) => {
       return res.status(200).json({
         code: 200,
         message: "All logs fetched successfully",
-        info: {
-          logs,
-        },
+        info: { logs },
       });
     } else {
-      // Paginated query
       queryOptions.limit = parseInt(limit);
       queryOptions.offset = (parseInt(page) - 1) * parseInt(limit);
 

@@ -14,6 +14,7 @@ import VehicleTypeAdmin from "../pages/VehicleType/index.jsx";
 import ParkingSpaceManagement from "../pages/ParkingSpace/ParkingSpace.jsx";
 import { RegisteredVehicles } from '../pages/RegisteredVehicles/index.jsx';
 import ParkingSessions from "../pages/ParkingSessions/index.jsx";
+import TransactionsDashboard from "../pages/Transactions/index.jsx";
 
 export const APP_ROUTES = [
     {
@@ -85,6 +86,11 @@ export const APP_ROUTES = [
         key:'parking-spaces',
         path: '/parking-spaces',
         element: <ParkingSpaceManagement/>,
+    },
+    {
+        key:'transactions-dashboard',
+        path: '/transactions-dashboard',
+        element: <TransactionsDashboard/>,
     },
     {
       key:'parking-sessions',

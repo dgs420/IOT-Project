@@ -29,6 +29,7 @@ exports.getHomeCount = async (req, res) => {
                 time: {
                     [Op.gte]: startOfDay,
                 },
+                is_valid: true 
             },
         });
 

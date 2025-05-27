@@ -38,7 +38,6 @@ export const LogHistory = () => {
                 `/logs/all-logs-details?page=${page}&size=${pageSize}&startDate=${startDate}&endDate=${endDate}`
             ); // Adjust URL as needed
 
-            console.log(response.info);
             if (response.code === 200) {
                 setLogs(response.info.logs);
                 setTotalPages(response.info.pagination.totalPages);

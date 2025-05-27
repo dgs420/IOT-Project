@@ -14,7 +14,10 @@ const Transactions = () => {
         method:'all',
         dateRange: {start: null, end: null}
     });
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     const {transactions, loading, error} = useTransactions();
 
     // Filter transactions
@@ -24,7 +27,7 @@ const Transactions = () => {
         const matchesMethod = filters.method === 'all' || transaction.payment_method === filters.method;
         return matchesStatus && matchesType && matchesMethod;
     });
-
+    const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
     return (
         <>
             <div className="bg-white rounded-lg shadow">
@@ -41,16 +44,17 @@ const Transactions = () => {
                 )}
 
                 <TransactionList
-                    transactions={filteredTransactions}
+                    transactions={paginatedTransactions}
                     loading={loading}
                     error={error}
                 />
 
                 {filteredTransactions.length > 0 && (
                     <TransactionPagination
-                        currentPage={1}
+                        currentPage={currentPage}
                         totalItems={filteredTransactions.length}
                         itemsPerPage={10}
+                        onPageChange={setCurrentPage}
                     />
                 )}
             </div>

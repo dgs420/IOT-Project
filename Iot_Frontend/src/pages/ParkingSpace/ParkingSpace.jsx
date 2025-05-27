@@ -23,6 +23,7 @@ import { fetchData } from "../../api/fetchData.js";
 import { toast } from "react-toastify";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
 import { deleteRequest } from "../../api/index.js";
+import {CustomButton} from "../../common/components/CustomButton.jsx";
 
 const ParkingSpaceManagement = () => {
   const [spaces, setSpaces] = useState([]);
@@ -141,14 +142,13 @@ const ParkingSpaceManagement = () => {
               gap: 2,
             }}
           >
-            <Button
-              variant="outlined"
-              startIcon={<RefreshCw size={18} />}
-              onClick={() => fetchData("/parking-spaces", setSpaces)}
-              disabled={loading}
-            >
-              Refresh
-            </Button>
+            <CustomButton
+                icon={<RefreshCw size={18}/>}
+                onClick={() => fetchData("/parking-spaces", setSpaces)}
+                title="Refresh"
+                color="success"
+                disabled={loading}
+            />
 
           </Grid2>
         </Grid2>

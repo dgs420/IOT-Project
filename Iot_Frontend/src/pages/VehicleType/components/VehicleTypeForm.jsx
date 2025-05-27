@@ -9,6 +9,7 @@ import {
     TextField
 } from "@mui/material";
 import { Save, X } from "lucide-react";
+import {CustomButton} from "../../../common/components/CustomButton.jsx";
 
 const VehicleTypeForm = ({
                              open,
@@ -70,12 +71,18 @@ const VehicleTypeForm = ({
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={onClose} startIcon={<X size={18} />}>
-                    Cancel
-                </Button>
-                <Button onClick={onSubmit} color="primary" startIcon={<Save size={18} />}>
-                    {isEdit ? 'Update' : 'Save'}
-                </Button>
+                <CustomButton
+                    onClick={onClose}
+                    icon={<X size={18} />}
+                    title='Cancel'
+                    color='danger'
+                />
+                <CustomButton
+                    onClick={onSubmit}
+                    icon={<Save size={18} />}
+                    title= {isEdit ? 'Update' : 'Save'}
+                    color='success'
+                />
             </DialogActions>
         </Dialog>
     );

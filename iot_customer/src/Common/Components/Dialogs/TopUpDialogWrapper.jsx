@@ -1,4 +1,3 @@
-// File: src/components/CustomerDashboard/dialogs/TopUpDialogWrapper.jsx
 import React, { useState, useEffect } from 'react';
 import {
     Dialog,

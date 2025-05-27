@@ -5,7 +5,7 @@ const requireAuth = require("../middleware/requireAuth");
 const requireRole = require("../middleware/requireRole")
 router.use(requireAuth);
 
-router.get('/all-logs',requireRole(['manager','admin']), TrafficLogController.getAllLogs);
+router.get('/all-logs',requireRole(['manager','admin']), TrafficLogController.getLogs);
 router.get('/all-logs-details',requireRole(['manager','admin']), TrafficLogController.getDetailedLogs);
 router.get('/logs-by-hour',requireRole(['manager','admin']), TrafficLogController.getTrafficByHour);
 router.get('/traffic-by-week',requireRole(['manager','admin']), TrafficLogController.getTrafficByWeek);

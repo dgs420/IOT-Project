@@ -46,27 +46,27 @@ const ParkingSessionTable = ({ sessions, loading, sortConfig, onSort }) => {
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
+            <TableContainer sx={{ maxHeight: 600 }}>
                 <Table stickyHeader aria-label="parking sessions table">
                     <TableHead>
                         <TableRow>
-                            <TableCell onClick={() => onSort("session_id")} sx={{ cursor: "pointer" }}>
+                            <TableCell onClick={() => onSort("session_id")} sx={{ cursor: "pointer", fontWeight: "bold" }}>
                                 <Box sx={{ display: "flex", alignItems: "center" }}>Session ID {renderSortIndicator("session_id")}</Box>
                             </TableCell>
-                            <TableCell>User Id</TableCell>
-                            <TableCell>Vehicle</TableCell>
-                            <TableCell onClick={() => onSort("entry_time")} sx={{ cursor: "pointer" }}>
+                            <TableCell sx={{ fontWeight: "bold" }}>User Id</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>Vehicle</TableCell>
+                            <TableCell onClick={() => onSort("entry_time")} sx={{ cursor: "pointer", fontWeight: "bold" }}>
                                 <Box sx={{ display: "flex", alignItems: "center" }}>Entry Time {renderSortIndicator("entry_time")}</Box>
                             </TableCell>
-                            <TableCell onClick={() => onSort("exit_time")} sx={{ cursor: "pointer" }}>
+                            <TableCell onClick={() => onSort("exit_time")} sx={{ cursor: "pointer", fontWeight: "bold" }}>
                                 <Box sx={{ display: "flex", alignItems: "center" }}>Exit Time {renderSortIndicator("exit_time")}</Box>
                             </TableCell>
-                            <TableCell onClick={() => onSort("duration")} sx={{ cursor: "pointer" }}>
+                            <TableCell onClick={() => onSort("duration")} sx={{ cursor: "pointer", fontWeight: "bold" }}>
                                 <Box sx={{ display: "flex", alignItems: "center" }}>Duration {renderSortIndicator("duration")}</Box>
                             </TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Payment</TableCell>
-                            <TableCell onClick={() => onSort("fee")} sx={{ cursor: "pointer" }}>
+                            <TableCell sx={{fontWeight: "bold" }}>Status</TableCell>
+                            <TableCell sx={{fontWeight: "bold" }}>Payment</TableCell>
+                            <TableCell onClick={() => onSort("fee")} sx={{ cursor: "pointer", fontWeight: "bold" }}>
                                 <Box sx={{ display: "flex", alignItems: "center" }}>Fee {renderSortIndicator("fee")}</Box>
                             </TableCell>
                         </TableRow>

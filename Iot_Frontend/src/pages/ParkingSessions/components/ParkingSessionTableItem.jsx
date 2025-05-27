@@ -15,23 +15,33 @@ const ParkingSessionTableItem = ({session}) => {
             <TableCell>#{session.session_id}</TableCell>
             <TableCell>
                 <Box sx={{display: "flex", alignItems: "center"}}>
-                    <Link to={`/user/${session.Vehicle.user_id}`}>
-                        {session.Vehicle.user_id}
-                    </Link>
+                    {session.Vehicle?.user_id ? (
+                        <Link to={`/user/${session.Vehicle.user_id}`}>
+                            {session.Vehicle.user_id}
+                        </Link>
+                    ) : (
+                        <span>Unknown User</span> // Or fallback UI
+                    )}
                 </Box>
             </TableCell>
             <TableCell>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                        <span className="w-8">{getVehicleIcon(session.Vehicle.vehicle_type_id)}</span>
-                        <span className="font-medium text-lg">
-                            {session.Vehicle.vehicle_number}
-                        </span>
+                {session.Vehicle ? (
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                            <span className="w-8">
+                              {getVehicleIcon(session.Vehicle.vehicle_type_id)}
+                            </span>
+                            <span className="font-medium text-lg">
+                                {session.Vehicle.vehicle_number ?? "Unknown Number"}
+                             </span>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                            ({getTypeNameById(session.Vehicle.vehicle_type_id)})
+                         </span>
                     </div>
-                    <span className="text-sm text-gray-500">
-                        ({getTypeNameById(session.Vehicle.vehicle_type_id)})
-                    </span>
-                </div>
+                ) : (
+                    <div className="text-gray-400 italic">Vehicle data missing</div>
+                )}
             </TableCell>
 
             <TableCell>{formatDate(session.entry_time)}</TableCell>

@@ -14,7 +14,7 @@ const UserVehiclesList = ({userId}) => {
         card_number: "",
         user_id: userId,
         vehicle_number: "",
-        vehicle_type: 1,
+        vehicle_type_id: 1,
     });
 
     useEffect(() => {

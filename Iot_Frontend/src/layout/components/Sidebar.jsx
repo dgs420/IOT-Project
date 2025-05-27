@@ -11,18 +11,20 @@ import {
   Settings,
   Info,
   Microchip,
-  Car,
+  Car, Clock,
 } from "lucide-react";
+import {FaParking} from "react-icons/fa";
 const Sidebar = () => {
   const links = [
     { to: "/", icon: <Home />, label: "Home" },
     { to: "/users-requests", icon: <Mail />, label: "User Requests" },
+    { to: "/parking-sessions", icon: <Clock />, label: "Parking Sessions" },
     { to: "/parking-spaces", icon: <ParkingSquare />, label: "Parking Spaces" },
     { to: "/users-cards", icon: <CreditCard />, label: "Registered Vehicles" },
+    { to: "/transactions-dashboard", icon: <FileText />, label: "Transactions" },
     { to: "/details", icon: <BarChart />, label: "Statistics" },
     { to: "/device", icon: <Microchip />, label: "Devices" },
     { to: "/users-list", icon: <Users />, label: "Users" },
-    { to: "/report", icon: <FileText />, label: "Report" },
     { to: "/vehicle-types", icon: <Car />, label: "Vehicle Types" },
     { to: "/settings", icon: <Settings />, label: "Settings" },
     { to: "/about", icon: <Info />, label: "About Us" },

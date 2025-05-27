@@ -1,18 +1,15 @@
+import {Calendar, Filter, Search} from "lucide-react";
 import React from "react";
-import {Filter, Search} from "lucide-react";
 import {Paper,} from "@mui/material"
-import {useVehicleTypeStore} from "../../../store/useVehicleTypeStore";
 
-export const VehicleSearch = ({
-                                  searchQuery,
-                                  onSearchChange,
-                                  statusFilter,
-                                  onStatusFilterChange,
-                                  typeFilter,
-                                  onTypeFilterChange,
-                              }) => {
-    const vehicleTypes = useVehicleTypeStore((state) => state.vehicleTypes);
-
+const UserFilterBar = ({
+                           searchQuery,
+                           setSearchQuery,
+                           roleFilter,
+                           setRoleFilter,
+                           sortBy,
+                           setSortBy,
+                       }) => {
     return (
         <Paper sx={{p: 2, mb: 3}}>
             <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
@@ -22,10 +19,10 @@ export const VehicleSearch = ({
                     </div>
                     <input
                         type="text"
-                        placeholder="Search by card number or vehicle number"
+                        placeholder="Search by name,. username or email"
                         className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         value={searchQuery}
-                        onChange={onSearchChange}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
@@ -33,30 +30,29 @@ export const VehicleSearch = ({
                     <Filter className="h-4 w-4 text-gray-500"/>
                     <select
                         className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                        value={typeFilter}
-                        onChange={onTypeFilterChange}
+                        value={roleFilter}
+                        onChange={(e) => setRoleFilter(e.target.value)}
                     >
-                        <option value="all">All Types</option>
-                        {vehicleTypes.map((type) => (
-                            <option key={type.vehicle_type_id} value={type.vehicle_type_id}>
-                                {type.vehicle_type_name}
-                            </option>
-                        ))}
+                        <option value="all">All</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="manager">Manager</option>
                     </select>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <Filter className="h-4 w-4 text-gray-500"/>
+                    <Calendar className="h-4 w-4 text-gray-500"/>
                     <select
                         className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                        value={statusFilter}
-                        onChange={onStatusFilterChange}
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
                     >
-                        <option value="all">All Statuses</option>
-                        <option value="parking">Parking</option>
-                        <option value="exited">Exited</option>
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
                     </select>
                 </div>
             </div>
         </Paper>
     );
 };
+
+export default UserFilterBar;

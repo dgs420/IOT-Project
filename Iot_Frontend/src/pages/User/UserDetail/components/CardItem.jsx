@@ -1,4 +1,4 @@
-// components/RfidCardItem.jsx
+// Components/RfidCardItem.jsx
 import React from 'react';
 import { Card, CardContent, Button, Chip, Divider, Typography, Box } from "@mui/material";
 import { CreditCard } from '@mui/icons-material';

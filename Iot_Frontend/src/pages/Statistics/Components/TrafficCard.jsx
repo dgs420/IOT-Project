@@ -4,6 +4,7 @@ import {Card, CardContent, TextField} from '@mui/material';
 import {format, startOfWeek, isValid, endOfWeek} from 'date-fns';
 import {getRequest} from "../../../api/index.js";
 import {toast} from "react-toastify";
+import {DatePicker} from "@mui/x-date-pickers";
 
 export const TrafficCard = () => {
   const [weekData, setWeekData] = useState([]);
@@ -18,7 +19,6 @@ export const TrafficCard = () => {
     try {
       const response = await getRequest(`/logs/traffic-by-week?start_date=${formattedDate}`);
       // if (!response.ok) throw new Error('Failed to fetch logs');
-      // console.log(response);
       if (response.code===200) {
         setWeekData(response.info);
       } else {
@@ -33,7 +33,7 @@ export const TrafficCard = () => {
   };
 
   const handleDateChange = (event) => {
-    const selectedDate = new Date(event.target.value);
+    const selectedDate = event;
     if (isValid(selectedDate)) {
       const weekStart = startOfWeek(selectedDate, { weekStartsOn: 0 });
       setStartDate(weekStart);
@@ -56,19 +56,32 @@ export const TrafficCard = () => {
           <div className="text-green-500">↑ 2.1% vs last week</div>
           <div className="text-1xl text-gray-500 mb-4">Traffic from {formattedStartDate} - {formattedEndDate}</div>
 
-
-          <TextField
-              type="date"
-              onChange={handleDateChange}
-              value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
+          <DatePicker
               label="Start Date"
-              variant="outlined"
-              // fullWidth
-              // InputLabelProps={{ shrink: true }}
-              sx={{
-                marginBottom: 3,
+              value={startDate}
+              onChange={handleDateChange}
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: {fontSize: 14},
+                },
+                actionBar: {
+                  actions: ['clear', 'today'],
+                },
               }}
           />
+          {/*<TextField*/}
+          {/*    type="date"*/}
+          {/*    onChange={handleDateChange}*/}
+          {/*    value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}*/}
+          {/*    label="Start Date"*/}
+          {/*    variant="outlined"*/}
+          {/*    // fullWidth*/}
+          {/*    // InputLabelProps={{ shrink: true }}*/}
+          {/*    sx={{*/}
+          {/*      marginBottom: 3,*/}
+          {/*    }}*/}
+          {/*/>*/}
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={weekData} margin={{top: 20, right: 30, left: 20, bottom: 5}}>
               <CartesianGrid strokeDasharray="3 3"/>

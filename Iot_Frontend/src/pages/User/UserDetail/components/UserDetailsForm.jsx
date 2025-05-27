@@ -1,4 +1,4 @@
-// components/UserDetailsForm.jsx
+// Components/UserDetailsForm.jsx
 import React, { useState } from 'react';
 import {
     Card,
@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material';
 import { putRequest } from "../../../../api/index.js";
 import { toast } from "react-toastify";
+import {CustomButton} from "../../../../common/components/CustomButton.jsx";
 
 // eslint-disable-next-line react/prop-types
 const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
@@ -216,14 +217,13 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                             <Divider sx={{ my: 3 }} />
 
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                <Button
-                                    variant="outlined"
-                                    color="secondary"
+                                <CustomButton
+                                    color='danger'
                                     onClick={() => setEditMode(false)}
                                     disabled={isSubmitting}
-                                >
-                                    Cancel
-                                </Button>
+                                    title='Cancel'
+                                />
+
                                 <Button
                                     type="submit"
                                     variant="contained"
