@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useState} from "react";
 import {Link} from "react-router-dom";
+import {TablePagination} from "@mui/material";
 
 const UsersTable = ({
                         users, handleDeleteUser
                     }) => {
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
+
     return (
         <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
             <table className="min-w-full bg-white">
@@ -19,7 +23,9 @@ const UsersTable = ({
                 </tr>
                 </thead>
                 <tbody>
-                {users.map((user, index) => (
+                {users
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((user, index) => (
                     <tr key={user.user_id} className="hover:bg-gray-100">
                         <td className="py-2 px-4 border-b text-center">{index + 1}</td>
                         <td className="py-2 px-4 border-b text-center">
@@ -51,6 +57,18 @@ const UsersTable = ({
                 ))}
                 </tbody>
             </table>
+            <TablePagination
+                component="div"
+                count={users.length}
+                page={page}
+                onPageChange={(e, newPage) => setPage(newPage)}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(e) => {
+                    setRowsPerPage(parseInt(e.target.value, 10));
+                    setPage(0);
+                }}
+                rowsPerPageOptions={[6, 12, 24]}
+            />
         </div>
     );
 };

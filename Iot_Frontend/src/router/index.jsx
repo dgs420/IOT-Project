@@ -78,8 +78,8 @@ export const APP_ROUTES = [
         element: <UserRequests />,
     },
     {
-        key: 'users-cards',
-        path: '/users-cards',
+        key: 'vehicles',
+        path: '/vehicles',
         element: <RegisteredVehicles />,
     },
     {

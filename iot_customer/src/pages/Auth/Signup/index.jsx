@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
-import {
-    Box,
-    TextField,
-    Button,
-    Typography,
-    Snackbar,
-    Alert,
-} from '@mui/material';
+import React, {useState} from 'react';
+import {Alert, Box, Button, Paper, Snackbar, TextField, Typography} from '@mui/material';
 import {toast} from "react-toastify";
 import {postRequest} from "../../../api/index.js";
+import {Person} from '@mui/icons-material';
+import {CustomButton} from "../../../Common/Components/CustomButton.jsx";
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -34,7 +29,6 @@ const Signup = () => {
                 first_name: firstName,
                 last_name: lastName
             });
-            console.log(response);
             if (response.code !== 200) {
                 toast.error(response.message);
                 throw new Error(response.message);
@@ -50,10 +44,7 @@ const Signup = () => {
             setError(error.message);
             toast.error(error);
 
-
         }
-        // Proceed with signup, using username, email, and password
-        // Reset fields after successful signup (for demo purposes)
     };
 
     const resetForm = () => {
@@ -71,77 +62,114 @@ const Signup = () => {
     };
 
     return (
-        <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, bgcolor: '#f5f5f5', borderRadius: 2, marginTop: 10 }}>
-            <Typography variant="h5" component="h1" gutterBottom>
-                Create Account
-            </Typography>
-            <form onSubmit={handleSignup} className='flex flex-col'>
-                <TextField
-                    type='email'
-                    label='Email'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    required
-                />
-                <TextField
-                    type='password'
-                    label='Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    required
-                />
-                <TextField
-                    type='text'
-                    label='First Name'
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    required
-                />
-                <TextField
-                    type='text'
-                    label='Last Name'
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    required
-                />
-                <TextField
-                    type='password'
-                    label='Confirm Password'
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    required
-                />
-                {error && <Typography color="error" variant="body2" sx={{ mt: 1 }}>{error}</Typography>}
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    sx={{ mt: 2 }}
-                    fullWidth
-                >
-                    Sign Up
-                </Button>
-            </form>
-            <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={handleSnackbarClose}>
-                <Alert onClose={handleSnackbarClose} severity="error">
-                    {error}
-                </Alert>
-            </Snackbar>
+        <Box
+            sx={{
+                minHeight: '100vh',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 2
+            }}
+        >
+
+            <Paper
+                elevation={24}
+                sx={{
+                    maxWidth: 500,
+                    width: '100%',
+                    p: 4,
+                    borderRadius: 3,
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                }}
+            >
+                <Box sx={{textAlign: 'center', mb: 4}}>
+                    <Box
+                        sx={{
+                            width: 64,
+                            height: 64,
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            mx: 'auto',
+                            mb: 2,
+                            boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)',
+                        }}
+                    >
+                        <Person sx={{color: 'white', fontSize: 32}}/>
+                    </Box>
+                    <Typography variant="h5" component="h1" sx={{fontWeight: 10, color: '#2d3748', mb: 1}}>
+                        Create Account
+                    </Typography>
+                </Box>
+                <form onSubmit={handleSignup} className='flex flex-col'>
+                    <TextField
+                        type='email'
+                        label='Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        type='password'
+                        label='Password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        type='text'
+                        label='First Name'
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        type='text'
+                        label='Last Name'
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        type='password'
+                        label='Confirm Password'
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        required
+                    />
+                    {error && <Typography color="error" variant="body2" sx={{mt: 1}}>{error}</Typography>}
+                    <CustomButton
+                        type='submit'
+                        className='w-full mt-4 items-center justify-center'
+                    >
+                        Sign Up
+                    </CustomButton>
+                </form>
+                <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={handleSnackbarClose}>
+                    <Alert onClose={handleSnackbarClose} severity="error">
+                        {error}
+                    </Alert>
+                </Snackbar>
+            </Paper>
         </Box>
     );
 };

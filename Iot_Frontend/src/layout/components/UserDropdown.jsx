@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { use } from 'react';
+import useUserStore from '../../store/useUserStore';
 
 // eslint-disable-next-line react/prop-types
-const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout ,userInitial}) => {
+const UserDropdown = ({ username, showDropdown, setShowDropdown ,userInitial}) => {
     const dropdownRef = useRef(null);
-
+    const {clearUser, role} = useUserStore.getState();
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -30,13 +32,13 @@ const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout ,u
                 </div>
                 <div className="hidden md:block text-left">
                     <p className="text-sm font-medium text-gray-700">{username}</p>
-                    <p className="text-xs text-gray-500">User</p>
+                    <p className="text-xs text-gray-500">{role || "User"}</p>
                 </div>
                 <ChevronDown className="h-4 w-4 text-gray-500"/>
             </button>
             {showDropdown && (
                 <div ref={dropdownRef} className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
-                    <button onClick={handleLogout}
+                    <button onClick={clearUser}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Log out
                     </button>

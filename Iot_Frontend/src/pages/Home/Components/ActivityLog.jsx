@@ -7,8 +7,6 @@ const ActivityLog = ({ socket }) => {
     const [events, setEvents] = useState([]); // State to store MQTT events
 
     useEffect(() => {
-        // const storedEvents = JSON.parse(localStorage.getItem('mqttEvents')) || [];
-        // setEvents(storedEvents.slice(-10));
 
         const handleMqttMessage = (data) => {
             console.log('Received MQTT Message:', data);

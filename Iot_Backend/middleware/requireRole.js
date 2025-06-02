@@ -12,7 +12,7 @@ const requireRole = (allowedRoles) => {
             });
         }
 
-        next(); // User has the required role, proceed to the next middleware or controller
+        next();
     };
 };
 module.exports = requireRole;
