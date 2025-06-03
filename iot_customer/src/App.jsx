@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import Layout from "./layout/index.jsx";
 import { APP_ROUTES } from './router/index.jsx';
 import {NotFoundPage} from "./pages/NotFound/index.jsx";
+import ProtectedRoute from "./Common/Components/ProtectedRoute.jsx";
 // import {ConfigProvider} from "antd";
 
 export default function App() {
@@ -29,9 +30,9 @@ export default function App() {
                             route.path === '/login' || route.path === '/register' ?  (
                                 route.element
                             ) : (
-                                <Layout>
-                                    {route.element}
-                                </Layout>
+                                <ProtectedRoute>
+                                    <Layout>{route.element}</Layout>
+                                </ProtectedRoute>
                                     )
                                 }
                                     />

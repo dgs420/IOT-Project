@@ -167,8 +167,7 @@ export default function NewCardDialog({ open, onClose }) {
             // Simulate API call
             // await new Promise((resolve) => setTimeout(resolve, 1500))
             const response = await postRequest('/request/create-request',formData);
-            // Show success message
-            console.log(response);
+          
             if (response.code === 200) {
                 toast.success("Card request submitted successfully!");
                 setFormData({

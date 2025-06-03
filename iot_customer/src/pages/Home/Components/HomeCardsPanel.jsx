@@ -14,7 +14,6 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
             const getUserVehicles = async () => {
                 try {
                     const response = await getRequest('/vehicle/recent-vehicles');
-                    console.log(response);
                     if (response.code === 200) {
                         setVehicles(response.info);
                     } else
@@ -32,9 +31,6 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Box>
                     <Typography variant="h6" sx={{ mb: 1 }}>Your Vehicles</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Your Registered Vehicles
-                    </Typography>
                 </Box>
                 <CustomButton
                     variant='success'

@@ -15,6 +15,9 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
 const vehicleTypeRoutes = require('./routes/vehicleTypeRoutes');
 const spaceRoutes = require('./routes/spaceRoutes');
+const sseRoutes = require('./routes/sseRoutes');
+const { sendToUser } = require('./services/sseService');
+
 
 const http = require('http');
 
@@ -73,8 +76,12 @@ const io = new Server(server, {
 
 app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 // Middleware
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  credentials: true
+}));
 app.use(express.json()); // Allows the use of JSON in requests
-app.use(cors()); // Allows cross-origin requests
+app.options('*', cors()); 
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
@@ -93,7 +100,9 @@ app.use('/api/session', sessionRoutes);
 app.use('/api/notification', notificationRoutes);
 app.use('/api/vehicle', vehicleRoutes);
 app.use('/api/vehicle-type', vehicleTypeRoutes);
-app.use('/api/parking-spaces',spaceRoutes)
+app.use('/api/parking-spaces',spaceRoutes);
+app.use('/api/sse', sseRoutes);
+
 
 mqttEventEmitter.on('mqttMessage', (data) => {
   io.emit('mqttMessage', data);
@@ -114,7 +123,8 @@ mqttEventEmitter.on('deviceStatus', (data) => {
 
 
 mqttEventEmitter.on('notification', (data) => {
-  io.to(`user_${data.user_id}`).emit('notification', data);
+  // io.to(`user_${data.user_id}`).emit('notification', data);
+  sendToUser(data.user_id, data);
   console.log(data);
 });
 

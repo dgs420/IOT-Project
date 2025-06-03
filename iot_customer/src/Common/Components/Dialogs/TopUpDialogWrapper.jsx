@@ -29,6 +29,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import TopUpDialog from './TopUpDialog.jsx';
 import { postRequest } from "../../../api/index.js";
 import { toast } from "react-toastify";
+import useUserStore from '../../../store/useUserStore.js';
 
 export default function TopUpDialogWrapper({ open, onClose, clientSecret, setClientSecret, stripePromise, currentBalance }) {
     // Reset client secret when dialog is closed
@@ -80,7 +81,8 @@ function TopUpInitialDialog({ open, onClose, setClientSecret, currentBalance }) 
     const [topUpAmount, setTopUpAmount] = useState("20");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const user_id = localStorage.getItem("uid");
+    // const user_id = localStorage.getItem("uid");
+    const {uid: user_id} = useUserStore((state) => state);
     const [customAmount, setCustomAmount] = useState(false);
 
     const handleAmountChange = (e) => {

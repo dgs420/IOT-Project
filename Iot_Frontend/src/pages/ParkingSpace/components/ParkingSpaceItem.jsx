@@ -19,10 +19,8 @@ const ParkingSpaceItem = ({ space, vehicleType, onEdit, onDelete }) => {
     const theme = useTheme()
     const [isHovered, setIsHovered] = useState(false)
 
-    // Calculate occupancy percentage
     const occupancyPercentage = Math.round((space.occupied_spaces / space.total_spaces) * 100) || 0
 
-    // Get color based on occupancy
     const getOccupancyColor = (percentage) => {
         if (percentage < 50) return "success"
         if (percentage < 80) return "warning"
@@ -53,7 +51,7 @@ const ParkingSpaceItem = ({ space, vehicleType, onEdit, onDelete }) => {
                     bgcolor: theme.palette.primary.light,
                 }}
             >
-                {getVehicleIcon(vehicleType.vehicle_type_id)}
+                {getVehicleIcon(vehicleType?.vehicle_type_id)}
                 <Typography variant="h6" sx={{ ml: 1, flexGrow: 1 }}>
                     {vehicleType ? vehicleType.vehicle_type_name : `Vehicle Type ${space.vehicle_type_id}`}
                 </Typography>

@@ -4,8 +4,7 @@ const mqtt = require('mqtt');
 let client = null;
 
 function connectMqtt() {
-    if (client) return client;  // Reuse existing client.
-
+    if (client) return client; 
     const MQTT_CREDENTIALS = {
         port: process.env.MQTT_PORT,
         username: process.env.BROKER_USERNAME,

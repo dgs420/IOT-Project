@@ -59,7 +59,6 @@ const Activity = () => {
     const applyFiltersAndSort = () => {
         let result = [...sessions]
 
-        // Apply search filter
         if (searchQuery) {
             const query = searchQuery.toLowerCase()
             result = result.filter(

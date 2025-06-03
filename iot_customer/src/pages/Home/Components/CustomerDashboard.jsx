@@ -36,7 +36,6 @@ export default function CustomerDashboard() {
     const getUserBalance = async () => {
         try {
             const response = await getRequest('/payment/balance');
-            console.log(response);
             if (response.code === 200) {
                 setBalance(response.info.balance);
             } else

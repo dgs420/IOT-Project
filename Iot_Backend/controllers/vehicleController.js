@@ -106,24 +106,18 @@ exports.getYourRecentVehicles = async (req, res) => {
   const user_id = req.user.user_id;
 
   try {
-    const cards = await Vehicle.findAll({
+    const vehicles = await Vehicle.findAll({
       where: {
         user_id,
       },
       order: [["updated_at", "DESC"]],
       limit: 5,
     });
-    if (cards.length === 0) {
-      return res.status(404).json({
-        code: 404,
-        message: "You have not registered any vehicles.",
-      });
-    }
 
     res.status(200).json({
       code: 200,
       message: "Vehicles Successfully Fetched",
-      info: cards,
+      info: vehicles,
     });
   } catch (error) {
     console.error("Error fetching vehicles:", error);
