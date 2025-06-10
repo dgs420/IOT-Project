@@ -16,7 +16,7 @@ export default function App() {
         <Routes>
           {APP_ROUTES.map((route) => {
             const isPublic =
-              route.path === "/login" || route.path === "/register";
+              route.path === "/login" || route.path === "/register" || route.path === "/forbidden";
 
             return (
               <Route

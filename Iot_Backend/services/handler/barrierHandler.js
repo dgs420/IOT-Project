@@ -86,20 +86,16 @@ const logTraffic = async ({
   }
 };
 
-// Main barrier handler
 async function barrierHandler2(client, topic, data) {
   const { card_number, embed_id, action } = data;
 
-  // Initialize logging variables
   let card_id = null;
   let device_id = null;
   let is_valid = false;
   let details = null;
 
   try {
-    // Validate input
     if (!card_number || !embed_id || !action) {
-      // await logTraffic({ device_id, action, is_valid, details: 'Missing or invalid fields' });
       return publishResponse(
         client,
         topic,
@@ -109,9 +105,7 @@ async function barrierHandler2(client, topic, data) {
       );
     }
 
-    // Validate action
     if (!["enter", "exit"].includes(action)) {
-      // await logTraffic({ device_id, action, is_valid, details: 'Invalid action', });
       return publishResponse(
         client,
         topic,
@@ -121,7 +115,6 @@ async function barrierHandler2(client, topic, data) {
       );
     }
 
-    // Find device
     const device = await Device.findOne({ where: { embed_id } });
     if (!device) {
       await logTraffic({
@@ -140,7 +133,6 @@ async function barrierHandler2(client, topic, data) {
     }
     device_id = device.device_id;
 
-    // Find card and user
     const card = await RfidCard.findOne({
       where: { card_number },
       include: [{ model: User }],
@@ -168,7 +160,6 @@ async function barrierHandler2(client, topic, data) {
     card_id = card.card_id;
     const user = card.user;
 
-    // Find vehicle
     const vehicle = await Vehicle.findOne({
       where: { card_id: card.card_id },
       include: [{ model: VehicleType }],

@@ -8,30 +8,25 @@ import ParkingSessionTable from "./components/ParkingSessionTable"
 import {getRequest} from "../../api/index.js";
 
 const Activity = () => {
-    // State for sessions data
     const [sessions, setSessions] = useState([])
     const [filteredSessions, setFilteredSessions] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
-    // State for search and filters
     const [searchQuery, setSearchQuery] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
     const [paymentFilter, setPaymentFilter] = useState("all")
 
-    // State for sorting
     const [sortConfig, setSortConfig] = useState({
         field: "entry_time",
         direction: "desc",
     })
 
 
-    // Fetch sessions on component mount
     useEffect(() => {
         loadParkingSessions()
     }, [])
 
-    // Apply filters, sorting when dependencies change
     useEffect(() => {
         applyFiltersAndSort()
     }, [sessions, searchQuery, statusFilter, paymentFilter, sortConfig])
@@ -55,7 +50,6 @@ const Activity = () => {
         }
     }
 
-    // Apply filters and sorting
     const applyFiltersAndSort = () => {
         let result = [...sessions]
 
@@ -67,21 +61,17 @@ const Activity = () => {
             )
         }
 
-        // Apply status filter
         if (statusFilter !== "all") {
             result = result.filter((session) => session.status === statusFilter)
         }
 
-        // Apply payment filter
         if (paymentFilter !== "all") {
             result = result.filter((session) => session.payment_status === paymentFilter)
         }
 
-        // Apply sorting
         result.sort((a, b) => {
             let valueA, valueB
 
-            // Handle different field types
             switch (sortConfig.field) {
                 case "fee":
                     valueA = a.fee ? Number.parseFloat(a.fee) : 0
@@ -96,11 +86,9 @@ const Activity = () => {
                     valueB = b[sortConfig.field]
             }
 
-            // Handle null values
             if (valueA === null) return sortConfig.direction === "asc" ? -1 : 1
             if (valueB === null) return sortConfig.direction === "asc" ? 1 : -1
 
-            // Compare values
             if (valueA < valueB) return sortConfig.direction === "asc" ? -1 : 1
             if (valueA > valueB) return sortConfig.direction === "asc" ? 1 : -1
             return 0
@@ -111,7 +99,6 @@ const Activity = () => {
 
 
 
-    // Handle sort change
     const handleSort = (field) => {
         setSortConfig((prevConfig) => ({
             field,
@@ -134,7 +121,6 @@ const Activity = () => {
             {/*</Box>*/}
 
 
-            {/* Filters and Actions */}
             <ParkingSessionFilters
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
@@ -147,14 +133,12 @@ const Activity = () => {
                 hasData={filteredSessions.length > 0}
             />
 
-            {/* Error message */}
             {error && (
                 <Alert severity="error" sx={{ mb: 3 }}>
                     {error}
                 </Alert>
             )}
 
-            {/* Sessions Table */}
             <ParkingSessionTable sessions={filteredSessions} loading={loading} sortConfig={sortConfig} onSort={handleSort} />
         </Box>
     )

@@ -1,20 +1,11 @@
-import React from 'react'
+import React from "react";
 import HomeAdmin from "./Components/HomeAdmin.jsx";
-import {ForbiddenPage} from "../Forbidden/index.jsx";
-import useUserStore from '../../store/useUserStore.js';
-
+import { ForbiddenPage } from "../Forbidden/index.jsx";
+import useUserStore from "../../store/useUserStore.js";
 
 const Home = () => {
-    const {role} = useUserStore.getState();
+  const { role } = useUserStore.getState();
 
-    return (
-        <>
-            {role === 'admin' ? (
-                <HomeAdmin/>
-            ) : (
-                <ForbiddenPage/>
-            )}
-        </>
-    );
+  return <HomeAdmin />;
 };
-export default Home
+export default Home;

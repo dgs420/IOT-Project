@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import VehiclesPieChart from "./VehiclesPieChart.jsx";
-import {
-  Car,
-  ClipboardList,
-  LogOut,
-  LogIn,
-} from "lucide-react";
+import { Car, ClipboardList, LogOut, LogIn } from "lucide-react";
 import { Card, CardContent } from "@mui/material";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import ActivityLog from "./ActivityLog.jsx";
-import { io } from "socket.io-client";
 import { fetchData } from "../../../api/fetchData.js";
+import useUserStore from "../../../store/useUserStore.js";
+import { EventSourcePolyfill } from "event-source-polyfill";
+import useSSEStore from "../../../store/useSseStore.js";
 
 const HomeAdmin = () => {
   const [homeData, setHomeData] = useState({
@@ -20,23 +17,55 @@ const HomeAdmin = () => {
     vehicles_exited: 0,
     traffic_today: 0,
   });
+  const [latestActivityEvent, setLatestActivityEvent] = useState(null);
 
-  const [socket, setSocket] = useState(null);
+  const { token } = useUserStore((state) => state);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000"); // Replace with your backend URL
-    setSocket(newSocket);
-    void fetchData("/home", setHomeData, null, null);
-    const handleMqttMessage = () => {
-      void fetchData("/home", setHomeData, null, null); // Call your function here
-    };
+    let eventSource;
 
-    // Listen for mqttMessage events
-    newSocket.on("mqttMessage", handleMqttMessage);
+    if (token) {
+      eventSource = new EventSourcePolyfill(
+        `${import.meta.env.VITE_BASE_URL}/api/sse/device-notifications`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Connecting SSE");
+
+      eventSource.onmessage = (event) => {
+
+        void fetchData("/home", setHomeData, null, null);
+
+        const data = JSON.parse(event.data);
+
+        if (data.type === "ACTIVITY_LOG") {
+          setLatestActivityEvent(data.payload.data);
+        }
+        console.log("Device SSE received:", data);
+      };
+
+      eventSource.onerror = (err) => {
+        console.error("SSE error:", err);
+        // eventSource.close();
+      };
+    }
+
+    void fetchData("/home", setHomeData, null, null);
+
     return () => {
-      newSocket.off("mqttMessage", handleMqttMessage);
-      newSocket.disconnect();
+      if (eventSource) {
+        eventSource.close();
+      }
     };
+  }, [token]);
+
+  useEffect(() => {
+    void fetchData("/home", setHomeData, null, null);
   }, []);
   return (
     <>
@@ -94,7 +123,7 @@ const HomeAdmin = () => {
         </div>
 
         <div className="col-span-2 ">
-          {socket && <ActivityLog socket={socket} />}
+          {<ActivityLog latestActivityEvent={latestActivityEvent}/>}
           {/*<ActivityLog/>*/}
         </div>
       </div>

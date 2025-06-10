@@ -95,6 +95,8 @@ export default function NotificationDropdown() {
         }
       );
 
+      console.log("Connecting SSE", uid)
+
       eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("SSE received:", data);

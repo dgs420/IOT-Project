@@ -1,81 +1,70 @@
-import React, {useEffect, useState} from 'react';
-import {deleteRequest} from "../../../api/index.js";
-import {Modal as AntModal} from 'antd';
-import {toast} from "react-toastify";
-import {io} from "socket.io-client";
-import {fetchData} from "../../../api/fetchData.js";
+import React, { useEffect, useState } from "react";
+import { fetchData } from "../../../api/fetchData.js";
 import NewDeviceModal from "./components/NewDeviceModal.jsx";
 import PageContentHeader from "../../../common/components/PageContentHeader.jsx";
-import {Box, IconButton} from "@mui/material";
-import {Edit, Trash2} from "lucide-react";
+import { Box, IconButton } from "@mui/material";
+import { Edit, Trash2 } from "lucide-react";
 import DeviceTable from "./components/DeviceTable.jsx";
+import useUserStore from "../../../store/useUserStore.js";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 function DeviceList() {
-    const [devices, setDevices] = useState([]);
-    const [openModal, setOpenModal] = useState(false);
+  const [devices, setDevices] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
-    const handleModalOpen = () => setOpenModal(true);
-    const handleModalClose = () => setOpenModal(false);
+  const handleModalOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
 
-    const handleDelete = async (deviceId) => {
-        AntModal.confirm({
-            title: 'Confirm Deletion',
-            content: 'Are you sure you want to delete this device?',
-            onOk: async () => {
-                try {
-                    const response = await deleteRequest(`/device/${deviceId}`);
-                    if (response.code === 200) {
-                        toast.success('Device deleted successfully');
-                        await fetchData('/device', setDevices, null, null);
-                    } else {
-                        toast.error(response.message || 'Failed to delete device');
-                    }
-                } catch (error) {
-                    console.error('Error deleting device:', error);
-                    toast.error('An error occurred while deleting the device');
-                }
-            },
-            onCancel() {
-                console.log('Device deletion cancelled');
-            },
-        });
-    };
+  const { uid, token } = useUserStore((state) => state);
 
-    useEffect(() => {
-        void fetchData('/device', setDevices, null, null);
-        const socket = io('http://localhost:5000'); // Replace with your backend URL
+  useEffect(() => {
+    void fetchData("/device", setDevices, null, null);
+    let eventSource;
 
-        socket.on('deviceStatus', (data) => {
-            console.log('Received MQTT Message:', data);
+    if (token) {
+      eventSource = new EventSourcePolyfill(
+        `${import.meta.env.VITE_BASE_URL}/api/sse/device-notifications`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
 
-            void fetchData('/device', setDevices, null, null);
-        });
+      console.log("Connecting SSE");
 
-        return () => {
-            socket.disconnect();
-        };
-        // setInterval(getTrafficLogs)
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
 
-    }, []);
-    return (
-        <Box>
-            <PageContentHeader
-                label="Devices"
-                description={'Manage all registered devices'}
-                buttonLabel="Add Device"
-                onClick={handleModalOpen}
-                className={'mb-4'}
-            />
-            <DeviceTable devices={devices} setDevices={setDevices} />
-            <NewDeviceModal
-                open={openModal}
-                onClose={handleModalClose}
-                onSuccess={() => void fetchData('/device', setDevices, null, null)}
-            />
-        </Box>
+        if (data.type === "DEVICE_STATUS") {
+          void fetchData("/device", setDevices, null, null);
+        }
+        console.log("Device SSE received:", data);
+      };
 
-
-    );
+      eventSource.onerror = (err) => {
+        console.error("SSE error:", err);
+      };
+    }
+  }, [token]);
+  return (
+    <Box>
+      <PageContentHeader
+        label="Devices"
+        description={"Manage all registered devices"}
+        buttonLabel="Add Device"
+        onClick={handleModalOpen}
+        className={"mb-4"}
+      />
+      <DeviceTable devices={devices} setDevices={setDevices} />
+      <NewDeviceModal
+        open={openModal}
+        onClose={handleModalClose}
+        onSuccess={() => void fetchData("/device", setDevices, null, null)}
+      />
+    </Box>
+  );
 }
 
 export default DeviceList;

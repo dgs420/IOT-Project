@@ -37,11 +37,11 @@ const Login = () => {
         throw new Error("Login failed");
       }
 
-      const { token, uid, role, username } = response.info;
+      const { token, user_id, role, username } = response.info;
 
       setUser({
         token: token,
-        uid: uid,
+        uid: user_id,
         username: username,
         role: role,
       });

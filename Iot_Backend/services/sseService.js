@@ -1,34 +1,46 @@
 const clients = new Map(); // userId -> { res, keepAliveInterval }
 
-function addClient(userId, res) {
-  console.log(`Client ${userId} connected. Total: ${clients.size + 1}`);
+function addClient(userId, res, channel = "default") {
+  const key = `${userId}:${channel}`;
+  console.log(`Client ${key} connected. Total: ${clients.size + 1}`);
 
-  // Write initial comment to open SSE
   res.write(': connected\n\n');
 
-  // Start keep-alive ping every 30 seconds
   const keepAliveInterval = setInterval(() => {
     res.write(': keep-alive\n\n');
   }, 30000);
 
-  clients.set(userId, { res, keepAliveInterval });
+  clients.set(key, { res, keepAliveInterval });
 }
 
-function removeClient(userId) {
-  const client = clients.get(userId);
+function removeClient(userId, channel = "default") {
+  const key = `${userId}:${channel}`;
+  const client = clients.get(key);
   if (client) {
     clearInterval(client.keepAliveInterval);
-    clients.delete(userId);
-    console.log(`Client ${userId} disconnected. Total: ${clients.size}`);
+    clients.delete(key);
+    console.log(`Client ${key} disconnected. Total: ${clients.size}`);
   }
 }
 
-function sendToUser(userId, data) {
-  const client = clients.get(userId);
+function sendToUser(userId, data, channel = "default") {
+  const key = `${userId}:${channel}`;
+  const client = clients.get(key);
   if (client) {
-    console.log(`Sending data to client ${userId}: ${JSON.stringify(data)}`);
+    console.log(`Sending data to ${key}: ${JSON.stringify(data)}`);
     client.res.write(`data: ${JSON.stringify(data)}\n\n`);
   }
 }
 
-module.exports = { addClient, removeClient, sendToUser };
+function sendToChannel(channel, data) {
+  for (const [key, client] of clients.entries()) {
+    if (key.endsWith(`:${channel}`)) {
+      console.log(`Sending to ${key}`);
+      client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+    }
+  }
+}
+
+
+module.exports = { addClient, removeClient, sendToUser, sendToChannel };
+

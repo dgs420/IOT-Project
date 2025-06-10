@@ -1,7 +1,6 @@
 const RfidCard = require('../models/rfidCardModel');
 const User = require('../models/userModel');
 const Notification = require("../models/notificationModel");
-const { mqttEventEmitter } = require('../services/eventEmitter');
 const { sendToUser } = require('../services/sseService');
 
 
@@ -110,8 +109,7 @@ exports.sendNotification = async (user_id, message, type = {}) => {
             is_read: false,
         });
 
-        // mqttEventEmitter.emit('notification', { user_id });
-        sendToUser(user_id, notification);
+        sendToUser(user_id, notification, 'notification');
         return notification;
     } catch (error) {
         console.error("Error sending notification:", error);

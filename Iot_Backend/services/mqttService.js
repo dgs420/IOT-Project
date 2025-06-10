@@ -4,7 +4,6 @@ const TrafficLog = require('../models/trafficLogModel');
 const Device = require('../models/deviceModel');
 const {handleDeviceStatus} = require("./handler/deviceStatusHandler");
 
-const mqttEventEmitter = require('./eventEmitter');
 const {barrierHandler,cashConfirm,barrierHandler2} = require("./handler/barrierHandler");
 const {connectMqtt} = require("./mqttClient"); // For emitting MQTT events
 // let client;

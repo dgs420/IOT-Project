@@ -319,7 +319,7 @@ export default function NewCardDialog({ open, onClose }) {
                         <Box sx={{ mt: 2, p: 2, bgcolor: "warning.light", borderRadius: 1 }}>
                             <Box display="flex" alignItems="flex-start">
                                 <Info sx={{ color: "warning.main", mr: 1, mt: 0.5 }} />
-                                <Typography variant="body2" color="warning.main">
+                                <Typography variant="body2" color="textPrimary">
                                     Make sure the vehicle information matches your registration documents. Incorrect information may delay
                                     your card processing.
                                 </Typography>

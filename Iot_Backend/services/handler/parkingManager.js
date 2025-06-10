@@ -286,14 +286,10 @@ class ParkingManager {
         });
     }
 
-    /**
-     * Handle cash payment confirmation
-     */
+   
     static async cashConfirm(client, data) {
         const { vehicle_number, embed_id, fee } = data;
-        const topic = "exit"; // Assuming this is the default topic for cash payments
-
-        // Validate input
+        const topic = "exit";
         if (!vehicle_number || !embed_id || !fee) {
             return this.publishResponse(client, topic, embed_id, {
                 status: "invalid",
