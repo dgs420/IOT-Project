@@ -23,4 +23,4 @@ export const CustomButton = ({ icon, color, title, onClick, className = "", disa
             {title}
         </button>
     );
-};
+};  

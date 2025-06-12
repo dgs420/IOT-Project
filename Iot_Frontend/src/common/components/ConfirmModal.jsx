@@ -1,5 +1,6 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import React from "react";
+import { CustomButton } from "./CustomButton";
 
 export const ConfirmModal = ({ open, onClose, onConfirm, title, message }) => {
     return (
@@ -9,8 +10,8 @@ export const ConfirmModal = ({ open, onClose, onConfirm, title, message }) => {
                 <p>{message}</p>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="secondary">Cancel</Button>
-                <Button onClick={onConfirm} color="primary">Confirm</Button>
+                <CustomButton color="danger" onClick={onClose} title="Cancel" />
+                <CustomButton color="primary" onClick={onConfirm} title="Confirm" />
             </DialogActions>
         </Dialog>
     );

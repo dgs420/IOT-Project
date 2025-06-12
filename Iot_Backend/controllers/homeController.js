@@ -7,15 +7,12 @@ const moment = require('moment');
 
 exports.getHomeCount = async (req, res) => {
     try {
-        // Count total RFID cards
         const vehiclesCount = await Vehicle.count();
         const startOfDay = moment().startOf('day').toDate();
-        // Count parking cards
         const vehiclesIn = await Vehicle.count({
             where: {status: 'parking'}
         });
 
-        // Count exited cards
         const vehiclesExited = await Vehicle.count({
             where: {status: 'exited'}
         });

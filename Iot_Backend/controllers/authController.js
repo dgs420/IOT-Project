@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const req = require("express/lib/request");
 const res = require("express/lib/response");
 
-// Signup function with email
 exports.createUser = async (req, res) => {
   const { email, password, username, role, first_name, last_name } = req.body;
 

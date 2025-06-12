@@ -164,7 +164,7 @@ async function init() {
       ();
     console.log("All models were synchronized successfully.");
 
-    startMqttService(); // Start the MQTT service
+    startMqttService();
 
     console.log("Server is running with MQTT enabled");
   } catch (error) {

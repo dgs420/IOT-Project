@@ -91,7 +91,7 @@ function UserList() {
   const handleDeleteUser = async (userId) => {
     AntModal.confirm({
       title: 'Confirm Deletion',
-      content: 'Are you sure you want to delete this device?',
+      content: 'Are you sure you want to delete this user?',
       onOk: async () => {
         try {
           const response = await deleteRequest(`/user/${userId}`);

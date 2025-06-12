@@ -1,5 +1,7 @@
 const Vehicle = require("../models/vehicleModel");
 const VehicleType = require("../models/vehicleTypeModel");
+const vehicleTypeService = require("../services/vehicleTypeService");
+
 // const RfidCard=require("../models/rfidCardModel");
 
 exports.getAllVehicleType = async (req, res) => {
@@ -23,55 +25,72 @@ exports.getAllVehicleType = async (req, res) => {
   }
 };
 
+// exports.createVehicleType = async (req, res) => {
+//   const { vehicle_type_name, description, fee_per_hour } = req.body;
+
+//   if (!vehicle_type_name || typeof vehicle_type_name !== "string") {
+//     return res
+//       .status(400)
+//       .json({
+//         code: 400,
+//         message: "Vehicle type name is required and must be a string.",
+//       });
+//   }
+//   if (!fee_per_hour || isNaN(fee_per_hour) || fee_per_hour <= 0) {
+//     return res
+//       .status(400)
+//       .json({
+//         code: 400,
+//         message: "Fee per hour must be a valid positive number.",
+//       });
+//   }
+
+//   try {
+//     const existingType = await VehicleType.findOne({
+//       where: { vehicle_type_name },
+//     });
+
+//     if (existingType) {
+//       return res.json({
+//         code: 400,
+//         message: "Vehicle type already exists.",
+//       });
+//     }
+
+//     // Create a new card
+//     const newVehicleType = await VehicleType.create({
+//       vehicle_type_name,
+//       description,
+//       fee_per_hour,
+//     });
+
+//     res.status(201).json({
+//       code: 200,
+//       message: "New vehicle type created successfully.",
+//       info: newVehicleType,
+//     });
+//   } catch (error) {
+//     console.error("Error creating vehicle type:", error);
+//     res.json({
+//       code: 500,
+//       message: "Server error.",
+//     });
+//   }
+// };
+
 exports.createVehicleType = async (req, res) => {
-  const { vehicle_type_name, description, fee_per_hour } = req.body;
-
-  if (!vehicle_type_name || typeof vehicle_type_name !== "string") {
-    return res
-      .status(400)
-      .json({
-        code: 400,
-        message: "Vehicle type name is required and must be a string.",
-      });
-  }
-  if (!fee_per_hour || isNaN(fee_per_hour) || fee_per_hour <= 0) {
-    return res
-      .status(400)
-      .json({
-        code: 400,
-        message: "Fee per hour must be a valid positive number.",
-      });
-  }
-
   try {
-    const existingType = await VehicleType.findOne({
-      where: { vehicle_type_name },
-    });
-
-    if (existingType) {
-      return res.json({
-        code: 400,
-        message: "Vehicle type already exists.",
-      });
-    }
-
-    // Create a new card
-    const newVehicleType = await VehicleType.create({
-      vehicle_type_name,
-      description,
-      fee_per_hour,
-    });
-
+    const newType = await vehicleTypeService.createVehicleType(req.body);
     res.status(201).json({
       code: 200,
       message: "New vehicle type created successfully.",
-      info: newVehicleType,
+      info: newType,
     });
-  } catch (error) {
-    console.error("Error creating vehicle type:", error);
-    res.json({
-      code: 500,
-      message: "Server error.",
+  } catch (err) {
+    const status = err.status || 500;
+    res.status(status).json({
+      code: status,
+      message: err.message || "Server error",
     });
   }
 };

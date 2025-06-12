@@ -7,13 +7,13 @@ const sequelize = require('../config/database');
 const {getClient,connectMqtt } = require('../services/mqttClient');
 const EventEmitter = require("events");
 const { is } = require('express/lib/request');
-const client  = connectMqtt ();
+// const client  = connectMqtt ();
 const mqttEventEmitter   = new EventEmitter();
 
 
 exports.createDevice = async (req, res) => {
     const { embed_id, location, type, status } = req.body;
-
+    const client  = getClient ();
     try {
         // Check if a device with the same embed_id already exists
         const existingDevice = await Device.findOne({ where: { embed_id } });
@@ -24,7 +24,6 @@ exports.createDevice = async (req, res) => {
             });
         }
 
-        // Default the device status to 'offline' initially
         const initialStatus = status || 'offline';
 
         // Create the device in the database
@@ -35,7 +34,6 @@ exports.createDevice = async (req, res) => {
             status: initialStatus,
         });
 
-        // Subscribe to the status topic for the new device
         const topic = `device/${embed_id}/status`;
         client.subscribe(topic, (err) => {
             if (err) {
@@ -50,7 +48,7 @@ exports.createDevice = async (req, res) => {
         });
 
         const timeout = setTimeout(async () => {
-            console.warn(`No status message received for device ${embed_id} within timeout period.`);
+            // console.warn(`No status message received for device ${embed_id} within timeout period.`);
 
             // Optionally update the status to "unknown" or handle as needed
             // await Device.update({ status: 'offline' }, { where: { embed_id } });
@@ -63,37 +61,36 @@ exports.createDevice = async (req, res) => {
                     console.log(`Unsubscribed from topic: ${topic} due to timeout`);
                 }
             });
-        }, 10000); // Timeout period in milliseconds (e.g., 10 seconds)
+        }, 5000); // Timeout period in milliseconds (e.g., 10 seconds)
 
         // Listen for the retained status message
-        client.once('message', async (receivedTopic, message) => {
-            if (receivedTopic === topic) {
-                clearTimeout(timeout);
-                try {
-                    const statusMessage = JSON.parse(message.toString());
+        // client.once('message', async (receivedTopic, message) => {
+        //     if (receivedTopic === topic) {
+        //         clearTimeout(timeout);
+        //         try {
+        //             const statusMessage = JSON.parse(message.toString());
 
-                    if (statusMessage.status) {
-                        // Update the device status in the database
-                        await Device.update(
-                            { status: statusMessage.status },
-                            { where: { embed_id } }
-                        );
-                        console.log(`Device ${embed_id} status updated to: ${statusMessage.status}`);
-                    }
+        //             if (statusMessage.status) {
+        //                 // Update the device status in the database
+        //                 await Device.update(
+        //                     { status: statusMessage.status },
+        //                     { where: { embed_id } }
+        //                 );
+        //                 console.log(`Device ${embed_id} status updated to: ${statusMessage.status}`);
+        //             }
 
-                    // Unsubscribe from the topic after handling the message
-                    client.unsubscribe(topic, (err) => {
-                        if (err) {
-                            console.error(`Failed to unsubscribe from topic ${topic}:`, err.message);
-                        } else {
-                            console.log(`Unsubscribed from topic: ${topic}`);
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error parsing retained status message:', error);
-                }
-            }
-        });
+        //             client.unsubscribe(topic, (err) => {
+        //                 if (err) {
+        //                     console.error(`Failed to unsubscribe from topic ${topic}:`, err.message);
+        //                 } else {
+        //                     console.log(`Unsubscribed from topic: ${topic}`);
+        //                 }
+        //             });
+        //         } catch (error) {
+        //             console.error('Error parsing retained status message:', error);
+        //         }
+        //     }
+        // });
 
         // Respond to the client
         res.status(200).json({
@@ -248,7 +245,7 @@ exports.deleteDevice = async (req, res) => {
 
 exports.commandDevice =async (req,res) =>{
     const { embed_id, command } = req.body;
-
+    const client = getClient();
     try {
         const device = await Device.findOne({ where: { embed_id } });
         if (!device) {
