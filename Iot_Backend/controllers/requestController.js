@@ -135,7 +135,12 @@ exports.rejectRequest = async (req, res) => {
 exports.approveRequest = async (req, res) => {
   const { requestId } = req.params;
   const { card_number } = req.body;
-
+  if (!card_number) {
+    return res.status(400).json({
+      code: 400,
+      message: "Card number is required",
+    });
+  }
   try {
     const request = await Request.findByPk(requestId);
     if (!request) {

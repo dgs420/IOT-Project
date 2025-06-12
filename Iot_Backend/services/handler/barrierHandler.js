@@ -88,7 +88,7 @@ const logTraffic = async ({
   }
 };
 
-async function barrierHandler2(client, topic, data) {
+async function barrierHandler(client, topic, data) {
   const { card_number, embed_id, action } = data;
 
   let card_id = null;
@@ -583,5 +583,5 @@ async function cashConfirm(client, data) {
   }
 }
 
-module.exports = { barrierHandler2, cashConfirm };
+module.exports = { barrierHandler, cashConfirm };
 // module.exports = { barrierHandler, cashConfirm, barrierHandler2 };

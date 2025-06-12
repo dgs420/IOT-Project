@@ -1,10 +1,7 @@
 const mqtt = require('mqtt');
-const RfidCard = require('../models/rfidCardModel');
-const TrafficLog = require('../models/trafficLogModel');
-const Device = require('../models/deviceModel');
 const {handleDeviceStatus} = require("./handler/deviceStatusHandler");
 
-const {barrierHandler,cashConfirm,barrierHandler2} = require("./handler/barrierHandler");
+const {barrierHandler,cashConfirm} = require("./handler/barrierHandler");
 const {connectMqtt, getClient} = require("./mqttClient"); // For emitting MQTT events
 // let client;
 
@@ -31,7 +28,7 @@ function startMqttService() {
           switch (topicParts[1]) {
             case 'enter':
             case 'exit':
-              await barrierHandler2(client, topic, message);
+              await barrierHandler(client, topic, message);
               break;
 
             case 'exit-cash':
