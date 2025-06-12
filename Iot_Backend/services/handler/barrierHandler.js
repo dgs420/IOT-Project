@@ -13,6 +13,8 @@ const { getClient } = require("../mqttClient");
 const {
   sendNotification,
 } = require("../../controllers/notificationController.js");
+const {createAndSendNotification} = require("../../services/notificationService");
+
 const { isParkingFull } = require("../helper/helper.js");
 const { Hooks } = require("sequelize/lib/hooks");
 // const EventEmitter = require("events");
@@ -199,7 +201,7 @@ async function barrierHandler2(client, topic, data) {
 
     // Check balance for entry
     if (action === "enter" && user.balance <= 0) {
-      sendNotification(user.user_id, "Insufficient balance to park", "warning");
+      createAndSendNotification(user.user_id, "Insufficient balance to park", "warning");
       details = "Insufficient balance";
       await logTraffic({
         card_id,
@@ -305,7 +307,7 @@ async function barrierHandler2(client, topic, data) {
     );
 
     if (user.balance < fee) {
-      sendNotification(
+      createAndSendNotification(
         user.user_id,
         `Insufficient balance for exit fee of $${fee} for vehicle ${vehicle.vehicle_number}`,
         "warning"
@@ -564,7 +566,7 @@ async function cashConfirm(client, data) {
       }
     );
 
-    sendNotification(
+    createAndSendNotification(
       user.user_id,
       `Cash payment of ${fee} received for vehicle ${vehicle.vehicle_number}`,
       "info"

@@ -3,7 +3,7 @@ const RfidCard = require("../models/rfidCardModel");
 const User = require("../models/userModel");
 const Vehicle = require("../models/vehicleModel");
 const { sendNotification } = require("./notificationController");
-
+const {createAndSendNotification} = require("../services/notificationService");
 exports.getAllRequests = async (req, res) => {
   try {
     const requests = await Request.findAll();
@@ -115,7 +115,7 @@ exports.rejectRequest = async (req, res) => {
 
     await request.update({ status: "rejected", reason: reason });
 
-    sendNotification(
+    createAndSendNotification(
       (user_id = request.user_id),
       (message = `Your request for vehicle ${request.vehicle_number} has been rejected. Reason: ${reason}`),
       (type = "fail")
@@ -187,7 +187,7 @@ exports.approveRequest = async (req, res) => {
     });
 
     await request.update({ status: "approved" });
-    sendNotification(
+    createAndSendNotification(
       (user_id = request.user_id),
       (message = `Your request for vehicle ${request.vehicle_number} has been approved`),
       (type = "success")

@@ -29,6 +29,8 @@ function sendToUser(userId, data, channel = "default") {
   if (client) {
     console.log(`Sending data to ${key}: ${JSON.stringify(data)}`);
     client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+  } else {
+    console.log(`Client ${key} not found`);
   }
 }
 
