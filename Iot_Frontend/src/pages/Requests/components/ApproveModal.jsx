@@ -10,7 +10,7 @@ const ApproveModal = ({ isOpen, onClose, onApprove, request }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h2 className="text-lg font-semibold">Approve Request</h2>
                 <p className="mt-2 text-sm text-gray-600">Enter the card number to approve this request.</p>

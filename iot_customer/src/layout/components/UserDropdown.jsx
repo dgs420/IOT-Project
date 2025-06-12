@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
+import {useNavigate} from "react-router-dom";
 
 const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout ,userInitial}) => {
     const dropdownRef = useRef(null);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -35,10 +36,15 @@ const UserDropdown = ({ username, showDropdown, setShowDropdown, handleLogout ,u
             </button>
             {showDropdown && (
                 <div ref={dropdownRef} className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                    <button onClick={() => navigate('/profile')}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Profile
+                    </button>
                     <button onClick={handleLogout}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Log out
                     </button>
+
                 </div>
             )}
         </div>

@@ -25,7 +25,7 @@ export default function HomeCardsItem({ card }) {
         >
             <Box>
                 <Typography variant="body1" fontWeight="medium">{card.vehicle_number}</Typography>
-                <Typography variant="body2" color="text.secondary">{card.vehicle_type}</Typography>
+                <Typography variant="body2" color="text.secondary">{card.vehicle_type_id}</Typography>
             </Box>
             <Chip
                 label={card.status}

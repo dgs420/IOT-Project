@@ -1,8 +1,7 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     BrowserRouter as Router,
     Route,
-    Link,
     Routes
 } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +12,11 @@ import {NotFoundPage} from "./pages/NotFound/index.jsx";
 // import {ConfigProvider} from "antd";
 
 export default function App() {
+    // const setVehicleTypes = useVehicleTypeStore((state) => state.setVehicleTypes);
+    //
+    // useEffect(() => {
+    //     void fetchData('/vehicle-type', setVehicleTypes, null, null)
+    // }, []);
     return (
 
         <Router>
@@ -25,12 +29,14 @@ export default function App() {
                             route.path === '/login' || route.path === '/register' ?  (
                                 route.element
                             ) : (
-                                <Layout>{route.element}</Layout>
-                            )
-                        }
-                    />
-                ))}
-                <Route path='*' element={<NotFoundPage/>} />
+                                <Layout>
+                                    {route.element}
+                                </Layout>
+                                    )
+                                }
+                                    />
+                                    ))}
+                                    <Route path='*' element={<NotFoundPage/>} />
             </Routes>
 
             <ToastContainer

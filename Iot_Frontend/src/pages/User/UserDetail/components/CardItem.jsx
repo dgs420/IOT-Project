@@ -1,21 +1,11 @@
-// components/RfidCardItem.jsx
+// Components/RfidCardItem.jsx
 import React from 'react';
 import { Card, CardContent, Button, Chip, Divider, Typography, Box } from "@mui/material";
-import { CreditCard, LocalTaxi, DirectionsCar, TwoWheeler } from '@mui/icons-material';
+import { CreditCard } from '@mui/icons-material';
+import {getVehicleIcon} from "../../../../utils/helpers.jsx";
 
 // eslint-disable-next-line react/prop-types
 const CardItem = ({ card, onDelete }) => {
-
-    const getVehicleIcon = (type) => {
-        switch (type?.toLowerCase()) {
-            case 'car':
-                return <DirectionsCar />;
-            case 'bike':
-                return <TwoWheeler />;
-            default:
-                return <LocalTaxi />;
-        }
-    };
 
     return (
         <Card
@@ -30,7 +20,6 @@ const CardItem = ({ card, onDelete }) => {
             }}
         >
             <CardContent sx={{ p: 0 }}>
-                {/* Card Header */}
                 <Box sx={{
                     p: 2,
                     bgcolor: 'primary.light',
@@ -43,11 +32,10 @@ const CardItem = ({ card, onDelete }) => {
                 }}>
                     <CreditCard />
                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {card.card_number}
+                        {card.vehicle_number}
                     </Typography>
                 </Box>
 
-                {/* Status Indicator */}
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'flex-end',
@@ -64,9 +52,7 @@ const CardItem = ({ card, onDelete }) => {
 
                 <Divider />
 
-                {/* Card Details */}
                 <Box sx={{ p: 2 }}>
-                    {/* Vehicle Details */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -75,18 +61,17 @@ const CardItem = ({ card, onDelete }) => {
                         bgcolor: 'grey.100',
                         borderRadius: 1
                     }}>
-                        {getVehicleIcon(card.vehicle_type)}
+                        {getVehicleIcon(card.vehicle_type_id)}
                         <Box sx={{ ml: 1 }}>
                             <Typography variant="body2" color="text.secondary">
                                 Vehicle Details
                             </Typography>
                             <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                                {card.vehicle_number ? `${card.vehicle_number} (${card.vehicle_type || 'Unknown'})` : 'No vehicle linked'}
+                                {card.vehicle_number ? `${card.vehicle_number} (${card.vehicle_type_id || 'Unknown'})` : 'No vehicle linked'}
                             </Typography>
                         </Box>
                     </Box>
 
-                    {/* Action Button */}
                     <Button
                         variant="contained"
                         color="error"

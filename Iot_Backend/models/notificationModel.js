@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const User = require('../models/userModel');
+const User = require('./userModel');
 
 const Notification = sequelize.define('Notification', {
     notification_id: {

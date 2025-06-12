@@ -4,14 +4,15 @@ import BalanceCard from './BalanceCard';
 import HomeCardsPanel from './HomeCardsPanel';
 import ParkingMap from './ParkingMap';
 import HomeTransactionPanel from './HomeTransactionPanel';
-import TopUpDialogWrapper from './dialogs/TopUpDialogWrapper'; // Import the wrapper instead
-import NewCardDialog from './dialogs/NewCardDialog';
+import TopUpDialogWrapper from '../../../Common/Components/Dialogs/TopUpDialogWrapper';
+import NewCardDialog from '../../../Common/Components/Dialogs/NewCardDialog';
 import {loadStripe} from "@stripe/stripe-js";
 // import process from "process";
 
 // Mock data would typically come from an API or context
-import {parkingLots, recentTransactions, userCards} from './MockData';
-import {getRequest} from "../../../api/index.jsx";
+import {recentTransactions} from './MockData';
+import {getRequest} from "../../../api/index.js";
+import {fetchData} from "../../../api/fetchData.js";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -21,6 +22,8 @@ export default function CustomerDashboard() {
     const [newCardDialogOpen, setNewCardDialogOpen] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
     const [balance, setBalance] = useState(0);
+    const [parkingSpaces, setParkingSpaces] = useState([])
+    const [transactions, setTransactions] = useState([]);
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     };
@@ -43,12 +46,13 @@ export default function CustomerDashboard() {
         }
     }
     useEffect(() => {
-        getUserBalance();
+        void fetchData('/parking-spaces',setParkingSpaces, null, null );
+        void fetchData('/payment/recent-transactions', setTransactions, null,null);
+        void getUserBalance();
     },[]);
     return (
         <Box sx={{bgcolor: '#f5f5f5', minHeight: '100vh'}}>
-            <div className='max-w-7xl mx-auto p-4 sm:p-6 lg:p-8' >
-                {/* Balance and Cards Section */}
+                {/* Balance and Vehicles Section */}
                 <Box sx={{display: 'flex', flexDirection: {xs: 'column', md: 'row'}, gap: 3, mb: 4}}>
                     <BalanceCard
                         balance={balance}
@@ -72,10 +76,9 @@ export default function CustomerDashboard() {
                     </Tabs>
 
                     {/* Tab Panels */}
-                    {tabValue === 0 && <ParkingMap parkingLots={parkingLots}/>}
-                    {tabValue === 1 && <HomeTransactionPanel transactions={recentTransactions}/>}
+                    {tabValue === 0 && <ParkingMap parkingLots={parkingSpaces}/>}
+                    {tabValue === 1 && <HomeTransactionPanel transactions={transactions}/>}
                 </Paper>
-            </div>
 
             {/* Dialogs */}
             <TopUpDialogWrapper
@@ -84,7 +87,7 @@ export default function CustomerDashboard() {
                 clientSecret={clientSecret}
                 setClientSecret={setClientSecret}
                 stripePromise={stripePromise}
-                currentBalance={balance}
+                currentBalance={balance.balance}
             />
 
             <NewCardDialog

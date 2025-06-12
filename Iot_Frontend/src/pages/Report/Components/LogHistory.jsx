@@ -13,7 +13,7 @@ export const LogHistory = () => {
     const [startDate, setStartDate] = useState([]);
     const [endDate, setEndDate] = useState([]);
 
-    const pageSize = 10; // Number of logs per page
+    const pageSize = 10;
 
     const getAllLogs = async () => {
         try {
@@ -37,9 +37,10 @@ export const LogHistory = () => {
             const response = await getRequest(
                 `/logs/all-logs-details?page=${page}&size=${pageSize}&startDate=${startDate}&endDate=${endDate}`
             ); // Adjust URL as needed
+
             if (response.code === 200) {
                 setLogs(response.info.logs);
-                setTotalPages(response.info.pagination.totalPages); // Assuming backend provides total pages
+                setTotalPages(response.info.pagination.totalPages);
             } else {
                 toast.error(response.message);
                 console.error(response.message);
@@ -71,11 +72,10 @@ export const LogHistory = () => {
                 new Date(log.time).toLocaleString(),
                 log.action,
                 log.rfid_card?.card_number || "N/A",
-                log.rfid_card?.vehicle_number || "N/A",
-                log.rfid_card?.vehicle_type || "N/A",
+                log.rfid_card?.Vehicle?.vehicle_number || "N/A",  // Use "Vehicle" with uppercase "V"
+                log.rfid_card?.Vehicle?.vehicle_type || "N/A",    // Make sure vehicle_type exists
                 log.device_id,
-                log.rfid_card?.user?.user_id || "N/A",
-                log.rfid_card?.user?.username || "N/A"
+                log.rfid_card?.Vehicle?.user_id || "N/A",
             ]),
         });
         doc.save("Activity_Log_Report_All.pdf");
@@ -129,7 +129,6 @@ export const LogHistory = () => {
                             <th className="py-3 px-4 border-b">Vehicle Type</th>
                             <th className="py-3 px-4 border-b">Gate ID</th>
                             <th className="py-3 px-4 border-b">User ID</th>
-                            <th className="py-3 px-4 border-b">Username</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -147,9 +146,15 @@ export const LogHistory = () => {
                                             {log.action}
                                     </span>
                                 </td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.card_number : 'N/A'}</td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_number : 'N/A'}</td>
-                                <td className="py-2 px-4 border-b text-center">{log.rfid_card ? log.rfid_card.vehicle_type : 'N/A'}</td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card ? log.rfid_card.card_number : 'N/A'}
+                                </td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card?.Vehicle ? log.rfid_card.Vehicle.vehicle_number : 'N/A'}
+                                </td>
+                                <td className="py-2 px-4 border-b text-center">
+                                    {log.rfid_card?.Vehicle ? log.rfid_card.Vehicle.vehicle_type_id : 'N/A'}
+                                </td>
                                 <td className="py-2 px-4 border-b text-center">{log.device ? (
                                         <Link to={`/device/${log.device.embed_id}`}>
                                             {log.device.embed_id}
@@ -158,23 +163,23 @@ export const LogHistory = () => {
 
                                 </td>
                                 <td className="py-2 px-4 border-b text-center">
-                                    {log.rfid_card && log.rfid_card.user ? (
-                                        <Link to={`/user/${log.rfid_card.user.user_id}`}>
-                                            {log.rfid_card.user.user_id}
+                                    {log.rfid_card ? (
+                                        <Link to={`/user/${log.rfid_card.user_id}`}>
+                                            {log.rfid_card.user_id}
                                         </Link>
                                     ) : (
                                         'N/A'
                                     )}
                                 </td>
-                                <td className="py-2 px-4 border-b text-center">
+                                {/* <td className="py-2 px-4 border-b text-center">
                                     {log.rfid_card && log.rfid_card.user ? (
                                         <Link to={`/user/${log.rfid_card.user.user_id}`}>
-                                            {log.rfid_card.user.username}
+                                            {log.rfid_card.user_id}
                                         </Link>
                                     ) : (
                                         'N/A'
                                     )}
-                                </td>
+                                </td> */}
                             </tr>
                         ))}
                         </tbody>

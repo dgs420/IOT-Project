@@ -17,7 +17,7 @@ function connectMqtt() {
 
     client.on('connect', () => {
         console.log('Connected to MQTT broker');
-        client.subscribe(['barrier/enter', 'barrier/exit', 'device/+/status'], (err) => {
+        client.subscribe(['barrier/enter', 'barrier/exit','barrier/exit-cash','device/+/status'], (err) => {
             if (err) {
                 console.error('Failed to subscribe:', err.message);
             } else {

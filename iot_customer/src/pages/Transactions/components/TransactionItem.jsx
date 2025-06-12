@@ -1,10 +1,15 @@
-
 import React from 'react';
-import { Calendar } from 'lucide-react';
-import { formatDate, formatCurrency } from '../../../utils/formatters';
-import { getTransactionIcon, getPaymentMethodIcon, getStatusBadge, getTransactionTypeLabel } from '../../../utils/transactionHelpers';
+import {Calendar} from 'lucide-react';
+import {formatCurrency, formatDate} from '../../../utils/formatters';
+import {
+    getPaymentMethodIcon,
+    getStatusBadge,
+    getTransactionIcon,
+    getTransactionTypeLabel
+} from '../../../utils/transactionHelpers';
+import {Link} from "react-router-dom";
 
-const TransactionItem = ({ transaction }) => {
+const TransactionItem = ({transaction}) => {
     return (
         <div className="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between">
@@ -24,7 +29,7 @@ const TransactionItem = ({ transaction }) => {
                         </div>
 
                         <div className="mt-1 flex items-center text-xs text-gray-500">
-                            <Calendar className="h-3 w-3 mr-1" />
+                            <Calendar className="h-3 w-3 mr-1"/>
                             {formatDate(transaction.createdAt)}
                         </div>
 
@@ -59,16 +64,21 @@ const TransactionItem = ({ transaction }) => {
                     </div>
                 </div>
             </div>
+            {
+                (transaction.session_id) && (
+                    <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+                        <div className="text-xs text-gray-500">
+                            Parkinkg Session ID: <span className="font-mono">{transaction.session_id}</span>
+                        </div>
+                        <Link to={'/activity'}>
+                            <button className="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                View Details
+                            </button>
+                        </Link>
+                    </div>
+                )
+            }
 
-            <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-                <div className="text-xs text-gray-500">
-                    Transaction ID: <span className="font-mono">{transaction.transaction_id}</span>
-                </div>
-
-                <button className="text-xs text-blue-600 hover:text-blue-800 font-medium">
-                    View Details
-                </button>
-            </div>
         </div>
     );
 };

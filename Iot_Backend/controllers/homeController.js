@@ -1,7 +1,6 @@
-const RfidCard = require('../models/rfidCardModel');
-const User = require('../models/userModel');
 const TrafficLog = require("../models/trafficLogModel");
-// const RfidCard=require("../models/rfidCardModel");
+const Vehicle=require("../models/vehicleModel");
+const Request=require("../models/requestModel")
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 const moment = require('moment');
@@ -9,16 +8,20 @@ const moment = require('moment');
 exports.getHomeCount = async (req, res) => {
     try {
         // Count total RFID cards
-        const vehiclesCount = await RfidCard.count();
+        const vehiclesCount = await Vehicle.count();
         const startOfDay = moment().startOf('day').toDate();
         // Count parking cards
-        const vehiclesIn = await RfidCard.count({
+        const vehiclesIn = await Vehicle.count({
             where: {status: 'parking'}
         });
 
         // Count exited cards
-        const vehiclesExited = await RfidCard.count({
+        const vehiclesExited = await Vehicle.count({
             where: {status: 'exited'}
+        });
+
+        const pendingRequests = await Request.count({
+            where: {status: 'pending'}
         });
 
         const trafficToday = await TrafficLog.count({
@@ -26,6 +29,7 @@ exports.getHomeCount = async (req, res) => {
                 time: {
                     [Op.gte]: startOfDay,
                 },
+                is_valid: true 
             },
         });
 
@@ -34,6 +38,7 @@ exports.getHomeCount = async (req, res) => {
             code: 200,
             message: 'RFID card created successfully.',
             info: {
+                pending_requests: pendingRequests,
                 total_vehicles: vehiclesCount,
                 vehicles_in: vehiclesIn,
                 vehicles_exited: vehiclesExited,
@@ -47,12 +52,12 @@ exports.getHomeCount = async (req, res) => {
 };
 exports.getVehicleCountsByType = async (req, res) => {
     try {
-        const vehicleCounts = await RfidCard.findAll({
+        const vehicleCounts = await Vehicle.findAll({
             attributes: [
-                'vehicle_type',
-                [sequelize.fn('COUNT', sequelize.col('vehicle_type')), 'count']
+                'vehicle_type_id',
+                [sequelize.fn('COUNT', sequelize.col('vehicle_type_id')), 'count']
             ],
-            group: ['vehicle_type']
+            group: ['vehicle_type_id']
         });
 
         res.status(200).json({

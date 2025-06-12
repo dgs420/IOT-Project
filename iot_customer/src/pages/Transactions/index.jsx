@@ -11,20 +11,25 @@ const Transactions = () => {
     const [filters, setFilters] = useState({
         status: 'all',
         type: 'all',
+        method:'all',
         dateRange: {start: null, end: null}
     });
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     const {transactions, loading, error} = useTransactions();
 
     // Filter transactions
     const filteredTransactions = transactions.filter(transaction => {
         const matchesStatus = filters.status === 'all' || transaction.status === filters.status;
         const matchesType = filters.type === 'all' || transaction.transaction_type === filters.type;
-        return matchesStatus && matchesType;
+        const matchesMethod = filters.method === 'all' || transaction.payment_method === filters.method;
+        return matchesStatus && matchesType && matchesMethod;
     });
-
+    const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
     return (
-        <div className='max-w-7xl mx-auto p-4 sm:p-6 lg:p-8'>
+        <>
             <div className="bg-white rounded-lg shadow">
                 <TransactionHeader
                     filterOpen={filterOpen}
@@ -39,20 +44,21 @@ const Transactions = () => {
                 )}
 
                 <TransactionList
-                    transactions={filteredTransactions}
+                    transactions={paginatedTransactions}
                     loading={loading}
                     error={error}
                 />
 
                 {filteredTransactions.length > 0 && (
                     <TransactionPagination
-                        currentPage={1}
+                        currentPage={currentPage}
                         totalItems={filteredTransactions.length}
                         itemsPerPage={10}
+                        onPageChange={setCurrentPage}
                     />
                 )}
             </div>
-        </div>
+        </>
     );
 };
 

@@ -8,7 +8,7 @@ import {
     Alert,
 } from '@mui/material';
 import {toast} from "react-toastify";
-import {postRequest} from "../../../api/index.jsx";
+import {postRequest} from "../../../api/index.js";
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -38,6 +38,8 @@ const Signup = () => {
             if (response.code !== 200) {
                 toast.error(response.message);
                 throw new Error(response.message);
+            } else {
+                window.location.href = '/login';
             }
             // if(response.code === 200) {
             //     window.location.href = '/login';

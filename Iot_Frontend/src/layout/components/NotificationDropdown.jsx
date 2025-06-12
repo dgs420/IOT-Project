@@ -26,7 +26,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
-// Styled components
+// Styled Components
 const NotificationPopper = styled(Popper)(({ theme }) => ({
     zIndex: 1000,
     width: 360,

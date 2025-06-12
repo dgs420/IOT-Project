@@ -1,6 +1,6 @@
 // File: hooks/useTransactions.js
 import { useState, useEffect } from 'react';
-import {getRequest} from "../api/index.jsx";
+import {getRequest} from "../api/index.js";
 
 // This is a mock implementation - in a real app, you'd fetch from an API
 export const useTransactions = () => {

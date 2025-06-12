@@ -2,7 +2,6 @@ import React from "react";
 
 const RequestHeader = () => {
     return (
-        <div className="mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Card Requests</h1>
@@ -16,7 +15,6 @@ const RequestHeader = () => {
                     </button>
                 </div>
             </div>
-        </div>
     );
 };
 

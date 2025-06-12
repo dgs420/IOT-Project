@@ -76,7 +76,7 @@ export const RequestCard = ({ request }) => {
                             <RequestDetailItem
                                 icon={getVehicleIcon(request.vehicle_type, "h-4 w-4 text-gray-500")}
                                 label="Vehicle Information"
-                                value={`${request.vehicle_number || "No number"} (${request.vehicle_type || "Unknown type"})`}
+                                value={`${request.vehicle_number || "No number"} (${request.vehicle_type_id || "Unknown type"})`}
                             />
                             <RequestDetailItem
                                 icon={<MapPin className="h-4 w-4 text-gray-500" />}
