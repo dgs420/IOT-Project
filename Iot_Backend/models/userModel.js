@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const RfidCard = require("./rfidCardModel");
 
 const User = sequelize.define(
   "user",

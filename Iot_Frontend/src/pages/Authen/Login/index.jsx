@@ -139,7 +139,7 @@ const Login = () => {
             type="submit"
             onClick={handleLogin}
             title={isLoading ? "Signing in..." : "Sign In"}
-            className="w-full items-center justify-center"
+            className="w-full items-center justify-center mt-4"
             disabled={isLoading}
           />
           <div className="mt-8 pt-6 border-t border-white/10">

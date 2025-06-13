@@ -2,7 +2,6 @@ const Request = require("../models/requestModel");
 const RfidCard = require("../models/rfidCardModel");
 const User = require("../models/userModel");
 const Vehicle = require("../models/vehicleModel");
-const { sendNotification } = require("./notificationController");
 const {createAndSendNotification} = require("../services/notificationService");
 exports.getAllRequests = async (req, res) => {
   try {

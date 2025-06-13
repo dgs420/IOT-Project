@@ -1,103 +1,37 @@
-const ParkingSession = require("../models/parkingSessionModel");
-const Session = require("../models/parkingSessionModel");
-const TrafficLog = require("../models/trafficLogModel");
-const Vehicle = require("../models/vehicleModel");
+const sessionService = require("../services/sessionService");
 
 exports.getAllSessions = async (req, res) => {
   try {
-    const sessions = await Session.findAll({
-      include: [
-        {
-          model: Vehicle,
-        },
-      ],
-    });
-    res.status(200).json({
-      code: 200,
-      message: "All sessions fetched",
-      info: sessions,
-    });
+    const sessions = await sessionService.getAllSessions();
+    res.status(200).json({ code: 200, message: "All sessions fetched", info: sessions });
   } catch (error) {
-    res.status(500).json({
-      code: 500,
-      message: error.message,
-    });
+    res.status(500).json({ code: 500, message: error.message });
   }
 };
 
 exports.getUserSessions = async (req, res) => {
   try {
-    const { userId } = req.params;
-    // const sessions = await Session.findAll({
-    //   where: { user_id },
-    // });
-
-    const sessions = await ParkingSession.findAll({
-      include: [
-        {
-          model: Vehicle,
-          where: { user_id: userId },
-          attributes: ["vehicle_number"], 
-        },
-      ],
-    });
-    res.status(200).json({
-      code: 200,
-      message: "All sessions fetched",
-      info: sessions,
-    });
+    const sessions = await sessionService.getUserSessions(req.params.userId);
+    res.status(200).json({ code: 200, message: "All sessions fetched", info: sessions });
   } catch (error) {
-    res.status(500).json({
-      code: 500,
-      message: error.message,
-    });
+    res.status(500).json({ code: 500, message: error.message });
   }
 };
 
 exports.getYourSessions = async (req, res) => {
   try {
-    const user_id = req.user.user_id;
-    // const sessions = await Session.findAll({
-    //   where: { user_id },
-    // });
-
-    const sessions = await ParkingSession.findAll({
-      include: [
-        {
-          model: Vehicle,
-          where: { user_id: user_id },
-          attributes: ["vehicle_number"], 
-        },
-      ],
-    });
-    res.status(200).json({
-      code: 200,
-      message: "All sessions fetched",
-      info: sessions,
-    });
+    const sessions = await sessionService.getYourSessions(req.user.user_id);
+    res.status(200).json({ code: 200, message: "All sessions fetched", info: sessions });
   } catch (error) {
-    res.status(500).json({
-      code: 500,
-      message: error.message,
-    });
+    res.status(500).json({ code: 500, message: error.message });
   }
 };
 
-exports.closeActiveSession = async(req,res) => {
+exports.closeActiveSession = async (req, res) => {
   try {
-    const { sessionId } = req.params;
-    const session = await ParkingSession.findByPk(sessionId);
-    if (!session) {
-      return res.status(404).json({
-        code: 404,
-        message: "Session not found",
-      });
-    }
-    await session.update({ status: "completed" });
+    const session = await sessionService.closeActiveSession(req.params.sessionId);
+    res.status(200).json({ code: 200, message: "Session closed", info: session });
   } catch (error) {
-    res.status(500).json({
-      code: 500,
-      message: error.message,
-    });
+    res.status(error.code || 500).json({ code: error.code || 500, message: error.message });
   }
-}
+};

@@ -37,7 +37,6 @@ exports.createAndSendNotification = async (user_id, message, type = {}) => {
         message,
         is_read: false,
     });
-    console.log("jkasdh");
     sendToUser(user_id, notification, 'notifications');
     return notification;
 };
