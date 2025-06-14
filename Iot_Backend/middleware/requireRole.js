@@ -6,7 +6,7 @@ const requireRole = (allowedRoles) => {
         const { user } = req;
         // console.log(user);
         if (!user || !allowedRoles.includes(user.role)) {
-            return res.status(403).json({
+            return res.status(400).json({
                 code: 401,
                 message: 'Access denied: insufficient permissions',
             });

@@ -42,7 +42,6 @@ router.post("/top-up",requireAuth, async (req, res) => {
     }
 });
 
-// Get account balance
 router.get("/balance",requireAuth, async (req, res) => {
     try {
         const user_id = req.user.user_id;

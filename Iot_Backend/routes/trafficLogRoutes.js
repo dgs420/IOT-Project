@@ -10,8 +10,8 @@ router.get('/all-logs-details',requireRole(['manager','admin']), TrafficLogContr
 router.get('/logs-by-hour',requireRole(['manager','admin']), TrafficLogController.getTrafficByHour);
 router.get('/traffic-by-week',requireRole(['manager','admin']), TrafficLogController.getTrafficByWeek);
 router.get('/traffic-by-day',requireRole(['manager','admin']), TrafficLogController.getTrafficByDay);
-router.get('/logs-by-user/:userId',requireRole(['manager','admin']), TrafficLogController.getUserLogsByUserId);
-router.get('/logs-by-card/:cardId',requireRole(['manager','admin']), TrafficLogController.getLogsByCardId);
+// router.get('/logs-by-user/:userId',requireRole(['manager','admin']), TrafficLogController.getUserLogsByUserId);
+// router.get('/logs-by-card/:cardId',requireRole(['manager','admin']), TrafficLogController.getLogsByCardId);
 
 
 module.exports = router;

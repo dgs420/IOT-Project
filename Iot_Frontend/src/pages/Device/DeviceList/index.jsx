@@ -35,12 +35,18 @@ function DeviceList() {
       console.log("Connecting SSE");
 
       eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+        const message = JSON.parse(event.data);
 
-        if (data.type === "DEVICE_STATUS") {
-          void fetchData("/device", setDevices, null, null);
+        if (message.type === "DEVICE_STATUS") {
+          setDevices((prevDevices) =>
+            prevDevices.map((device) =>
+              device.embed_id === message?.payload?.data.embed_id
+                ? { ...device, status: message?.payload?.data.status }
+                : device
+            )
+          );
         }
-        console.log("Device SSE received:", data);
+        console.log("Device SSE received:", message);
       };
 
       eventSource.onerror = (err) => {

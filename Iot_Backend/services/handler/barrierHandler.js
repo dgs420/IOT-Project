@@ -10,9 +10,7 @@ const VehicleType = require("../../models/vehicleTypeModel");
 const Transaction = require("../../models/transactionModel");
 const { mqttEventEmitter } = require("../eventEmitter");
 const { getClient } = require("../mqttClient");
-const {
-  sendNotification,
-} = require("../../controllers/notificationController.js");
+
 const {createAndSendNotification} = require("../../services/notificationService");
 
 const { isParkingFull } = require("../helper/helper.js");

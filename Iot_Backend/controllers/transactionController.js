@@ -3,6 +3,7 @@ const Device = require("../models/deviceModel");
 const sequelize = require("../config/database");
 const ExcelJS = require("exceljs");
 const { Op } = require("sequelize");
+const transactionService = require("../services/transactionService");
 
 exports.getAllTransactions = async (req, res) => {
   try {
@@ -114,22 +115,18 @@ exports.getDeviceTransactions = async (req, res) => {
       sortOrder = "DESC",
     } = req.query;
 
-    // Basic validation
     if (!deviceId) {
       return res
         .status(400)
         .json({ code: 400, message: "Device ID is required" });
     }
 
-    // Build the query conditions
     const whereClause = [`t.device_id = ${parseInt(deviceId)}`];
 
-    // Filter by payment method if provided
     if (paymentMethod) {
       whereClause.push(`t.payment_method = '${paymentMethod}'`);
     }
 
-    // Filter by date - either specific date or date range
     if (date) {
       whereClause.push(`DATE(t.created_at) = '${date}'`);
     } else if (startDate && endDate) {
@@ -140,14 +137,11 @@ exports.getDeviceTransactions = async (req, res) => {
       whereClause.push(`t.created_at <= '${endDate}'`);
     }
 
-    // Combine conditions
     const whereCondition =
       whereClause.length > 0 ? `WHERE ${whereClause.join(" AND ")}` : "";
 
-    // Calculate pagination parameters
     const offset = (page - 1) * limit;
 
-    // Validate and sanitize sort fields to prevent SQL injection
     const validSortFields = [
       "created_at",
       "amount",
@@ -164,7 +158,6 @@ exports.getDeviceTransactions = async (req, res) => {
       ? sortOrder.toUpperCase()
       : "DESC";
 
-    // Query to get total count
     const [countResult] = await Transaction.sequelize.query(`
       SELECT COUNT(*) as total
       FROM transactions t
@@ -174,7 +167,6 @@ exports.getDeviceTransactions = async (req, res) => {
     const total = parseInt(countResult[0].total);
     const totalPages = Math.ceil(total / limit);
 
-    // Main query with joins for related data
     const [transactions] = await Transaction.sequelize.query(`
       SELECT 
         t.*,
@@ -189,7 +181,6 @@ exports.getDeviceTransactions = async (req, res) => {
       LIMIT ${limit} OFFSET ${offset}
     `);
 
-    // Prepare response with pagination metadata
     res.status(200).json({
       code: 200,
       message: "Device transactions retrieved successfully",
@@ -206,7 +197,7 @@ exports.getDeviceTransactions = async (req, res) => {
     res.status(500).json({ code: 500, message: error.message });
   }
 };
-// exports.getDeviceCashFlow = async (req, res) => {
+
 //   try {
 //     const [data] = await Transaction.sequelize
 //       .query(`SELECT device_id, COUNT(*) as transaction_count, SUM(amount) as cash_total
@@ -249,188 +240,32 @@ exports.getDailyRevenue = async (req, res) => {
 exports.getAllTransactionsORM = async (req, res) => {
   try {
     const {
-      deviceId,
-      embedId,
-      paymentMethod,
-      transactionType,
-      startDate,
-      endDate,
-      date,
-      page = 1,
-      limit = 10,
-      sortField = "created_at",
-      sortOrder = "DESC",
-    } = req.query;
-
-    // Build where conditions
-    const whereConditions = {};
-    const dateConditions = {};
-
-    if (deviceId) {
-      whereConditions.device_id = parseInt(deviceId);
-    }
-
-    if (embedId) {
-      const device = await Device.findOne({ where: { embed_id: embedId } });
-      whereConditions.device_id = device.device_id;
-    }
-
-    if (paymentMethod) {
-      whereConditions.payment_method = paymentMethod;
-    }
-
-    if (transactionType) {
-      whereConditions.transaction_type = transactionType;
-    }
-
-    // Handle date filtering
-    if (date) {
-      // For specific date
-      const startOfDay = new Date(date);
-      const endOfDay = new Date(date);
-      endOfDay.setHours(23, 59, 59, 999);
-
-      dateConditions.created_at = {
-        [Op.between]: [startOfDay, endOfDay],
-      };
-    } else if (startDate || endDate) {
-      const dateRange = {};
-      if (startDate) {
-        dateRange[Op.gte] = new Date(startDate);
-      }
-     
-      if (endDate) {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        dateRange[Op.lte] = end;
-      }
-      dateConditions.created_at = dateRange;
-      dateConditions.created_at = dateRange;
-    }
-
-    // Combine conditions
-    const finalWhereConditions = { ...whereConditions, ...dateConditions };
-
-    // Validate sort parameters
-    const validSortFields = [
-      "created_at",
-      "amount",
-      "payment_method",
-      "status",
-      "transaction_type",
-      "device_id",
-    ];
-    const sanitizedSortField = validSortFields.includes(sortField)
-      ? sortField
-      : "created_at";
-    const sanitizedSortOrder = ["ASC", "DESC"].includes(sortOrder.toUpperCase())
-      ? sortOrder.toUpperCase()
-      : "DESC";
-
-    // Calculate pagination
-    const offset = (page - 1) * limit;
-
-    const { count, rows: transactions } = await Transaction.findAndCountAll({
-      where: finalWhereConditions,
-      attributes: {
-        include: [
-          [
-            sequelize.Sequelize.literal(`(
-          SELECT embed_id
-          FROM Devices AS device
-          WHERE device.device_id = Transaction.device_id
-        )`),
-            "embed_id",
-          ],
-        ],
-      },
-      order: [[sanitizedSortField, sanitizedSortOrder]],
-      limit: parseInt(limit),
-      offset: parseInt(offset),
-      raw: true, // Use raw if you want flat JSON instead of nested structure
-    });
-    // Execute query with associations
-    // const { count, rows: transactions } = await Transaction.findAndCountAll({
-    //   where: finalWhereConditions,
-    //   include: [
-    //     {
-    //       model: Device,
-    //       attributes: ["embed_id"],
-    //       required: false,
-    //     },
-    //   ],
-    //   order: [[sanitizedSortField, sanitizedSortOrder]],
-    //   limit: parseInt(limit),
-    //   offset: parseInt(offset),
-    // });
-
-    const totalPages = Math.ceil(count / limit);
-
-    // Calculate summary statistics
-    const summary = await Transaction.findAll({
-      where: finalWhereConditions,
-      attributes: [
-        [
-          sequelize.Sequelize.fn(
-            "COUNT",
-            sequelize.Sequelize.col("transaction_id")
-          ),
-          "total_transactions",
-        ],
-        [
-          sequelize.Sequelize.fn("SUM", sequelize.Sequelize.col("amount")),
-          "total_amount",
-        ],
-        [
-          sequelize.Sequelize.fn(
-            "SUM",
-            sequelize.Sequelize.literal(
-              "CASE WHEN transaction_type = 'top-up' THEN amount ELSE 0 END"
-            )
-          ),
-          "total_topups",
-        ],
-        [
-          sequelize.Sequelize.fn(
-            "SUM",
-            sequelize.Sequelize.literal(
-              "CASE WHEN transaction_type = 'fee' THEN amount ELSE 0 END"
-            )
-          ),
-          "total_fees",
-        ],
-      ],
-      raw: true,
-    });
+      transactions,
+      count,
+      summary,
+      pagination,
+      filters,
+    } = await transactionService.getTransactionsWithSummary(req.query);
 
     res.status(200).json({
       code: 200,
       message: "Transactions retrieved successfully",
-      info: transactions, // Keep 'info' for backward compatibility
+      info: transactions,
       pagination: {
         total: count,
-        totalPages,
-        currentPage: parseInt(page),
-        limit: parseInt(limit),
-        hasNextPage: parseInt(page) < totalPages,
-        hasPrevPage: parseInt(page) > 1,
+        totalPages: pagination.totalPages,
+        currentPage: pagination.currentPage,
+        limit: pagination.limit,
+        hasNextPage: pagination.currentPage < pagination.totalPages,
+        hasPrevPage: pagination.currentPage > 1,
       },
       summary: {
-        totalTransactions: parseInt(summary[0]?.total_transactions) || 0,
-        totalAmount: parseFloat(summary[0]?.total_amount) || 0,
-        totalTopups: parseFloat(summary[0]?.total_topups) || 0,
-        totalFees: parseFloat(summary[0]?.total_fees) || 0,
+        totalTransactions: parseInt(summary?.total_transactions) || 0,
+        totalAmount: parseFloat(summary?.total_amount) || 0,
+        totalTopups: parseFloat(summary?.total_topups) || 0,
+        totalFees: parseFloat(summary?.total_fees) || 0,
       },
-      filters: {
-        deviceId: deviceId || null,
-        paymentMethod: paymentMethod || null,
-        transactionType: transactionType || null,
-        dateRange: {
-          startDate: startDate || null,
-          endDate: endDate || null,
-          specificDate: date || null,
-        },
-      },
+      filters,
     });
   } catch (error) {
     console.error("Error fetching transactions:", error);
@@ -478,99 +313,11 @@ exports.getDeviceCashByDay = async (req, res) => {
   }
 };
 
-async function getAllTransactionsWithoutPagination(query) {
-  const {
-    deviceId,
-    embedId,
-    paymentMethod,
-    transactionType,
-    startDate,
-    endDate,
-    date,
-    sortField = "created_at",
-    sortOrder = "DESC",
-  } = query;
-
-  const whereConditions = {};
-  const dateConditions = {};
-
-  if (deviceId) {
-    whereConditions.device_id = parseInt(deviceId);
-  }
-
-  if (embedId) {
-    const device = await Device.findOne({ where: { embed_id: embedId } });
-    if (device) whereConditions.device_id = device.device_id;
-  }
-
-  if (paymentMethod) {
-    whereConditions.payment_method = paymentMethod;
-  }
-
-  if (transactionType) {
-    whereConditions.transaction_type = transactionType;
-  }
-
-  if (date) {
-    const startOfDay = new Date(date);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-    dateConditions.created_at = {
-      [Op.between]: [startOfDay, endOfDay],
-    };
-  } else if (startDate || endDate) {
-    const dateRange = {};
-    if (startDate) dateRange[Op.gte] = new Date(startDate);
-    if (endDate) {
-      const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-      dateRange[Op.lte] = end;
-    }
-    dateConditions.created_at = dateRange;
-  }
-
-  const finalWhere = { ...whereConditions, ...dateConditions };
-
-  const validSortFields = [
-    "created_at",
-    "amount",
-    "payment_method",
-    "status",
-    "transaction_type",
-    "device_id",
-  ];
-  const sanitizedSortField = validSortFields.includes(sortField)
-    ? sortField
-    : "created_at";
-  const sanitizedSortOrder = ["ASC", "DESC"].includes(sortOrder.toUpperCase())
-    ? sortOrder.toUpperCase()
-    : "DESC";
-
-  const transactions = await Transaction.findAll({
-    where: finalWhere,
-    attributes: {
-      include: [
-        [
-          sequelize.Sequelize.literal(`(
-          SELECT embed_id
-          FROM Devices AS device
-          WHERE device.device_id = Transaction.device_id
-        )`),
-          "embed_id",
-        ],
-      ],
-    },
-    order: [[sanitizedSortField, sanitizedSortOrder]],
-  });
-
-  return transactions;
-}
-
 exports.exportTransactionsExcel = async (req, res) => {
   try {
     const { ...filters } = req.query;
 
-    const transactions = await getAllTransactionsWithoutPagination(filters);
+    const transactions = await transactionService.getAllTransactionsWithoutPagination(filters);
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Transactions");

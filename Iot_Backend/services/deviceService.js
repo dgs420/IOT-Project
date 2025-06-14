@@ -61,7 +61,8 @@ const updateDevice = async (deviceId, updateData) => {
 const deleteDevice = async (deviceId) => {
   const device = await Device.findByPk(deviceId);
   if (!device) throw { code: 404, message: "Device not found." };
-
+  const client = getClient();
+  client.publish(`device/${device.embed_id}/status`, "", { retain: true });
   await device.destroy();
 };
 
