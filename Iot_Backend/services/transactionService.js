@@ -3,7 +3,91 @@ const sequelize = require("../config/database");
 const Transaction = require("../models/transactionModel");
 const Device = require("../models/deviceModel");
 
-async function getTransactionsWithSummary(query) {
+
+exports.getAllTransactions = async () => {
+  return await Transaction.findAll();
+};
+
+exports.getUserTransactions = async (user_id) => {
+  return await Transaction.findAll({
+    where: { user_id },
+    order: [["createdAt", "DESC"]],
+  });
+};
+
+exports.getRecentTransactions = async (user_id, limit = 5) => {
+  return await Transaction.findAll({
+    where: { user_id },
+    order: [["createdAt", "DESC"]],
+    limit,
+  });
+};
+
+exports.getTransactionSummary = async () => {
+  const [data] = await sequelize.query(`
+    SELECT transaction_type, payment_method, SUM(amount) as total
+    FROM transactions
+    WHERE status = 'completed'
+    GROUP BY transaction_type, payment_method
+  `);
+  return data;
+};
+
+exports.getDeviceCashFlow = async () => {
+  const [data] = await Transaction.sequelize.query(`
+      SELECT
+        d.device_id,
+        d.embed_id,
+        d.location,
+        COUNT(t.transaction_id) AS transaction_count,
+        SUM(t.amount) AS cash_total
+      FROM transactions t
+      JOIN devices d ON t.device_id = d.device_id
+      WHERE t.payment_method = 'cash' AND t.status = 'completed'
+      GROUP BY d.device_id, d.embed_id, d.location
+      ORDER BY cash_total DESC
+    `);
+
+  return data;
+}
+
+exports.getDeviceCashByDay = async (device_id, from, to) => {
+  const [data] = await sequelize.query(
+    `
+    SELECT DATE(created_at) as date, SUM(amount) as cash_total
+    FROM transactions
+    WHERE 
+      device_id = :device_id
+      AND payment_method = 'cash'
+      AND status = 'completed'
+      AND DATE(created_at) BETWEEN :from AND :to
+    GROUP BY DATE(created_at)
+    ORDER BY date ASC
+    `,
+    {
+      replacements: { device_id, from, to },
+    }
+  );
+  return data;
+};
+
+exports.getDailyRevenue = async (from, to) => {
+  const [data] = await sequelize.query(
+    `
+    SELECT DATE(created_at) as date, SUM(amount) as total
+    FROM transactions
+    WHERE status = 'completed' AND created_at BETWEEN :from AND :to
+    GROUP BY DATE(created_at)
+    ORDER BY date ASC
+    `,
+    {
+      replacements: { from, to },
+    }
+  );
+  return data;
+};
+
+exports.getTransactionsWithSummary = async (query) => {
   const {
     deviceId,
     embedId,
@@ -151,7 +235,7 @@ async function getTransactionsWithSummary(query) {
   };
 }
 
-async function getAllTransactionsWithoutPagination(query) {
+exports.getAllTransactionsWithoutPagination =  async (query) => {
   const {
     deviceId,
     embedId,
@@ -240,4 +324,3 @@ async function getAllTransactionsWithoutPagination(query) {
 }
 
 
-module.exports = { getTransactionsWithSummary, getAllTransactionsWithoutPagination };

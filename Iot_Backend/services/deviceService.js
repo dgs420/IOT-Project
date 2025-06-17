@@ -1,6 +1,6 @@
 const Device = require("../models/deviceModel");
 const TrafficLog = require("../models/trafficLogModel");
-const { getClient } = require("./mqttClient");
+const { getClient } = require("../config/mqttClient");
 const { Op } = require("sequelize");
 
 const createDevice = async ({

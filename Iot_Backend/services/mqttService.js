@@ -1,12 +1,12 @@
 const mqtt = require("mqtt");
 const { handleDeviceStatus } = require("./handler/deviceStatusHandler");
 
-const { barrierHandler, cashConfirm } = require("./handler/barrierHandler");
-const { connectMqtt, getClient } = require("./mqttClient"); // For emitting MQTT events
+const { handleCardScan, cashConfirm } = require("./handler/barrierHandler");
+const { connectMqtt, getClient } = require("../config/mqttClient"); // For emitting MQTT events
 // let client;
 
-function startMqttService() {
-  const client = connectMqtt();
+function handleMqttMessage() {
+  const client = getClient();
 
   client.on("message", async (rawTopic, rawMessage) => {
     const topic = rawTopic.toString();
@@ -35,20 +35,21 @@ function startMqttService() {
       switch (topicParts[0]) {
         case "device": {
           if (topicParts[2] === "status") {
-            await handleDeviceStatus(client, embedId, message);
+            await handleDeviceStatus(embedId, message);
           }
           break;
         }
 
         case "barrier": {
-          switch (topicParts[1]) {
+          switch (topicParts[2]) {
             case "enter":
             case "exit":
-              await barrierHandler(client, topic, message);
+              await handleCardScan(topicParts[2], message);
+              console.log("topic:", topic);
               break;
 
             case "exit-cash":
-              await cashConfirm(client, message);
+              await cashConfirm(message);
               break;
           }
           break;
@@ -60,4 +61,4 @@ function startMqttService() {
   });
 }
 
-module.exports = { startMqttService };
+module.exports = { handleMqttMessage };

@@ -1,13 +1,9 @@
-const Transaction = require("../models/transactionModel");
-const Device = require("../models/deviceModel");
-const sequelize = require("../config/database");
 const ExcelJS = require("exceljs");
-const { Op } = require("sequelize");
 const transactionService = require("../services/transactionService");
 
 exports.getAllTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.findAll();
+    const transactions = await transactionService.getAllTransactions();
     res.status(200).json({
       code: 200,
       message: "Alltransaction found",
@@ -21,10 +17,7 @@ exports.getAllTransactions = async (req, res) => {
 exports.getYourTransactions = async (req, res) => {
   try {
     const user_id = req.user.user_id;
-    const transactions = await Transaction.findAll({
-      where: { user_id },
-      order: [["createdAt", "DESC"]],
-    });
+    const transactions = await transactionService.getUserTransactions(user_id);
 
     res.status(200).json({
       code: 200,
@@ -40,11 +33,9 @@ exports.getYourTransactions = async (req, res) => {
 exports.getRecentTransactions = async (req, res) => {
   try {
     const user_id = req.user.user_id;
-    const transactions = await Transaction.findAll({
-      where: { user_id },
-      order: [["createdAt", "DESC"]],
-      limit: 5,
-    });
+    const transactions = await transactionService.getRecentTransactions(
+      user_id
+    );
 
     res.status(200).json({
       code: 200,
@@ -62,14 +53,11 @@ exports.getRecentTransactions = async (req, res) => {
 
 exports.getTransactionSummary = async (req, res) => {
   try {
-    const [data] = await Transaction.sequelize.query(`
-      SELECT transaction_type, payment_method, SUM(amount) as total
-      FROM transactions
-      WHERE status = 'completed'
-      GROUP BY transaction_type, payment_method
-    `);
+    const summary = await transactionService.getTransactionSummary();
 
-    res.status(200).json({ code: 200, message: "Summary fetched", info: data });
+    res
+      .status(200)
+      .json({ code: 200, message: "Summary fetched", info: summary });
   } catch (error) {
     res.status(500).json({ code: 500, message: error.message });
   }
@@ -77,19 +65,7 @@ exports.getTransactionSummary = async (req, res) => {
 
 exports.getDeviceCashFlow = async (req, res) => {
   try {
-    const [data] = await Transaction.sequelize.query(`
-      SELECT
-        d.device_id,
-        d.embed_id,
-        d.location,
-        COUNT(t.transaction_id) AS transaction_count,
-        SUM(t.amount) AS cash_total
-      FROM transactions t
-      JOIN devices d ON t.device_id = d.device_id
-      WHERE t.payment_method = 'cash' AND t.status = 'completed'
-      GROUP BY d.device_id, d.embed_id, d.location
-      ORDER BY cash_total DESC
-    `);
+    const data = await transactionService.getDeviceCashFlow();
 
     res.status(200).json({
       code: 200,
@@ -101,116 +77,6 @@ exports.getDeviceCashFlow = async (req, res) => {
   }
 };
 
-exports.getDeviceTransactions = async (req, res) => {
-  try {
-    const {
-      deviceId,
-      paymentMethod,
-      startDate,
-      endDate,
-      date,
-      page = 1,
-      limit = 10,
-      sortField = "created_at",
-      sortOrder = "DESC",
-    } = req.query;
-
-    if (!deviceId) {
-      return res
-        .status(400)
-        .json({ code: 400, message: "Device ID is required" });
-    }
-
-    const whereClause = [`t.device_id = ${parseInt(deviceId)}`];
-
-    if (paymentMethod) {
-      whereClause.push(`t.payment_method = '${paymentMethod}'`);
-    }
-
-    if (date) {
-      whereClause.push(`DATE(t.created_at) = '${date}'`);
-    } else if (startDate && endDate) {
-      whereClause.push(`t.created_at BETWEEN '${startDate}' AND '${endDate}'`);
-    } else if (startDate) {
-      whereClause.push(`t.created_at >= '${startDate}'`);
-    } else if (endDate) {
-      whereClause.push(`t.created_at <= '${endDate}'`);
-    }
-
-    const whereCondition =
-      whereClause.length > 0 ? `WHERE ${whereClause.join(" AND ")}` : "";
-
-    const offset = (page - 1) * limit;
-
-    const validSortFields = [
-      "created_at",
-      "amount",
-      "payment_method",
-      "status",
-      "transaction_type",
-    ];
-    const validSortOrders = ["ASC", "DESC"];
-
-    const sanitizedSortField = validSortFields.includes(sortField)
-      ? sortField
-      : "created_at";
-    const sanitizedSortOrder = validSortOrders.includes(sortOrder.toUpperCase())
-      ? sortOrder.toUpperCase()
-      : "DESC";
-
-    const [countResult] = await Transaction.sequelize.query(`
-      SELECT COUNT(*) as total
-      FROM transactions t
-      ${whereCondition}
-    `);
-
-    const total = parseInt(countResult[0].total);
-    const totalPages = Math.ceil(total / limit);
-
-    const [transactions] = await Transaction.sequelize.query(`
-      SELECT 
-        t.*,
-        d.embed_id,
-        d.location,
-        u.email as user_email
-      FROM transactions t
-      JOIN devices d ON t.device_id = d.device_id
-      LEFT JOIN users u ON t.user_id = u.user_id
-      ${whereCondition}
-      ORDER BY t.${sanitizedSortField} ${sanitizedSortOrder}
-      LIMIT ${limit} OFFSET ${offset}
-    `);
-
-    res.status(200).json({
-      code: 200,
-      message: "Device transactions retrieved successfully",
-      info: transactions,
-      pagination: {
-        total,
-        totalPages,
-        currentPage: parseInt(page),
-        limit: parseInt(limit),
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching device transactions:", error);
-    res.status(500).json({ code: 500, message: error.message });
-  }
-};
-
-//   try {
-//     const [data] = await Transaction.sequelize
-//       .query(`SELECT device_id, COUNT(*) as transaction_count, SUM(amount) as cash_total
-//     FROM transactions
-//     WHERE payment_method = 'cash' AND status = 'completed'
-//     GROUP BY device_id`);
-
-//     res.status(200).json({ code: 200, message: "Cash per device", info: data });
-//   } catch (error) {
-//     res.status(500).json({ code: 500, message: error.message });
-//   }
-// };
-
 exports.getDailyRevenue = async (req, res) => {
   const { from, to } = req.query;
   if (!from || !to) {
@@ -218,18 +84,7 @@ exports.getDailyRevenue = async (req, res) => {
   }
 
   try {
-    const [data] = await Transaction.sequelize.query(
-      `
-      SELECT DATE(created_at) as date, SUM(amount) as total
-      FROM transactions
-      WHERE status = 'completed' AND created_at BETWEEN :from AND :to
-      GROUP BY DATE(created_at)
-      ORDER BY date ASC
-    `,
-      {
-        replacements: { from, to },
-      }
-    );
+    const data = await transactionService.getDailyRevenue(from, to);
 
     res.status(200).json({ code: 200, message: "Daily revenue", info: data });
   } catch (error) {
@@ -239,13 +94,8 @@ exports.getDailyRevenue = async (req, res) => {
 
 exports.getAllTransactionsORM = async (req, res) => {
   try {
-    const {
-      transactions,
-      count,
-      summary,
-      pagination,
-      filters,
-    } = await transactionService.getTransactionsWithSummary(req.query);
+    const { transactions, count, summary, pagination, filters } =
+      await transactionService.getTransactionsWithSummary(req.query);
 
     res.status(200).json({
       code: 200,
@@ -287,21 +137,10 @@ exports.getDeviceCashByDay = async (req, res) => {
   }
 
   try {
-    const [data] = await Transaction.sequelize.query(
-      `
-      SELECT DATE(created_at) as date, SUM(amount) as cash_total
-      FROM transactions
-      WHERE 
-        device_id = :device_id
-        AND payment_method = 'cash'
-        AND status = 'completed'
-        AND DATE(created_at) BETWEEN :from AND :to
-      GROUP BY DATE(created_at)
-      ORDER BY date ASC
-      `,
-      {
-        replacements: { device_id, from, to },
-      }
+    const data = await transactionService.getDeviceCashByDay(
+      device_id,
+      from,
+      to
     );
 
     res
@@ -317,7 +156,8 @@ exports.exportTransactionsExcel = async (req, res) => {
   try {
     const { ...filters } = req.query;
 
-    const transactions = await transactionService.getAllTransactionsWithoutPagination(filters);
+    const transactions =
+      await transactionService.getAllTransactionsWithoutPagination(filters);
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Transactions");

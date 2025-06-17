@@ -8,39 +8,12 @@ const User = require("../models/userModel");
 const Transaction = require("../models/transactionModel");
 const {getYourTransactions} = require("../controllers/transactionController");
 const transactionController = require("../controllers/transactionController");
+const paymentController = require("../controllers/paymentController");
 const requireRole = require("../middleware/requireRole");
 // Use requireAuth middleware for all routes except webhook
 router.use('/webhook', express.raw({ type: "application/json" }));
 
-router.post("/top-up",requireAuth, async (req, res) => {
-    try {
-        const { amount, currency,metadata  } = req.body;
-        const user_id = req.user.user_id; // Get user ID from auth middleware
-
-        if (!amount || !currency) {
-            return res.status(400).json({ error: "Amount and currency are required." });
-        }
-
-        // Validate amount (positive number)
-        if (amount <= 0) {
-            return res.status(400).json({ error: "Amount must be greater than zero." });
-        }
-
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount * 100), // Convert to smallest currency unit (cents)
-            currency,
-            payment_method_types: ["card"],
-            metadata: { user_id: String(user_id) }
-        });
-
-        res.json({
-            clientSecret: paymentIntent.client_secret,
-        });
-    } catch (error) {
-        console.error("Stripe error:", error);
-        res.status(500).json({ error: error.message });
-    }
-});
+router.post("/top-up",requireAuth, paymentController.createTopUp);
 
 router.get("/balance",requireAuth, async (req, res) => {
     try {
@@ -74,63 +47,12 @@ router.get("/transactions-summary",requireAuth, requireRole(['manager','admin'])
 router.get("/transactions-cash",requireAuth, requireRole(['manager','admin']), transactionController.getDeviceCashFlow);
 router.get("/transactions-daily",requireAuth, requireRole(['manager','admin']), transactionController.getDailyRevenue);
 router.get("/device-cash-daily",requireAuth, requireRole(['manager','admin']), transactionController.getDeviceCashByDay);
-router.get("/device-transactions",requireAuth, requireRole(['manager','admin']), transactionController.getDeviceTransactions);
 router.get("/transactions",requireAuth, transactionController.getYourTransactions);
 router.get("/recent-transactions",requireAuth, transactionController.getRecentTransactions);
 router.get("/export-transactions",requireAuth, transactionController.exportTransactionsExcel); 
 
 // This route should be exempt from requireAuth middleware
-router.post("/webhook", async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    let event;
-
-    try {
-        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (err) {
-        console.error(`Webhook Error: ${err.message}`);
-        return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "payment_intent.succeeded") {
-        const paymentIntent = event.data.object;
-        try {
-            // Get user ID from Stripe metadata
-            const user_id = paymentIntent.metadata.user_id;
-            // console.log(paymentIntent);
-            // Convert amount to correct currency format (cents to dollars)
-            const amount = paymentIntent.amount / 100;
-
-            // Find user and update balance
-            const user = await User.findOne({ where: { user_id } });
-
-            if (user) {
-                const newBalance = user.balance + amount;
-                await user.update({ balance: newBalance });
-                console.log(`✅ Balance updated for user ${user_id}. New balance: ${newBalance}`);
-
-                // Create transaction record
-                await Transaction.create({
-                    user_id,
-                    amount,
-                    balance: newBalance,
-                    transaction_type: 'top-up',
-                    payment_method: 'stripe',
-                    payment_id: paymentIntent.id, // Store Stripe transaction ID for reference
-                    status: 'completed'
-                });
-            } else {
-                console.log(`❌ User not found: ${user_id}`);
-            }
-        } catch (error) {
-            console.error("Database update error:", error);
-            // Don't send error response to Stripe - they'll retry
-            // Just log it and return 200 to acknowledge receipt
-        }
-    }
-
-    // Always return a 200 response to acknowledge receipt of the webhook
-    res.json({ received: true });
-});
+router.post("/webhook", paymentController.handleWebhook);
 
 
 router.use(requireAuth);

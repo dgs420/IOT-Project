@@ -20,7 +20,7 @@ const { sendToUser, sendToChannel } = require("./services/sseService");
 
 const http = require("http");
 
-const { startMqttService } = require("./services/mqttService");
+const { handleMqttMessage } = require("./services/mqttService");
 const { mqttEventEmitter } = require("./services/eventEmitter");
 
 // Import models
@@ -35,6 +35,7 @@ const Transaction = require("./models/transactionModel");
 const ParkingSpace = require("./models/parkingSpaceModel");
 const Vehicle = require("./models/vehicleModel");
 const VehicleType = require("./models/vehicleTypeModel");
+const { connectMqtt } = require("./config/mqttClient");
 require("./models/modelHooks");
 
 RfidCard.belongsTo(User, { foreignKey: "user_id" });
@@ -163,8 +164,8 @@ async function init() {
       // { alter: true }
       ();
     console.log("All models were synchronized successfully.");
-
-    startMqttService();
+    connectMqtt();
+    handleMqttMessage();
 
     console.log("Server is running with MQTT enabled");
   } catch (error) {

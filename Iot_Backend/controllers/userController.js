@@ -37,6 +37,19 @@ exports.getPersonalDetail = async (req, res) => {
   }
 };
 
+exports.getUserBalance = async (req, res) => {
+  try {
+    const user = await userService.getPersonalDetail(req.user.user_id);
+    res
+      .status(200)
+      .json({ code: 200, message: "User balance", info: user.balance });
+  } catch (error) {
+    res
+      .status(error.code || 500)
+      .json({ code: error.code || 500, message: error.message });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     const result = await userService.deleteUser(req.params.userId, req.user);
