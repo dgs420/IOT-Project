@@ -9,9 +9,6 @@ import NewCardDialog from "../../../Common/Components/Dialogs/NewCardDialog";
 import { loadStripe } from "@stripe/stripe-js";
 // import process from "process";
 
-// Mock data would typically come from an API or context
-import { recentTransactions } from "./MockData";
-import { getRequest } from "../../../api/index.js";
 import { fetchData } from "../../../api/fetchData.js";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);

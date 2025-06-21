@@ -152,7 +152,7 @@ const Header = ({toggleSidebar}) => {
                     {/* Right section: Search, notifications, user */}
                     <div className="flex items-center space-x-4">
                         {/* Search - hide on mobile unless expanded */}
-                        <div className={`transition-all duration-200 ease-in-out ${
+                        {/* <div className={`transition-all duration-200 ease-in-out ${
                             isMobile && !showMobileSearch ? "w-0 overflow-hidden opacity-0" : "w-auto opacity-100"
                         }`}>
                             <form onSubmit={handleSearch} className="relative">
@@ -171,10 +171,9 @@ const Header = ({toggleSidebar}) => {
                                     <span className="sr-only">Search</span>
                                 </button>
                             </form>
-                        </div>
+                        </div> */}
 
-                        {/* Mobile search toggle */}
-                        {isMobile && (
+                        {/* {isMobile && (
                             <button
                                 className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
                                 onClick={() => setShowMobileSearch(!showMobileSearch)}
@@ -184,7 +183,7 @@ const Header = ({toggleSidebar}) => {
                                     {showMobileSearch ? "Close search" : "Open search"}
                                 </span>
                             </button>
-                        )}
+                        )} */}
 
 
                         <NotificationDropdown

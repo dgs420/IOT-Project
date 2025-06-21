@@ -561,7 +561,7 @@ async function cashConfirm( data) {
       is_valid: false,
       details: `System error: ${error.message}`,
     });
-    return publishResponse(topic, embed_id, "error", "System error");
+    // return publishResponse(topic, embed_id, "error", "System error");
   }
 }
 

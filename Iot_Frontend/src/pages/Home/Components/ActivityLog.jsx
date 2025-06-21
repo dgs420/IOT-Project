@@ -39,7 +39,7 @@ const ActivityLog = ({ latestActivityEvent }) => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {events.length > 0 ? (
-                events.map((event, index) => (
+                events.slice(0, 10).map((event, index) => (
                   <tr
                     key={index}
                     className="hover:bg-gray-50 transition duration-200"
@@ -79,7 +79,7 @@ const ActivityLog = ({ latestActivityEvent }) => {
               ) : (
                 <tr>
                   <td
-                    colSpan="5"
+                    // colSpan="5"
                     className="px-4 py-2 text-gray-500 text-center"
                   >
                     No events received yet.

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import VehiclesPieChart from "./VehiclesPieChart.jsx";
-import { Car, ClipboardList, LogOut, LogIn } from "lucide-react";
+import { Car, ClipboardList, LogOut, LogIn, User, Space, Microchip, Wifi } from "lucide-react";
 import { Card, CardContent } from "@mui/material";
 import { Link } from "react-router-dom";
 import ActivityLog from "./ActivityLog.jsx";
@@ -8,14 +8,19 @@ import { fetchData } from "../../../api/fetchData.js";
 import useUserStore from "../../../store/useUserStore.js";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import useSSEStore from "../../../store/useSseStore.js";
+import { OnlinePrediction } from "@mui/icons-material";
 
 const HomeAdmin = () => {
   const [homeData, setHomeData] = useState({
+    user_count: 0,
     pending_requests: 0,
     total_vehicles: 0,
     vehicles_in: 0,
     vehicles_exited: 0,
     traffic_today: 0,
+    total_spaces: 0,
+    devices_count: 0,
+    online_devices_count: 0,
   });
   const [latestActivityEvent, setLatestActivityEvent] = useState(null);
 
@@ -71,6 +76,12 @@ const HomeAdmin = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {[
+          // {
+          //   title: "USERS",
+          //   value: homeData.user_count,
+          //   icon: User,
+          //   link: "/users-list",
+          // },
           {
             title: "UNRESOLVED REQUESTS",
             value: homeData.pending_requests,
@@ -101,6 +112,24 @@ const HomeAdmin = () => {
             icon: ClipboardList,
             link: "/report",
           },
+          {
+            title: "PARKING SPACES",
+            value: homeData.total_spaces,
+            icon: Space,
+            link: "/report",
+          },
+          {
+            title: "DEVICES COUNT",
+            value: homeData.devices_count,
+            icon: Microchip,
+            link: "/device",
+          },
+          {
+            title: "DEVICES ONLINE",
+            value: homeData.online_devices_count,
+            icon: OnlinePrediction,
+            link: "/device",
+          }
         ].map((item, index) => (
           <Link to={item.link} key={index} className="block hover:no-underline">
             <Card className="h-full transition-all duration-200 hover:shadow-lg cursor-pointer">

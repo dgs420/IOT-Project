@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { VehicleItem } from "./VehicleItem";
 import { EmptyVehicleList } from "./EmptyVehicleList";
-import { toast } from "react-toastify";
-import { getRequest } from "../../../api";
 import {fetchData} from "../../../api/fetchData.js";
 import {TablePagination} from "@mui/material";
 

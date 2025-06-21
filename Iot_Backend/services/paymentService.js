@@ -1,6 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const User = require("../models/userModel");
 const Transaction = require("../models/transactionModel");
+const { createAndSendNotification } = require("./notificationService");
 
 exports.createTopUpIntent = async (user_id, amount, currency) => {
   if (!amount || !currency) {
@@ -23,7 +24,7 @@ exports.createTopUpIntent = async (user_id, amount, currency) => {
 
 exports.handleStripeWebhook = async (req, sig) => {
   let event;
-
+  console.log("whasdl");
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
@@ -62,7 +63,7 @@ exports.handleStripeWebhook = async (req, sig) => {
     await createAndSendNotification(
         user_id,
         `You sucessfully added $${amount} to your account. You now have $${newBalance} in your account.`,
-        "sucess"
+        "success"
       );
 
     console.log(

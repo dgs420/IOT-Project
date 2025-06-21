@@ -45,7 +45,7 @@ const TransactionFilter = ({ filters, setFilters }) => {
                         onChange={(e) => handleChange('method', e.target.value)}
                     >
                         <option value="all">All</option>
-                        <option value="rfid-balance">Credits</option>
+                        <option value="rfid_balance">Credits</option>
                         <option value="cash">Cash</option>
                         <option value="stripe">Stripe</option>
                     </select>

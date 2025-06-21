@@ -22,7 +22,7 @@ const DeviceActivity = ({embedId}) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                 {events.length > 0 ? (
-                    events.slice().reverse().map((event, index) => (
+                    events.slice().map((event, index) => (
                         <tr key={index} className="hover:bg-gray-50 transition duration-200">
                             <td className="px-4 py-2 text-sm text-gray-700">{event?.card_number}</td>
                             <td className="px-4 py-2 text-sm text-gray-700">{event?.vehicle_number}</td>

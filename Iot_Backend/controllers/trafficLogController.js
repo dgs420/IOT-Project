@@ -34,13 +34,6 @@ exports.getDetailedLogs = async (req, res) => {
     const { page = 1, limit = 20, all } = req.query;
 
     if (all === "true") {
-      // if (result.logs.length === 0) {
-      //   return res.status(404).json({
-      //     code: 404,
-      //     message: "No logs found for the given criteria.",
-      //   });
-      // }
-
       return res.status(200).json({
         code: 200,
         message: "All logs fetched successfully",
@@ -64,6 +57,11 @@ exports.getDetailedLogs = async (req, res) => {
             totalPages: Math.ceil(result.count / limit),
             totalRecords: result.count,
           },
+        },
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(result.count / limit),
+          total: result.count,
         },
       });
     }
