@@ -136,7 +136,7 @@ const Login = () => {
           )}
 
           <CustomButton
-            type="submit"
+            // type="submit"
             onClick={handleLogin}
             title={isLoading ? "Signing in..." : "Sign In"}
             className="w-full items-center justify-center mt-4"

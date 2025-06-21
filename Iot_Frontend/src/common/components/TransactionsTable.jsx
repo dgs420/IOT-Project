@@ -18,7 +18,7 @@ import {
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import {DatePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 import {fetchData} from "../../api/fetchData.js";
 import {Link} from "react-router-dom";
 import {CustomButton} from "./CustomButton.jsx";

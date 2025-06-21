@@ -105,6 +105,8 @@ const ParkingSessionTable = ({ sessions, loading, sortConfig, onSort }) => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                showFirstButton={true}
+                showLastButton={true}
             />
         </Paper>
     )
