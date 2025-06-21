@@ -24,3 +24,11 @@ export const CustomButton = ({ icon, color, title, onClick, className = "", disa
         </button>
     );
 };  
+
+CustomButton.defaultProps = {
+  icon: null,
+  color: 'primary',
+  onClick: undefined,
+  className: '',
+  disabled: false,
+};

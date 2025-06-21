@@ -25,4 +25,10 @@ const PageContentHeader = ({onClick, label, description, buttonLabel, className}
     );
 };
 
+PageContentHeader.defaultProps = {
+  onClick: undefined,
+  buttonLabel: undefined,
+  className: '',
+};
+
 export default PageContentHeader;

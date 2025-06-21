@@ -1,7 +1,6 @@
-// services/userService.js
 const User = require("../models/userModel");
 const Card = require("../models/rfidCardModel");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async () => {
   return await User.findAll();

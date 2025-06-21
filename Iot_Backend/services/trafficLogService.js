@@ -53,6 +53,7 @@ exports.fetchDetailedLogs = async ({
   startDate,
   endDate,
   deviceId,
+  embedId
 }) => {
   const whereCondition = {};
 
@@ -79,6 +80,13 @@ exports.fetchDetailedLogs = async ({
       throw new Error(`Device with ID ${deviceId} not found.`);
     }
     whereCondition.device_id = deviceId;
+  }
+
+  if (embedId) {
+    const device = await Device.findOne({ where: { embed_id: embedId } });
+    if (!device) {
+      throw new Error(`Device with embed ID ${embedId} not found.`);
+    }
   }
 
   const queryOptions = {

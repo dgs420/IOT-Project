@@ -6,7 +6,7 @@ const requireRole = require("../middleware/requireRole");
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "http://your-production-domain.com",
+  "https://iot-project-git-main-dgs420s-projects.vercel.app",
 ];
 
 router.get(

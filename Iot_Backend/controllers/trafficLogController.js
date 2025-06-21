@@ -46,22 +46,25 @@ exports.getDetailedLogs = async (req, res) => {
           message: "No logs found for the given criteria.",
         });
       }
+      const totalPages = Math.ceil(result.count / limit);
+      const currentPage = parseInt(page);
 
       return res.status(200).json({
         code: 200,
         message: "Logs fetched successfully",
-        info: {
-          logs: result.rows,
-          pagination: {
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(result.count / limit),
-            totalRecords: result.count,
-          },
-        },
+        info: result.rows,
+        // pagination: {
+        //   currentPage: parseInt(page),
+        //   totalPages: Math.ceil(result.count / limit),
+        //   totalRecords: result.count,
+        // },
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(result.count / limit),
           total: result.count,
+          totalPages,
+          currentPage,
+          limit: parseInt(limit),
+          hasNextPage: currentPage < totalPages,
+          hasPrevPage: currentPage > 1,
         },
       });
     }
