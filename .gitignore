@@ -6,3 +6,4 @@ Iot_Backend/.env
 Iot_Frontend/vite.config.js.timestamp-1747543005173-2e1453b746.mjs
 /Iot_Backend/node_modules
 *.jsx~
+*.mjs

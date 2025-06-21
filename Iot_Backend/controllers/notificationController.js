@@ -1,117 +1,52 @@
-const RfidCard = require('../models/rfidCardModel');
-const User = require('../models/userModel');
-const Notification = require("../models/notificationModel");
-const { mqttEventEmitter } = require('../services/eventEmitter');
+const notificationService = require('../services/notificationService');
 
 exports.getNotification = async (req, res) => {
-    const user_id = req.user.user_id;
-
     try {
-        const notifications = await Notification.findAll({
-            where: {
-                user_id // Filter by card IDs
-            }
-        });
-        // if (notifications.length === 0) {
-        //     return res.status(404).json({
-        //         code: 404,
-        //         message: 'You have not registered any RFID cards.' });
-        // }
-
+        const notifications = await notificationService.getUserNotifications(req.user.user_id);
         res.status(200).json({
-            code:200,
+            code: 200,
             message: "Notifications Successfully Fetched",
-            info: notifications});
+            info: notifications,
+        });
     } catch (error) {
         console.error('Error fetching notifications:', error);
-        res.status(500).json({
-            code:500,
-            message: 'Server error' });
+        res.status(500).json({ code: 500, message: 'Server error' });
     }
-
 };
 
 exports.markAsRead = async (req, res) => {
-    const { notification_id } = req.params;
-    const user_id = req.user.user_id;
-
     try {
-        const notification = await Notification.findOne({
-            where: {
-                notification_id,
-                user_id
-            }
-        });
+        const notification = await notificationService.markNotificationAsRead(
+            req.user.user_id,
+            req.params.notification_id
+        );
 
         if (!notification) {
-            return res.status(404).json({
-                code: 404,
-                message: 'Notification not found'
-            });
+            return res.status(404).json({ code: 404, message: 'Notification not found' });
         }
-        if (!notification.is_read) {
-            notification.is_read = true;
-            await notification.save();
-        }
-
 
         res.status(200).json({
             code: 200,
             message: 'Notification marked as read',
-            info: notification
+            info: notification,
         });
     } catch (error) {
         console.error('Error marking notification as read:', error);
-        res.status(500).json({
-            code: 500,
-            message: 'Server error'
-        });
+        res.status(500).json({ code: 500, message: 'Server error' });
     }
-}
+};
 
 exports.markAllAsRead = async (req, res) => {
-    const user_id = req.user.user_id;
-
     try {
-        // Update all unread notifications for the user
-        const updatedCount = await Notification.update(
-            { is_read: true }, // Set `is_read` to true
-            {
-                where: {
-                    user_id,
-                    is_read: false, // Only update unread notifications
-                },
-            }
-        );
-
+        const count = await notificationService.markAllNotificationsAsRead(req.user.user_id);
         res.status(200).json({
             code: 200,
-            message: `${updatedCount[0]} notifications marked as read.`,
+            message: `${count} notifications marked as read.`,
         });
     } catch (error) {
         console.error('Error marking all notifications as read:', error);
-        res.status(500).json({
-            code: 500,
-            message: 'Server error',
-        });
+        res.status(500).json({ code: 500, message: 'Server error' });
     }
 };
 
-
-exports.sendNotification = async (user_id, message, type = {}) => {
-    try {
-        // Create a new notification in the database
-        const notification = await Notification.create({
-            user_id,
-            type,
-            message,
-            is_read: false,
-        });
-
-        mqttEventEmitter.emit('notification', { user_id });
-        return notification;
-    } catch (error) {
-        console.error("Error sending notification:", error);
-        throw error;
-    }
-};
+exports.sendNotification = notificationService.createAndSendNotification;

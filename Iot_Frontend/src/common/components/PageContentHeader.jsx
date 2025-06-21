@@ -1,3 +1,4 @@
+
 import React from "react";
 import {Plus} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
@@ -12,7 +13,7 @@ const PageContentHeader = ({onClick, label, description, buttonLabel, className}
                 </div>
                 {buttonLabel && onClick && (
                     <CustomButton
-                        variant="primary"
+                        color="primary"
                         icon={<Plus size={18}/>}
                         onClick={onClick}
                         title={buttonLabel}

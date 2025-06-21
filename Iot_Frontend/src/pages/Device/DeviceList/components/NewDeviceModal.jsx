@@ -85,9 +85,7 @@ function NewDeviceModal({open,onClose, onSuccess}) {
                         title="Add Device"
                         className="w-full mt-4 justify-center"
                     />
-                    {/*<Button type="submit" variant="contained" color="primary" fullWidth style={{marginTop: '10px'}}>*/}
-                    {/*    Add Device*/}
-                    {/*</Button>*/}
+                  
                 </form>
             </Box>
         </Modal>

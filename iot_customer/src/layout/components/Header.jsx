@@ -1,25 +1,21 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Bell, ChevronDown, Search, Menu, X, Home, ChevronRight } from 'lucide-react';
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {ChevronRight, Home, Menu, Search, X} from 'lucide-react';
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import NotificationDropdown from "./Notification/NotificationDropdown.jsx";
 import UserDropdown from "./UserDropdown.jsx";
+import useUserStore from '../../store/useUserStore.js';
 
-const mockNotifications = [
-    { id: 1, message: "Your vehicle card request has been approved.", status: "unread" },
-    { id: 2, message: "Your vehicle card request has been rejected.", status: "read" },
-    { id: 3, message: "New update available for your app.", status: "unread" },
-];
 
-const Header = ({ toggleSidebar }) => {
+const Header = ({toggleSidebar}) => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
-    const [notifications, setNotifications] = useState(mockNotifications);
+    const [notifications, setNotifications] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [showMobileSearch, setShowMobileSearch] = useState(false);
+    const {username, clearUser} = useUserStore.getState();
 
     const navigate = useNavigate();
     const location = useLocation();
-    const username = localStorage.getItem('username') || 'User';
     const userInitial = username.charAt(0).toUpperCase();
 
     const headerRef = useRef(null);
@@ -30,15 +26,11 @@ const Header = ({ toggleSidebar }) => {
         setShowDropdown(false);
     }, []);
 
-    const handleLogout = useCallback(() => {
-        ['token', 'uid', 'role', 'username'].forEach(item => localStorage.removeItem(item));
-        navigate('/login');
-    }, [navigate]);
 
     const markAsRead = useCallback((id) => {
         setNotifications(prev =>
             prev.map(notification =>
-                notification.id === id ? { ...notification, status: 'read' } : notification
+                notification.id === id ? {...notification, status: 'read'} : notification
             )
         );
     }, []);
@@ -74,7 +66,7 @@ const Header = ({ toggleSidebar }) => {
         return (
             <div className="flex items-center text-xs text-gray-500 mt-1">
                 <Link to="/" className="hover:text-blue-600 flex items-center">
-                    <Home className="h-3 w-3 mr-1" />
+                    <Home className="h-3 w-3 mr-1"/>
                     <span>Home</span>
                 </Link>
 
@@ -87,12 +79,12 @@ const Header = ({ toggleSidebar }) => {
                         'details': 'Statistics',
                         'your-cards': 'Your cards',
                         'users-list': 'Users',
-                        'request':'Request'
+                        'request': 'Request'
                     };
 
                     return (
                         <React.Fragment key={path}>
-                            <ChevronRight className="h-3 w-3 mx-1 text-gray-400" />
+                            <ChevronRight className="h-3 w-3 mx-1 text-gray-400"/>
                             {isLast ? (
                                 <span className="font-medium text-gray-700 capitalize">
                                     {titles[segment] || segment}
@@ -146,7 +138,7 @@ const Header = ({ toggleSidebar }) => {
                             className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
                             onClick={toggleSidebar}
                         >
-                            <Menu className="h-5 w-5" />
+                            <Menu className="h-5 w-5"/>
                             <span className="sr-only">Toggle menu</span>
                         </button>
 
@@ -160,7 +152,7 @@ const Header = ({ toggleSidebar }) => {
                     {/* Right section: Search, notifications, user */}
                     <div className="flex items-center space-x-4">
                         {/* Search - hide on mobile unless expanded */}
-                        <div className={`transition-all duration-200 ease-in-out ${
+                        {/* <div className={`transition-all duration-200 ease-in-out ${
                             isMobile && !showMobileSearch ? "w-0 overflow-hidden opacity-0" : "w-auto opacity-100"
                         }`}>
                             <form onSubmit={handleSearch} className="relative">
@@ -175,61 +167,42 @@ const Header = ({ toggleSidebar }) => {
                                     type="submit"
                                     className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
                                 >
-                                    <Search className="h-4 w-4" />
+                                    <Search className="h-4 w-4"/>
                                     <span className="sr-only">Search</span>
                                 </button>
                             </form>
-                        </div>
+                        </div> */}
 
-                        {/* Mobile search toggle */}
-                        {isMobile && (
+                        {/* {isMobile && (
                             <button
                                 className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
                                 onClick={() => setShowMobileSearch(!showMobileSearch)}
                             >
-                                {showMobileSearch ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+                                {showMobileSearch ? <X className="h-5 w-5"/> : <Search className="h-5 w-5"/>}
                                 <span className="sr-only">
                                     {showMobileSearch ? "Close search" : "Open search"}
                                 </span>
                             </button>
-                        )}
+                        )} */}
 
-                        {/* Notifications - keeping the original component */}
-                        {/*<div className="relative notification-trigger">*/}
-                        {/*    <button*/}
-                        {/*        className={`p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none relative ${*/}
-                        {/*            showNotification ? "bg-gray-100" : ""*/}
-                        {/*        }`}*/}
-                        {/*        onClick={toggleNotification}*/}
-                        {/*    >*/}
-                        {/*        <Bell className="h-5 w-5" />*/}
-                        {/*        {unreadCount > 0 && (*/}
-                        {/*            <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">*/}
-                        {/*                {unreadCount}*/}
-                        {/*            </span>*/}
-                        {/*        )}*/}
-                        {/*        <span className="sr-only">Notifications</span>*/}
-                        {/*    </button>*/}
 
-                        {/*    {showNotification && (*/}
-                                <NotificationDropdown
-                                    notifications={notifications}
-                                    toggleNotification={toggleNotification}
-                                    markAsRead={markAsRead}
-                                    showNotification={showNotification}
-                                    unreadCount={unreadCount}
-                                />
+                        <NotificationDropdown
+                            notifications={notifications}
+                            toggleNotification={toggleNotification}
+                            markAsRead={markAsRead}
+                            showNotification={showNotification}
+                            unreadCount={unreadCount}
+                        />
                         {/*    )}*/}
                         {/*</div>*/}
 
 
-                                <UserDropdown
-                                    username={username}
-                                    showDropdown={showDropdown}
-                                    setShowDropdown={setShowDropdown}
-                                    handleLogout={handleLogout}
-                                    userInitial={userInitial}
-                                />
+                        <UserDropdown
+                            username={username}
+                            showDropdown={showDropdown}
+                            setShowDropdown={setShowDropdown}
+                            userInitial={userInitial}
+                        />
 
                     </div>
                 </div>

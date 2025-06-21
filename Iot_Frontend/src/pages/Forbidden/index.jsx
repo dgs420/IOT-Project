@@ -3,8 +3,10 @@ import React from "react";
 import { Box, Button, Container, Grid2, Typography } from "@mui/material";
 
 import { Link } from "react-router-dom";
+import useUserStore from "../../store/useUserStore";
 
 export const ForbiddenPage = () => {
+  const {clearUser, role} = useUserStore.getState();
   return (
     <Box
       sx={{
@@ -20,7 +22,7 @@ export const ForbiddenPage = () => {
             <Typography variant="h1">403</Typography>
             <Typography variant="h6">You are not suppose to be here</Typography>
             <Link to="/login">
-              <Button variant="contained">Go back</Button>
+              <Button onClick={clearUser} variant="contained">Go back</Button>
             </Link>
           </Grid2>
           <Grid2 item xs={6}>

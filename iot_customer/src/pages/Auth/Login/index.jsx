@@ -2,11 +2,15 @@ import React, { useState } from 'react'
 import parkingImage from '../../../assets/parking-management-system.jpeg';
 import {toast} from "react-toastify";
 import {postRequest} from "../../../api/index.js";
+import useUserStore from "../../../store/useUserStore.js";
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { setUser } = useUserStore.getState();
+    const navigate = useNavigate();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -20,13 +24,13 @@ const Login = () => {
             const { token, user_id, role, username } = response.info;
 
 
-            // Store the JWT and user information
-            localStorage.setItem('token', token);
-            localStorage.setItem('user_id', user_id);
-            localStorage.setItem('role', role);
-            localStorage.setItem('username',username);
-            // Redirect user
-            window.location.href = '/';
+            setUser({
+                token: token,
+                uid: user_id,
+                username: username,
+                role: role,
+            });
+            navigate("/");
         } catch (error) {
             setError(error.message);
         }

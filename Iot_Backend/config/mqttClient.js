@@ -1,11 +1,9 @@
-// mqttClient.js
 const mqtt = require('mqtt');
 
 let client = null;
 
 function connectMqtt() {
-    if (client) return client;  // Reuse existing client.
-
+    if (client) return client; 
     const MQTT_CREDENTIALS = {
         port: process.env.MQTT_PORT,
         username: process.env.BROKER_USERNAME,
@@ -17,7 +15,7 @@ function connectMqtt() {
 
     client.on('connect', () => {
         console.log('Connected to MQTT broker');
-        client.subscribe(['barrier/enter', 'barrier/exit','barrier/exit-cash','device/+/status'], (err) => {
+        client.subscribe(['barrier/enter', 'barrier/exit','barrier/+/enter', 'barrier/+/exit','barrier/+/exit-cash','barrier/exit-cash','device/+/status'], (err) => {
             if (err) {
                 console.error('Failed to subscribe:', err.message);
             } else {

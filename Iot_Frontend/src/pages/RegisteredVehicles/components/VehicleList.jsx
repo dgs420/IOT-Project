@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { VehicleItem } from "./VehicleItem";
 import { EmptyVehicleList } from "./EmptyVehicleList";
-import { toast } from "react-toastify";
-import { getRequest } from "../../../api";
+import {fetchData} from "../../../api/fetchData.js";
+import {TablePagination} from "@mui/material";
 
 export const VehicleList = ({
   searchQuery,
   statusFilter,
-  onEditCard,
-  onDeleteCard,
   onAddNewCard,
   typeFilter,
 }) => {
   const [vehicles, setVehicles] = useState([]);
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(6)
+
+
   const filteredVehicles = vehicles.filter((vehicle) => {
     const matchesSearch = vehicle.vehicle_number
       .toLowerCase()
@@ -30,42 +32,43 @@ export const VehicleList = ({
     searchQuery || statusFilter !== "all" || typeFilter !== "all";
   
   useEffect(() => {
-    const getVehicles = async () => {
-      try {
-        const response = await getRequest("/vehicle/");
-
-        if (response.code === 200) {
-          setVehicles(response.info);
-        } else {
-          toast.error(response.message);
-          console.error(response.message);
-        }
-      } catch (err) {
-        toast.error(err);
-        console.error(err);
-      }
-    };
-    getVehicles();
+    void fetchData("/vehicle/", setVehicles);
   }, []);
 
   return (
     <div className="p-4 bg-white rounded-lg shadow">
       {filteredVehicles.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVehicles.map((vehicle) => (
+          {filteredVehicles
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((vehicle) => (
             <VehicleItem
               key={vehicle.vehicle_id}
               vehicle={vehicle}
               onDeleteSucess={() => setVehicles(vehicles.filter((v) => v.vehicle_id !== vehicle.vehicle_id))}
             />
           ))}
+
         </div>
+
       ) : (
         <EmptyVehicleList
           searchActive={searchActive}
           onAddNewCard={onAddNewCard}
         />
       )}
+      <TablePagination
+          component="div"
+          count={filteredVehicles.length}
+          page={page}
+          onPageChange={(e, newPage) => setPage(newPage)}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
+          rowsPerPageOptions={[6, 12, 24]}
+      />
     </div>
   );
 };

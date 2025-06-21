@@ -45,7 +45,7 @@ const ParkingSessionTableItem = ({session}) => {
             </TableCell>
 
             <TableCell>{formatDate(session.entry_time)}</TableCell>
-            <TableCell>{formatDate(session.exit_time)}</TableCell>
+            <TableCell>{session.exit_time ? formatDate(session.exit_time) : "—"}</TableCell>
             <TableCell>{formatDuration(duration)}</TableCell>
             <TableCell>
                 <StatusChip status={session.status} type="status"/>

@@ -224,7 +224,15 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     title='Cancel'
                                 />
 
-                                <Button
+                                 <CustomButton
+                                    type='submit'
+                                    color='primary'
+                                    disabled={isSubmitting}
+                                    title= {isSubmitting ? 'Saving...' : 'Save Changes'}
+                                    icon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
+                                />
+
+                                {/* <Button
                                     type="submit"
                                     variant="contained"
                                     color="primary"
@@ -233,7 +241,7 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                                     sx={{ px: 3 }}
                                 >
                                     {isSubmitting ? 'Saving...' : 'Save Changes'}
-                                </Button>
+                                </Button> */}
                             </Box>
                         </>
                     )}

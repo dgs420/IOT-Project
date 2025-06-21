@@ -12,4 +12,5 @@ router.put('/user-update/:userId',requireRole(['manager','admin']),userControlle
 router.delete('/:userId',requireRole(['manager','admin']),userController.deleteUser);
 router.get('/profile',userController.getPersonalDetail)
 router.put('/update', userController.updateProfile);
+router.get('/balance', userController.getUserBalance);
 module.exports = router;

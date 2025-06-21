@@ -9,10 +9,12 @@ const Vehicle = require("../../models/vehicleModel");
 const VehicleType = require("../../models/vehicleTypeModel");
 const Transaction = require("../../models/transactionModel");
 const { mqttEventEmitter } = require("../eventEmitter");
-const { getClient } = require("../mqttClient");
+const { getClient } = require("../../config/mqttClient.js");
+
 const {
-  sendNotification,
-} = require("../../controllers/notificationController.js");
+  createAndSendNotification,
+} = require("../../services/notificationService");
+
 const { isParkingFull } = require("../helper/helper.js");
 const { Hooks } = require("sequelize/lib/hooks");
 // const EventEmitter = require("events");
@@ -42,17 +44,16 @@ const validateInput = (data, requiredFields) => {
   );
 };
 
-// Shared response publisher
 const publishResponse = (
-  client,
   topic,
   embed_id,
   status,
   message,
   extra = {}
 ) => {
+  const client = getClient();
   return client.publish(
-    `${topic}/response/${embed_id}`,
+    `barrier/${topic}/response/${embed_id}`,
     JSON.stringify({ status, message, ...extra })
   );
 };
@@ -86,22 +87,17 @@ const logTraffic = async ({
   }
 };
 
-// Main barrier handler
-async function barrierHandler2(client, topic, data) {
+async function handleCardScan( topic, data) {
   const { card_number, embed_id, action } = data;
 
-  // Initialize logging variables
   let card_id = null;
   let device_id = null;
   let is_valid = false;
   let details = null;
 
   try {
-    // Validate input
     if (!card_number || !embed_id || !action) {
-      // await logTraffic({ device_id, action, is_valid, details: 'Missing or invalid fields' });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -109,19 +105,10 @@ async function barrierHandler2(client, topic, data) {
       );
     }
 
-    // Validate action
     if (!["enter", "exit"].includes(action)) {
-      // await logTraffic({ device_id, action, is_valid, details: 'Invalid action', });
-      return publishResponse(
-        client,
-        topic,
-        embed_id,
-        "invalid",
-        "Invalid action"
-      );
+      return publishResponse(topic, embed_id, "invalid", "Invalid action");
     }
 
-    // Find device
     const device = await Device.findOne({ where: { embed_id } });
     if (!device) {
       await logTraffic({
@@ -130,17 +117,10 @@ async function barrierHandler2(client, topic, data) {
         is_valid,
         details: "Device not found",
       });
-      return publishResponse(
-        client,
-        topic,
-        embed_id,
-        "invalid",
-        "Device not found"
-      );
+      return publishResponse(topic, embed_id, "invalid", "Device not found");
     }
     device_id = device.device_id;
 
-    // Find card and user
     const card = await RfidCard.findOne({
       where: { card_number },
       include: [{ model: User }],
@@ -155,7 +135,6 @@ async function barrierHandler2(client, topic, data) {
         embed_id,
       });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -168,7 +147,6 @@ async function barrierHandler2(client, topic, data) {
     card_id = card.card_id;
     const user = card.user;
 
-    // Find vehicle
     const vehicle = await Vehicle.findOne({
       where: { card_id: card.card_id },
       include: [{ model: VehicleType }],
@@ -184,7 +162,7 @@ async function barrierHandler2(client, topic, data) {
         details,
         embed_id,
       });
-      return publishResponse(client, topic, embed_id, "invalid", details, {
+      return publishResponse(topic, embed_id, "invalid", details, {
         vehicle_number: "N/A",
       });
     }
@@ -201,14 +179,18 @@ async function barrierHandler2(client, topic, data) {
         embed_id,
         vehicle_number: vehicle.vehicle_number,
       });
-      return publishResponse(client, topic, embed_id, "invalid", details, {
+      return publishResponse(topic, embed_id, "invalid", details, {
         vehicle_number: vehicle.vehicle_number,
       });
     }
 
     // Check balance for entry
     if (action === "enter" && user.balance <= 0) {
-      sendNotification(user.user_id, "Insufficient balance to park", "warning");
+      createAndSendNotification(
+        user.user_id,
+        "Insufficient balance to park",
+        "warning"
+      );
       details = "Insufficient balance";
       await logTraffic({
         card_id,
@@ -219,7 +201,7 @@ async function barrierHandler2(client, topic, data) {
         embed_id,
         vehicle_number: vehicle.vehicle_number,
       });
-      return publishResponse(client, topic, embed_id, "invalid", details, {
+      return publishResponse(topic, embed_id, "invalid", details, {
         vehicle_number: vehicle.vehicle_number,
       });
     }
@@ -237,7 +219,7 @@ async function barrierHandler2(client, topic, data) {
           embed_id,
           vehicle_number: vehicle.vehicle_number,
         });
-        return publishResponse(client, topic, embed_id, "invalid", details, {
+        return publishResponse(topic, embed_id, "invalid", details, {
           vehicle_number: vehicle.vehicle_number,
         });
       }
@@ -253,7 +235,7 @@ async function barrierHandler2(client, topic, data) {
           embed_id,
           vehicle_number: vehicle.vehicle_number,
         });
-        return publishResponse(client, topic, embed_id, "invalid", details, {
+        return publishResponse(topic, embed_id, "invalid", details, {
           vehicle_number: vehicle.vehicle_number,
         });
       }
@@ -280,7 +262,7 @@ async function barrierHandler2(client, topic, data) {
         embed_id,
         vehicle_number: vehicle.vehicle_number,
       });
-      return publishResponse(client, topic, embed_id, "valid", "Entry logged", {
+      return publishResponse(topic, embed_id, "valid", "Entry logged", {
         vehicle_number: vehicle.vehicle_number,
       });
     }
@@ -301,7 +283,7 @@ async function barrierHandler2(client, topic, data) {
         embed_id,
         vehicle_number: vehicle.vehicle_number,
       });
-      return publishResponse(client, topic, embed_id, "invalid", details, {
+      return publishResponse( topic, embed_id, "invalid", details, {
         vehicle_number: vehicle.vehicle_number,
       });
     }
@@ -314,7 +296,7 @@ async function barrierHandler2(client, topic, data) {
     );
 
     if (user.balance < fee) {
-      sendNotification(
+      createAndSendNotification(
         user.user_id,
         `Insufficient balance for exit fee of $${fee} for vehicle ${vehicle.vehicle_number}`,
         "warning"
@@ -329,7 +311,7 @@ async function barrierHandler2(client, topic, data) {
         embed_id,
         vehicle_number: vehicle.vehicle_number,
       });
-      return publishResponse(client, topic, embed_id, "invalid", details, {
+      return publishResponse(topic, embed_id, "invalid", details, {
         vehicle_number: vehicle.vehicle_number,
         fee,
       });
@@ -374,7 +356,7 @@ async function barrierHandler2(client, topic, data) {
       embed_id,
       vehicle_number: vehicle.vehicle_number,
     });
-    return publishResponse(client, topic, embed_id, "valid", "Exit logged", {
+    return publishResponse( topic, embed_id, "valid", "Exit logged", {
       vehicle_number: vehicle.vehicle_number,
       fee,
     });
@@ -389,12 +371,12 @@ async function barrierHandler2(client, topic, data) {
       embed_id,
       details,
     });
-    return publishResponse(client, topic, embed_id, "error", "System error");
+    return publishResponse(topic, embed_id, "error", "System error");
   }
 }
 
 // Cash payment handler
-async function cashConfirm(client, data) {
+async function cashConfirm( data) {
   const { vehicle_number, embed_id, fee } = data;
   let device_id = null;
 
@@ -403,11 +385,10 @@ async function cashConfirm(client, data) {
     if (!embed_id) {
       return console.error("Missing embed_id");
     }
-    const topic = `barrier/exit`;
+    const topic = `exit`;
     if (!vehicle_number || !fee) {
       // await logTraffic({ device_id, action: 'exit-cash', is_valid: false, details: 'Missing or invalid fields' });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -420,7 +401,6 @@ async function cashConfirm(client, data) {
     if (!device) {
       // await logTraffic({ device_id, action: 'exit-cash', is_valid: false, details: 'Device not found' });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -441,7 +421,6 @@ async function cashConfirm(client, data) {
         vehicle_number,
       });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -462,7 +441,6 @@ async function cashConfirm(client, data) {
         vehicle_number,
       });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -490,7 +468,6 @@ async function cashConfirm(client, data) {
         vehicle_number,
       });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -514,7 +491,6 @@ async function cashConfirm(client, data) {
         vehicle_number,
       });
       return publishResponse(
-        client,
         topic,
         embed_id,
         "invalid",
@@ -561,7 +537,6 @@ async function cashConfirm(client, data) {
       vehicle_number,
     });
     publishResponse(
-      client,
       topic,
       embed_id,
       "valid",
@@ -573,7 +548,7 @@ async function cashConfirm(client, data) {
       }
     );
 
-    sendNotification(
+    createAndSendNotification(
       user.user_id,
       `Cash payment of ${fee} received for vehicle ${vehicle.vehicle_number}`,
       "info"
@@ -586,9 +561,9 @@ async function cashConfirm(client, data) {
       is_valid: false,
       details: `System error: ${error.message}`,
     });
-    return publishResponse(client, topic, embed_id, "error", "System error");
+    // return publishResponse(topic, embed_id, "error", "System error");
   }
 }
 
-module.exports = { barrierHandler2, cashConfirm };
+module.exports = { handleCardScan, cashConfirm };
 // module.exports = { barrierHandler, cashConfirm, barrierHandler2 };

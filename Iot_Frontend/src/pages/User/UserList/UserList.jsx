@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { postRequest, deleteRequest } from "../../../api/index.js"; // Ensure your API functions are defined
 import { toast } from "react-toastify";
 import { fetchData } from "../../../api/fetchData.js";
@@ -91,7 +90,7 @@ function UserList() {
   const handleDeleteUser = async (userId) => {
     AntModal.confirm({
       title: 'Confirm Deletion',
-      content: 'Are you sure you want to delete this device?',
+      content: 'Are you sure you want to delete this user?',
       onOk: async () => {
         try {
           const response = await deleteRequest(`/user/${userId}`);

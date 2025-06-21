@@ -5,7 +5,7 @@ import StatusBadge from "../utils/StatusBadge.jsx";
 import ApproveModal from "./ApproveModal.jsx";
 import RejectModal from "./RejectModal.jsx";
 import { postRequest } from "../../../api/index.js";
-import { toast } from "react-toastify"; // Import the new RejectModal component
+import { toast } from "react-toastify";
 import { getVehicleIcon } from "../../../utils/helpers.jsx";
 
 const RequestCard = ({ request, refreshRequest }) => {
@@ -127,10 +127,7 @@ const RequestCard = ({ request, refreshRequest }) => {
                 value={request.contact_number || "Not provided"}
               />
               <RequestDetailItem
-                icon={getVehicleIcon(
-                  request.vehicle_type_id,
-                  "h-4 w-4 text-gray-500"
-                )}
+                icon={getVehicleIcon(request.vehicle_type_id, { className: "h-4 w-4 text-gray-500" })}
                 label="Vehicle Information"
                 value={`${request.vehicle_number || "No number"} (${
                   request.vehicle_type_id || "Unknown type"
@@ -146,7 +143,6 @@ const RequestCard = ({ request, refreshRequest }) => {
         )}
       </div>
 
-      {/* Approve Modal */}
       <ApproveModal
         isOpen={showApproveModal}
         onClose={() => setShowApproveModal(false)}
@@ -154,7 +150,6 @@ const RequestCard = ({ request, refreshRequest }) => {
         request={request}
       />
 
-      {/* Reject Modal */}
       <RejectModal
         isOpen={showRejectModal}
         onClose={() => setShowRejectModal(false)}

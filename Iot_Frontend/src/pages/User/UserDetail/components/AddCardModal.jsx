@@ -2,6 +2,7 @@ import {Box, Button, MenuItem, Modal, TextField} from "@mui/material";
 import React from "react";
 import propTypes from "prop-types";
 import {useVehicleTypeStore} from "../../../../store/useVehicleTypeStore.js";
+import { CustomButton } from "../../../../common/components/CustomButton.jsx";
 
 
 const AddCardModal = ({ open, onClose, newCard, onInputChange, onSubmit }) => {
@@ -21,7 +22,7 @@ const AddCardModal = ({ open, onClose, newCard, onInputChange, onSubmit }) => {
                     transform: "translate(-50%, -50%)",
                 }}
             >
-                <h2>Add New Vehicle</h2>
+                <h2 className="text-xl font-semibold">Add New Vehicle</h2>
                 <form onSubmit={onSubmit}>
                     <TextField
                         label="Card Number"
@@ -59,7 +60,7 @@ const AddCardModal = ({ open, onClose, newCard, onInputChange, onSubmit }) => {
                             ))
                         )}
                     </TextField>
-                    <Button
+                    {/* <Button
                         type="submit"
                         variant="contained"
                         color="primary"
@@ -67,7 +68,13 @@ const AddCardModal = ({ open, onClose, newCard, onInputChange, onSubmit }) => {
                         sx={{ mt: 2 }}
                     >
                         Add Vehicle
-                    </Button>
+                    </Button> */}
+                    <CustomButton
+                        type="submit"
+                        color="primary"
+                        className="w-full items-center justify-center"
+                        title="Add vehicle"
+                    />
                 </form>
             </Box>
         </Modal>

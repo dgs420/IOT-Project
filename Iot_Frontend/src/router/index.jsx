@@ -15,6 +15,7 @@ import ParkingSpaceManagement from "../pages/ParkingSpace/ParkingSpace.jsx";
 import { RegisteredVehicles } from '../pages/RegisteredVehicles/index.jsx';
 import ParkingSessions from "../pages/ParkingSessions/index.jsx";
 import TransactionsDashboard from "../pages/Transactions/index.jsx";
+import { ForbiddenPage } from "../pages/Forbidden/index.jsx";
 
 export const APP_ROUTES = [
     {
@@ -78,8 +79,8 @@ export const APP_ROUTES = [
         element: <UserRequests />,
     },
     {
-        key: 'users-cards',
-        path: '/users-cards',
+        key: 'vehicles',
+        path: '/vehicles',
         element: <RegisteredVehicles />,
     },
     {
@@ -97,9 +98,15 @@ export const APP_ROUTES = [
       path: '/parking-sessions',
       element: <ParkingSessions/>,
     },
+
     {
         key:'vehicle-types',
         path: '/vehicle-types',
         element: <VehicleTypeAdmin />,
+    },
+    {
+        key:'forbidden',
+        path: '/forbidden',
+        element: <ForbiddenPage />,
     }
 ];

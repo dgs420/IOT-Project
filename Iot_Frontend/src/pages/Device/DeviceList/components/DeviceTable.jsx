@@ -60,7 +60,9 @@ function DeviceTable({devices, setDevices}) {
                         >
                             {device.status}
                         </td>
-                        <td className="py-2 px-4 border-b text-center">{new Date(device.last_seen).toLocaleString()}</td>
+                        <td className="py-2 px-4 border-b text-center">
+                            {device.last_seen ? new Date(device.last_seen).toLocaleString() : 'N/A'}
+                        </td>
                         <td className="py-2 px-4 border-b text-center flex justify-between">
                             <Link to={`/device/${device.embed_id}`}>
                                 <IconButton color="primary">

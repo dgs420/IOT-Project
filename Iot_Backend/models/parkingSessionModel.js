@@ -1,7 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const RfidCard = require("./rfidCardModel");
-const Device = require("./deviceModel");
 const Vehicle = require("./vehicleModel");
 const ParkingSession = sequelize.define(
   "parking_session",

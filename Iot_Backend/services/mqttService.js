@@ -1,52 +1,64 @@
-const mqtt = require('mqtt');
-const RfidCard = require('../models/rfidCardModel');
-const TrafficLog = require('../models/trafficLogModel');
-const Device = require('../models/deviceModel');
-const {handleDeviceStatus} = require("./handler/deviceStatusHandler");
+const mqtt = require("mqtt");
+const { handleDeviceStatus } = require("./handler/deviceStatusHandler");
 
-const mqttEventEmitter = require('./eventEmitter');
-const {barrierHandler,cashConfirm,barrierHandler2} = require("./handler/barrierHandler");
-const {connectMqtt} = require("./mqttClient"); // For emitting MQTT events
+const { handleCardScan, cashConfirm } = require("./handler/barrierHandler");
+const { connectMqtt, getClient } = require("../config/mqttClient"); // For emitting MQTT events
 // let client;
 
-function startMqttService() {
-  const client = connectMqtt();
+function handleMqttMessage() {
+  const client = getClient();
 
-  client.on('message', async (rawTopic, rawMessage) => {
+  client.on("message", async (rawTopic, rawMessage) => {
     const topic = rawTopic.toString();
-    const message = JSON.parse(rawMessage.toString());
+    const messageStr = rawMessage.toString();
+    if (!messageStr || messageStr.trim() === "") {
+      console.warn(`[MQTT] Empty message received on topic ${topic}`);
+      return;
+    }
+
+    let message;
+    try {
+      message = JSON.parse(messageStr);
+    } catch (err) {
+      console.error(
+        `[MQTT] Failed to parse JSON from topic ${topic}:`,
+        messageStr
+      );
+      return;
+    }
+
     console.log(`Received MQTT message on topic ${topic}:`, message);
     try {
-      const topicParts = topic.split('/');
+      const topicParts = topic.split("/");
       const embedId = topicParts[1];
 
       switch (topicParts[0]) {
-        case 'device': {
-          if (topicParts[2] === 'status') {
-            await handleDeviceStatus(client, embedId, message);
+        case "device": {
+          if (topicParts[2] === "status") {
+            await handleDeviceStatus(embedId, message);
           }
           break;
         }
 
-        case 'barrier': {
-          switch (topicParts[1]) {
-            case 'enter':
-            case 'exit':
-              await barrierHandler2(client, topic, message);
+        case "barrier": {
+          switch (topicParts[2]) {
+            case "enter":
+            case "exit":
+              await handleCardScan(topicParts[2], message);
+              console.log("topic:", topic);
               break;
 
-            case 'exit-cash':
-              await cashConfirm(client, message);
+            case "exit-cash":
+              await cashConfirm(message);
               break;
           }
           break;
         }
       }
-
     } catch (error) {
       console.error(`Error processing MQTT message on topic ${topic}:`, error);
     }
   });
 }
 
-module.exports = { startMqttService };
+module.exports = { handleMqttMessage };

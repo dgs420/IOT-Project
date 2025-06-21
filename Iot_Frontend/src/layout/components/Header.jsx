@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Search, Menu, X, Home, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import UserDropdown from "./UserDropdown.jsx";
+import useUserStore from '../../store/useUserStore.js';
 
 const mockNotifications = [
   { id: 1, message: "Your vehicle card request has been approved.", status: "unread" },
@@ -13,12 +14,11 @@ const Header = ({ toggleSidebar }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
-  const [searchQuery, setSearchQuery] = useState('');
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const {username, clearUser } = useUserStore.getState();
 
   const navigate = useNavigate();
   const location = useLocation();
-  const username = localStorage.getItem('username') || 'User';
   const userInitial = username.charAt(0).toUpperCase();
 
   const headerRef = useRef(null);
@@ -28,11 +28,6 @@ const Header = ({ toggleSidebar }) => {
     setShowNotification(prev => !prev);
     setShowDropdown(false);
   }, []);
-
-  const handleLogout = useCallback(() => {
-    ['token', 'uid', 'role', 'username'].forEach(item => localStorage.removeItem(item));
-    navigate('/login');
-  }, [navigate]);
 
   const markAsRead = useCallback((id) => {
     setNotifications(prev =>
@@ -169,7 +164,6 @@ const Header = ({ toggleSidebar }) => {
                   username={username}
                   showDropdown={showDropdown}
                   setShowDropdown={setShowDropdown}
-                  handleLogout={handleLogout}
                   userInitial={userInitial}
               />
 

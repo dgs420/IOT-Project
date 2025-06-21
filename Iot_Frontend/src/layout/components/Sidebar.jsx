@@ -20,7 +20,7 @@ const Sidebar = () => {
     { to: "/users-requests", icon: <Mail />, label: "User Requests" },
     { to: "/parking-sessions", icon: <Clock />, label: "Parking Sessions" },
     { to: "/parking-spaces", icon: <ParkingSquare />, label: "Parking Spaces" },
-    { to: "/users-cards", icon: <CreditCard />, label: "Registered Vehicles" },
+    { to: "/vehicles", icon: <CreditCard />, label: "Registered Vehicles" },
     { to: "/transactions-dashboard", icon: <FileText />, label: "Transactions" },
     { to: "/details", icon: <BarChart />, label: "Statistics" },
     { to: "/device", icon: <Microchip />, label: "Devices" },

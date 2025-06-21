@@ -16,7 +16,6 @@ export const UserRequests = () => {
         const getUserRequests = async () => {
             try{
                 const response = await getRequest('/request/your-requests');
-                console.log(response);
                 if (response.code === 200) {
                     setRequests(response.info);
                 } else

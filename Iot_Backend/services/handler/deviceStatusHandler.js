@@ -1,7 +1,7 @@
 const Device = require('../../models/deviceModel.js');
 const { mqttEventEmitter } = require('../eventEmitter');
 
-async function handleDeviceStatus(client, embed_id, data) {
+async function handleDeviceStatus( embed_id, data) {
     const { status } = data;
     const device = await Device.findOne({ where: { embed_id } });
     console.log("Handler: " + status);
