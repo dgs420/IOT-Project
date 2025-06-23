@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { create } from "zustand";
 import { EventSourcePolyfill } from "event-source-polyfill";
 

@@ -26,8 +26,8 @@ const Sidebar = () => {
     { to: "/device", icon: <Microchip />, label: "Devices" },
     { to: "/users-list", icon: <Users />, label: "Users" },
     { to: "/vehicle-types", icon: <Car />, label: "Vehicle Types" },
-    { to: "/settings", icon: <Settings />, label: "Settings" },
-    { to: "/about", icon: <Info />, label: "About Us" },
+    // { to: "/settings", icon: <Settings />, label: "Settings" },
+    // { to: "/about", icon: <Info />, label: "About Us" },
   ];
   return (
     <div className="w-64 bg-white fixed h-full border-r p-4">

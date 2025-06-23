@@ -3,7 +3,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/ma
 
 
 
-export const CustomButton = ({ icon, color, title, onClick, className = "", disabled=false }) => {
+export const CustomButton = ({ icon=null, color='primary', title, onClick=undefined, className = "", disabled=false }) => {
     const colors = {
         primary: "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500",
         secondary: "bg-gray-600 hover:bg-gray-700 focus:ring-gray-500",
@@ -24,11 +24,3 @@ export const CustomButton = ({ icon, color, title, onClick, className = "", disa
         </button>
     );
 };  
-
-CustomButton.defaultProps = {
-  icon: null,
-  color: 'primary',
-  onClick: undefined,
-  className: '',
-  disabled: false,
-};

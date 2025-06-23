@@ -8,6 +8,7 @@ import {Activity, DollarSign, Info, Settings} from "lucide-react"
 import PageContentHeader from "../../../common/components/PageContentHeader.jsx";
 import TransactionsTable from "../../../common/components/TransactionsTable.jsx";
 import DeviceDetails from "./components/DeviceDetails.jsx";
+import ActivityList from '@/common/components/ActivityTable.jsx';
 
 const DeviceDetail = () => {
     const {embedId} = useParams();
@@ -82,7 +83,7 @@ const DeviceDetail = () => {
                             <DeviceDetails embedId={embedId}/>
                         )}
 
-                        {activeTab === 1 && <DeviceActivity embedId={deviceDetails.embed_id}/>}
+                        {activeTab === 1 && <ActivityList embedId={deviceDetails.embed_id}/>}
 
                         {activeTab === 2 && <TransactionsTable embedId={embedId}/>
                         }

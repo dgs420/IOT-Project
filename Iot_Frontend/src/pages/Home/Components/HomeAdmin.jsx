@@ -1,13 +1,13 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import VehiclesPieChart from "./VehiclesPieChart.jsx";
-import { Car, ClipboardList, LogOut, LogIn, User, Space, Microchip, Wifi } from "lucide-react";
+import { Car, ClipboardList, LogOut, LogIn, Space, Microchip } from "lucide-react";
 import { Card, CardContent } from "@mui/material";
 import { Link } from "react-router-dom";
 import ActivityLog from "./ActivityLog.jsx";
 import { fetchData } from "../../../api/fetchData.js";
 import useUserStore from "../../../store/useUserStore.js";
 import { EventSourcePolyfill } from "event-source-polyfill";
-import useSSEStore from "../../../store/useSseStore.js";
 import { OnlinePrediction } from "@mui/icons-material";
 
 const HomeAdmin = () => {
@@ -116,10 +116,10 @@ const HomeAdmin = () => {
             title: "PARKING SPACES",
             value: homeData.total_spaces,
             icon: Space,
-            link: "/report",
+            link: "/parking-spaces",
           },
           {
-            title: "DEVICES COUNT",
+            title: "TOTAL DEVICES",
             value: homeData.devices_count,
             icon: Microchip,
             link: "/device",

@@ -7,6 +7,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:5174",
   "https://iot-project-git-main-dgs420s-projects.vercel.app",
+  "https://iot-project-h7xc-git-main-dgs420s-projects.vercel.app"
 ];
 
 router.get(

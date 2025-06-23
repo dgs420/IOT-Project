@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { fetchData } from "../../../api/fetchData.js";
 import NewDeviceModal from "./components/NewDeviceModal.jsx";

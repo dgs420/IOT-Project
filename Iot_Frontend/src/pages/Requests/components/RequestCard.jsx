@@ -22,7 +22,7 @@ const RequestCard = ({ request, refreshRequest }) => {
       if (response.code === 200) {
         toast.success(response.message);
         setShowApproveModal(false);
-        // refreshRequest();
+        refreshRequest();
       } else {
         toast.error(response.message);
       }

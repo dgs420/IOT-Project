@@ -176,7 +176,7 @@ exports.exportTransactionsExcel = async (req, res) => {
     transactions.forEach((tx) => {
       worksheet.addRow({
         ...tx.dataValues,
-        embed_id: tx.Device?.embed_id || null,
+        embed_id: tx.dataValues.embed_id || null || null,
       });
     });
 

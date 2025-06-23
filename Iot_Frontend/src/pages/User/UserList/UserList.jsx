@@ -21,6 +21,7 @@ function UserList() {
     last_name: "",
     email: "",
     role: "",
+    password: "",
   });
 
   useEffect(() => {
@@ -52,16 +53,15 @@ function UserList() {
       last_name: "",
       email: "",
       role: "",
+      password: "",
     });
   };
 
-  // Handle input changes for Add User
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit Add User Form
   const handleAddUserSubmit = async () => {
     if (
       !newUser.username ||
@@ -81,9 +81,9 @@ function UserList() {
         handleAddUserClose();
       } else {
         toast.error(response.message);
-        console.error(response.message);
       }
     } catch (error) {
+      toast.error("Failed to add user");
       console.error("Error adding user:", error);
     }
   };
