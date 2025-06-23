@@ -77,7 +77,7 @@ app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174",'https://iot-project-git-main-dgs420s-projects.vercel.app'],
+    origin: ["http://localhost:5173", "http://localhost:5174",'https://iot-project-git-main-dgs420s-projects.vercel.app','https://iot-project-h7xc-git-main-dgs420s-projects.vercel.app'],
     credentials: true,
   })
 );

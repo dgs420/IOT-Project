@@ -47,7 +47,7 @@ const ParkingSession = sequelize.define(
       defaultValue: "unpaid",
     },
     fee: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.FLOAT,
       defaultValue: 0,
     },
   },

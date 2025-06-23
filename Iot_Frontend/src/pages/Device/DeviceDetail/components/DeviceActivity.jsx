@@ -50,7 +50,7 @@ const DeviceActivity = ({embedId}) => {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="4" className="px-4 py-2 text-gray-500 text-center">
+                        <td colSpan={4} className="px-4 py-2 text-gray-500 text-center">
                             No activities recorded yet.
                         </td>
                     </tr>

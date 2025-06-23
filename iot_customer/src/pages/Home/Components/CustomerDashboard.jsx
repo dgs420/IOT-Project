@@ -27,7 +27,6 @@ export default function CustomerDashboard() {
 
   const handleCloseTopUpDialog = () => {
     setTopUpDialogOpen(false);
-    // Reset clientSecret when dialog is closed
     setClientSecret("");
   };
 
@@ -38,7 +37,6 @@ export default function CustomerDashboard() {
   }, []);
   return (
     <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh" }}>
-      {/* Balance and Vehicles Section */}
       <Box
         sx={{
           display: "flex",
@@ -54,7 +52,6 @@ export default function CustomerDashboard() {
         <HomeCardsPanel onRequestNewCard={() => setNewCardDialogOpen(true)} />
       </Box>
 
-      {/* Tabs Section */}
       <Paper sx={{ mb: 4, boxShadow: 3 }}>
         <Tabs
           value={tabValue}
@@ -66,12 +63,10 @@ export default function CustomerDashboard() {
           <Tab label="Recent Transactions" />
         </Tabs>
 
-        {/* Tab Panels */}
         {tabValue === 0 && <ParkingMap parkingLots={parkingSpaces} />}
         {tabValue === 1 && <HomeTransactionPanel transactions={transactions} />}
       </Paper>
 
-      {/* Dialogs */}
       <TopUpDialogWrapper
         open={topUpDialogOpen}
         onClose={handleCloseTopUpDialog}

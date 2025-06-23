@@ -6,7 +6,7 @@ import { Edit, Trash2 } from "lucide-react";
 
 const UsersTable = ({ users, handleDeleteUser }) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
 
   return (
     <div className="overflow-x-auto rounded-lg shadow border border-gray-200">

@@ -4,7 +4,11 @@ import ParkingLotCard from "./ParkingLotCard.jsx";
 
 const ParkingMap = ({ parkingLots = [] }) => {
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{
+                p: 3,
+                maxHeight: '60vh',      
+                overflowY: 'auto',     
+            }}>
             <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
                 Parking Availability
             </Typography>

@@ -18,7 +18,7 @@ import {
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import { fetchData } from "../../api/fetchData.js";
 import { Link } from "react-router-dom";
 import { CustomButton } from "./CustomButton.jsx";
@@ -48,7 +48,7 @@ const ActivityList = ({ embedId }) => {
   const handleSearch = () => {
     setPagination({ ...pagination, currentPage: 1 });
     void fetchData(
-      "/trafficlog/detailed",
+      "/logs/all-logs-details",
       setLogs,
       setLoading,
       null,
@@ -170,9 +170,35 @@ const ActivityList = ({ embedId }) => {
                     <TableCell>
                       {format(new Date(log.time), "yyyy-MM-dd HH:mm")}
                     </TableCell>
-                    <TableCell>{log.action}</TableCell>
-                    <TableCell>{log.is_valid ? "Yes" : "No"}</TableCell>
-                    <TableCell>{log.details || "N/A"}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          log.action.includes("enter")
+                            ? "bg-green-100 text-green-700"
+                            : "bg-blue-100 text-blue-700"
+                        }`}
+                      >
+                        {log.action}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`text-sm ${
+                          log?.is_valid ? "text-green-600" : "text-red-600"
+                        }`}
+                      >
+                        {log.is_valid ? "Yes" : "No"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`text-sm ${
+                          log?.is_valid ? "text-green-600" : "text-red-600"
+                        }`}
+                      >
+                        {log.details || "None"}
+                      </span>
+                    </TableCell>
                     <TableCell>
                       {log.device?.embed_id ? (
                         <Link to={`/device/${log.device.embed_id}`}>

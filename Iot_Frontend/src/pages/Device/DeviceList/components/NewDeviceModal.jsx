@@ -56,7 +56,7 @@ function NewDeviceModal({open,onClose, onSuccess}) {
                         style={{marginTop: '10px'}}
                     />
                     <TextField
-                        label="Device Location"
+                        label="Device name"
                         name="location"
                         value={newDevice.location}
                         onChange={handleInputChange}
@@ -80,7 +80,6 @@ function NewDeviceModal({open,onClose, onSuccess}) {
                     </TextField>
 
                     <CustomButton
-                        type="submit"
                         color="primary"
                         title="Add Device"
                         className="w-full mt-4 justify-center"

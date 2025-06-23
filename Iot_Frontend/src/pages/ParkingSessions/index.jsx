@@ -6,6 +6,7 @@ import ParkingSessionFilters from "./components/ParkingSessionFilter.jsx"
 import ParkingSessionTable from "./components/ParkingSessionTable.jsx"
 import {getRequest} from "../../api/index.js";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
+import ParkingSessionTablePaginated from "./components/ParkingSessionPaginated.jsx"
 
 const ParkingSessions = () => {
     const [sessions, setSessions] = useState([])
@@ -112,8 +113,6 @@ const ParkingSessions = () => {
                 label="Parking Sessions"
                 description="View and manage parking sessions"
                 className="mb-4"
-                
-
             />
 
             <ParkingSessionFilters
@@ -139,6 +138,7 @@ const ParkingSessions = () => {
                 loading={loading}
                 sortConfig={sortConfig}
                 onSort={handleSort}/>
+            {/* <ParkingSessionTablePaginated /> */}
         </Box>
     )
 }

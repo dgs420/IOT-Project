@@ -9,7 +9,7 @@ import {toast} from "react-toastify";
 import {fetchData} from "../../../api/fetchData.js";
 import {ConfirmModal} from "../../../common/components/ConfirmModal.jsx";
 
-export const VehicleItem = ({vehicle, onEdit, onDeleteSucess}) => {
+export const VehicleItem = ({vehicle,  onDeleteSucess}) => {
     const [showCardNumber, setShowCardNumber] = useState(false);
     const getTypeNameById = useVehicleTypeStore((state) => state.getTypeNameById);
     const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);

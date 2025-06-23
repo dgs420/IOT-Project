@@ -40,12 +40,12 @@ exports.getDetailedLogs = async (req, res) => {
         info: result,
       });
     } else {
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          code: 404,
-          message: "No logs found for the given criteria.",
-        });
-      }
+      // if (result.rows.length === 0) {
+      //   return res.status(404).json({
+      //     code: 404,
+      //     message: "No logs found for the given criteria.",
+      //   });
+      // }
       const totalPages = Math.ceil(result.count / limit);
       const currentPage = parseInt(page);
 

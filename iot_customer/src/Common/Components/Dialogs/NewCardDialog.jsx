@@ -1,4 +1,3 @@
-"use client"
 
 import React, { useState } from "react"
 import {
@@ -42,32 +41,8 @@ import { toast } from "react-toastify"
 import {postRequest} from "../../../api/index.js";
 import {useVehicleTypeStore} from "../../../store/useVehicleTypeStore.js";
 
-// Card type definitions with additional info
-const card_types = [
-    {
-        value: "standard",
-        label: "Standard",
-        description: "Basic access to all parking facilities",
-        icon: <CreditCard />,
-        color: "#1976d2",
-    },
-    {
-        value: "premium",
-        label: "Premium",
-        description: "Priority parking and extended hours",
-        icon: <CreditCard />,
-        color: "#9c27b0",
-    },
-    {
-        value: "business",
-        label: "Business",
-        description: "Multiple vehicle support and billing options",
-        icon: <Business />,
-        color: "#2e7d32",
-    },
-]
 
-// Vehicle type definitions with icons
+
 const vehicle_types = [
     { value: 2, label: "Car", icon: <DirectionsCar /> },
     { value: 1, label: "Motorcycle", icon: <TwoWheeler /> },
@@ -76,11 +51,9 @@ const vehicle_types = [
 
 
 export default function NewCardDialog({ open, onClose }) {
-    // Form state
     const [activeStep, setActiveStep] = useState(0)
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
-        card_type: "standard",
         vehicle_number: "",
         vehicle_type_id: 2,
         delivery_address: "",
@@ -90,17 +63,14 @@ export default function NewCardDialog({ open, onClose }) {
     const [errors, setErrors] = useState({})
     const vehicleTypes = useVehicleTypeStore((state) => state.vehicleTypes);
 
-    // Steps for the stepper
     const steps = [ "Vehicle Information", "Delivery Information"]
 
-    // Handle form field changes
     const handleChange = (field) => (event) => {
         setFormData({
             ...formData,
             [field]: event.target.value,
         })
 
-        // Clear error for this field if it exists
         if (errors[field]) {
             setErrors({
                 ...errors,
@@ -109,19 +79,17 @@ export default function NewCardDialog({ open, onClose }) {
         }
     }
 
-    // Validate current step
     const validateStep = () => {
         const newErrors = {}
 
         if (activeStep === 0) {
-            // No validation needed for card type
         // } else if (activeStep === 1) {
             if (!formData.vehicle_number.trim()) {
                 newErrors.vehicle_number = "Vehicle number is required"
             } else if (!/^[A-Z0-9-]{3,10}$/i.test(formData.vehicle_number.trim())) {
                 newErrors.vehicle_number = "Please enter a valid vehicle number"
             }
-        } else if (activeStep === 2) {
+        } else if (activeStep === 1) {
             if (!formData.name.trim()) {
                 newErrors.name = "Full name is required"
             }
@@ -143,19 +111,16 @@ export default function NewCardDialog({ open, onClose }) {
         return Object.keys(newErrors).length === 0
     }
 
-    // Handle next step
     const handleNext = () => {
         if (validateStep()) {
             setActiveStep((prevStep) => prevStep + 1)
         }
     }
 
-    // Handle back step
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1)
     }
 
-    // Handle form submission
     const handleSubmit = async () => {
         if (!validateStep()) {
             return
@@ -164,8 +129,6 @@ export default function NewCardDialog({ open, onClose }) {
         setLoading(true)
 
         try {
-            // Simulate API call
-            // await new Promise((resolve) => setTimeout(resolve, 1500))
             const response = await postRequest('/request/create-request',formData);
           
             if (response.code === 200) {
@@ -203,7 +166,6 @@ export default function NewCardDialog({ open, onClose }) {
         }
     }
 
-    // Reset form when dialog closes
     const handleDialogClose = () => {
         if (!loading) {
             setActiveStep(0)
@@ -212,79 +174,9 @@ export default function NewCardDialog({ open, onClose }) {
         }
     }
 
-    // Render step content
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-            //     return (
-            //         <Box>
-            //             <Typography variant="subtitle1" gutterBottom fontWeight="medium">
-            //                 Select Card Type
-            //             </Typography>
-            //
-            //             <Grid container spacing={2} sx={{ mt: 1 }}>
-            //                 {card_types.map((type) => (
-            //                     <Grid item xs={12} key={type.value}>
-            //                         <Paper
-            //                             elevation={formData._type === type.value ? 3 : 1}
-            //                             sx={{
-            //                                 p: 2,
-            //                                 cursor: "pointer",
-            //                                 borderLeft: 4,
-            //                                 borderColor: formData.card_type === type.value ? type.color : "transparent",
-            //                                 bgcolor: formData.card_type === type.value ? `${type.color}10` : "background.paper",
-            //                                 transition: "all 0.2s ease",
-            //                                 "&:hover": {
-            //                                     bgcolor: `${type.color}10`,
-            //                                 },
-            //                             }}
-            //                             onClick={() => setFormData({ ...formData, card_type: type.value })}
-            //                         >
-            //                             <Box display="flex" alignItems="center" justifyContent="space-between">
-            //                                 <Box display="flex" alignItems="center">
-            //                                     <Box
-            //                                         sx={{
-            //                                             display: "flex",
-            //                                             alignItems: "center",
-            //                                             justifyContent: "center",
-            //                                             width: 40,
-            //                                             height: 40,
-            //                                             borderRadius: "50%",
-            //                                             bgcolor: `${type.color}20`,
-            //                                             color: type.color,
-            //                                             mr: 2,
-            //                                         }}
-            //                                     >
-            //                                         {type.icon}
-            //                                     </Box>
-            //                                     <Box>
-            //                                         <Typography variant="subtitle1" fontWeight="medium">
-            //                                             {type.label}
-            //                                         </Typography>
-            //                                         <Typography variant="body2" color="text.secondary">
-            //                                             {type.description}
-            //                                         </Typography>
-            //                                     </Box>
-            //                                 </Box>
-            //                                 {formData.card_type === type.value && <CheckCircle sx={{ color: type.color }} />}
-            //                             </Box>
-            //                         </Paper>
-            //                     </Grid>
-            //                 ))}
-            //             </Grid>
-            //
-            //             <Box sx={{ mt: 3, p: 2, bgcolor: "info.light", borderRadius: 1 }}>
-            //                 <Box display="flex" alignItems="flex-start">
-            //                     <Info sx={{ color: "info.main", mr: 1, mt: 0.5 }} />
-            //                     <Typography variant="body2" color="info.main">
-            //                         Card processing fee may apply depending on the card type. Standard cards have a $5 processing fee,
-            //                         Premium cards have a $10 fee, and Business cards have a $15 fee.
-            //                     </Typography>
-            //                 </Box>
-            //             </Box>
-            //         </Box>
-            //     )
-            // case 1:
                 return (
                     <Box>
                         <Typography variant="subtitle1" gutterBottom fontWeight="medium">
@@ -385,12 +277,6 @@ export default function NewCardDialog({ open, onClose }) {
                             <Grid2 container spacing={2}>
                                 <Grid2 item xs={6}>
                                     <Typography variant="body2" color="text.secondary">
-                                        Card Type
-                                    </Typography>
-                                    <Typography variant="body1">{card_types.find((t) => t.value === formData.card_type)?.label}</Typography>
-                                </Grid2>
-                                <Grid2 item xs={6}>
-                                    <Typography variant="body2" color="text.secondary">
                                         Vehicle Type
                                     </Typography>
                                     <Typography variant="body1">
@@ -459,7 +345,7 @@ export default function NewCardDialog({ open, onClose }) {
             >
                 <Box display="flex" alignItems="center">
                     <CreditCard sx={{ mr: 1 }} />
-                    <Typography variant="h6">Regíter a Vehicle</Typography>
+                    <Typography variant="h6">Register a Vehicle</Typography>
                 </Box>
                 <IconButton
                     edge="end"
@@ -474,7 +360,7 @@ export default function NewCardDialog({ open, onClose }) {
             </DialogTitle>
 
             <DialogContent sx={{ pt: 3, pb: 1 }}>
-                <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+                <Stepper activeStep={activeStep} sx={{ mb: 4, mt:2}}>
                     {steps.map((label) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>

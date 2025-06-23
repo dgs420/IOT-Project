@@ -22,18 +22,15 @@ const ParkingSessionTable = ({ sessions, loading, sortConfig, onSort }) => {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
-    // Handle page change
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
     }
 
-    // Handle rows per page change
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(Number.parseInt(event.target.value, 10))
         setPage(0)
     }
 
-    // Render sort indicator
     const renderSortIndicator = (field) => {
         if (sortConfig.field !== field) return null
 
