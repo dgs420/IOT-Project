@@ -83,7 +83,7 @@ const DeviceDetail = () => {
                             <DeviceDetails embedId={embedId}/>
                         )}
 
-                        {activeTab === 1 && <ActivityList embedId={deviceDetails.embed_id}/>}
+                        {activeTab === 1 && <ActivityList embedId={embedId}/>}
 
                         {activeTab === 2 && <TransactionsTable embedId={embedId}/>
                         }

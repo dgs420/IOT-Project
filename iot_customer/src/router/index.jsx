@@ -7,6 +7,7 @@ import Transactions from "../pages/Transactions/index.jsx";
 import {UserCards} from "../pages/Vehicles/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
 import ProfilePage from "../pages/Profile/index.jsx";
+import AboutUs from '../pages/AboutUs/index.jsx';
 // import Statistics from '../pages/Statistics';
 // import PersonalProfile from '../pages/PersonalProfile';
 // import Report from '../pages/Report';
@@ -35,7 +36,7 @@ export const APP_ROUTES = [
     {
         key: 'about',
         path: '/about',
-        element: <p>about</p>,
+        element: <AboutUs/>,
     },
     {
         key: 'profile',
