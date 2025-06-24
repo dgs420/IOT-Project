@@ -18,10 +18,10 @@ const TransactionHeader = ({ filterOpen, setFilterOpen }) => {
                         <ChevronDown className={`h-4 w-4 ml-1 text-gray-500 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
                     </button>
 
-                    <button className="flex items-center px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                    {/* <button className="flex items-center px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                         <Download className="h-4 w-4 mr-1.5 text-gray-500" />
                         Export
-                    </button>
+                    </button> */}
                 </div>
             </div>
         </div>
