@@ -46,11 +46,6 @@ export const APP_ROUTES = [
         ,
     },
     {
-        key: 'profile',
-        path: '/profile',
-        element: <p>profile</p>
-    },
-    {
         key: 'activity',
         path: '/activity',
         element: <Activity/>,

@@ -13,7 +13,9 @@ export const UserLog = ({ userId }) => {
     if (!a.exit_time && b.exit_time) return -1;
     if (a.exit_time && !b.exit_time) return 1;
     return (
+      // @ts-ignore
       new Date(b.exit_time || b.entry_time) -
+      // @ts-ignore
       new Date(a.exit_time || a.entry_time)
     );
   });
