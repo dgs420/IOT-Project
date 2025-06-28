@@ -4,7 +4,7 @@ import Signup from "../pages/Auth/Signup/index.jsx";
 import Activity from "../pages/Activity/index.jsx";
 import PaymentSuccess from "../pages/PaymentResult/PaymentSuccess.jsx";
 import Transactions from "../pages/Transactions/index.jsx";
-import {UserCards} from "../pages/Vehicles/index.jsx";
+import {UserVehicles} from "../pages/Vehicles/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
 import ProfilePage from "../pages/Profile/index.jsx";
 import AboutUs from '../pages/AboutUs/index.jsx';
@@ -51,9 +51,9 @@ export const APP_ROUTES = [
         element: <Activity/>,
     },
     {
-        key:'your-cards',
-        path: '/your-cards',
-        element: <UserCards />,
+        key:'your-vehicles',
+        path: '/your-vehicles',
+        element: <UserVehicles />,
 
     },
     {

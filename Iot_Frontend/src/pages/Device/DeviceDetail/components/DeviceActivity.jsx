@@ -14,7 +14,7 @@ const DeviceActivity = ({embedId}) => {
                 <thead className="bg-gray-100">
                 <tr>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Card Number</th>
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Vehicle Number</th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Vehicle Plate</th>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Action</th>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Message</th>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Time</th>
@@ -25,7 +25,7 @@ const DeviceActivity = ({embedId}) => {
                     events.slice().map((event, index) => (
                         <tr key={index} className="hover:bg-gray-50 transition duration-200">
                             <td className="px-4 py-2 text-sm text-gray-700">{event?.card_number}</td>
-                            <td className="px-4 py-2 text-sm text-gray-700">{event?.vehicle_number}</td>
+                            <td className="px-4 py-2 text-sm text-gray-700">{event?.vehicle_plate}</td>
                             <td className="px-4 py-2 text-sm text-gray-700">
                                          <span
                                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${

@@ -2,6 +2,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const User = require("../models/userModel");
 const Transaction = require("../models/transactionModel");
 const { createAndSendNotification } = require("./notificationService");
+const sequelize = require("../config/database");
 
 exports.createTopUpIntent = async (user_id, amount, currency) => {
   if (!amount || !currency) {
@@ -24,7 +25,6 @@ exports.createTopUpIntent = async (user_id, amount, currency) => {
 
 exports.handleStripeWebhook = async (req, sig) => {
   let event;
-  console.log("whasdl");
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
@@ -40,36 +40,99 @@ exports.handleStripeWebhook = async (req, sig) => {
     const user_id = paymentIntent.metadata.user_id;
     const amount = paymentIntent.amount / 100;
 
-    const user = await User.findOne({ where: { user_id } });
+    const t = await sequelize.transaction();
+    try {
+      const user = await User.findOne({ where: { user_id }, transaction: t });
+      if (!user) {
+        console.warn(`❌ User not found for user_id: ${user_id}`);
+        await t.rollback();
+        return;
+      }
 
-    if (!user) {
-      console.warn(`❌ User not found for user_id: ${user_id}`);
-      return;
-    }
+      const currentBalance = parseFloat(user.balance);
+      const newBalance = currentBalance + amount;
 
-    const newBalance = user.balance + amount;
-    await user.update({ balance: newBalance });
+      await user.update({ balance: newBalance }, { transaction: t });
 
-    await Transaction.create({
-      user_id,
-      amount,
-      balance: newBalance,
-      transaction_type: "top-up",
-      payment_method: "stripe",
-      payment_id: paymentIntent.id,
-      status: "completed",
-    });
+      await Transaction.create(
+        {
+          user_id,
+          amount,
+          balance: newBalance,
+          transaction_type: "top-up",
+          payment_method: "stripe",
+          payment_id: paymentIntent.id,
+          status: "completed",
+        },
+        { transaction: t }
+      );
 
-    await createAndSendNotification(
+      await t.commit();
+
+      await createAndSendNotification(
         user_id,
-        `You sucessfully added $${amount} to your account. You now have $${newBalance} in your account.`,
+        `You successfully added $${amount.toFixed(
+          2
+        )} to your account. You now have $${newBalance.toFixed(
+          2
+        )} in your account.`,
         "success"
       );
 
-    console.log(
-      `✅ Balance updated for user ${user_id}. New balance: ${newBalance}`
-    );
+      console.log(
+        `✅ Balance updated for user ${user_id}. New balance: ${newBalance}`
+      );
+    } catch (error) {
+      await t.rollback();
+      console.error(`❌ Failed to process payment for user ${user_id}:`, error);
+      throw error;
+    }
   }
 
   return { received: true };
+};
+
+exports.topUpCash = async (user_id, amount) => {
+  const t = await sequelize.transaction();
+  try {
+    const user = await User.findOne({ where: { user_id }, transaction: t });
+    if (!user) throw { code: 404, message: "User does not exist" };
+
+    if (typeof amount !== "number" || isNaN(amount) || amount <= 0) {
+      throw { code: 400, message: "Invalid top-up amount" };
+    }
+    const currentBalance = parseFloat(user.balance || 0);
+    const newBalance = currentBalance + amount;
+
+    await user.update({ balance: newBalance }, { transaction: t });
+
+    await Transaction.create(
+      {
+        user_id,
+        amount,
+        balance: newBalance,
+        transaction_type: "top-up",
+        payment_method: "cash",
+        status: "completed",
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    await createAndSendNotification(
+      user_id,
+      `You successfully added $${amount.toFixed(
+        2
+      )} to your account. You now have $${newBalance.toFixed(
+        2
+      )} in your account.`,
+      "success"
+    );
+
+    return `Successfully added $${amount.toFixed(2)} to account.`;
+  } catch (error) {
+    await t.rollback();
+    throw error;
+  }
 };

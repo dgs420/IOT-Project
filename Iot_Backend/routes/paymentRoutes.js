@@ -50,7 +50,7 @@ router.get("/device-cash-daily",requireAuth, requireRole(['manager','admin']), t
 router.get("/transactions",requireAuth, transactionController.getYourTransactions);
 router.get("/recent-transactions",requireAuth, transactionController.getRecentTransactions);
 router.get("/export-transactions",requireAuth, transactionController.exportTransactionsExcel); 
-
+router.put("/top-up-cash",requireAuth, paymentController.topUpCash);
 // This route should be exempt from requireAuth middleware
 router.post("/webhook", paymentController.handleWebhook);
 

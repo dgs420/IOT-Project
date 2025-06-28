@@ -11,6 +11,7 @@ router.get('/your-sessions', SessionController.getYourSessions);
 router.get('/your-sessions-paginated', SessionController.getPaginatedYourSessions);
 router.get('/user-sessions/:userId',requireRole(['manager','admin']), SessionController.getUserSessions);
 router.get('/user-sessions-paginated/:userId',requireRole(['manager','admin']), SessionController.getPaginatedUserSessions);
+router.get('/transaction-session', SessionController.getTransactionSession);
 
 
 

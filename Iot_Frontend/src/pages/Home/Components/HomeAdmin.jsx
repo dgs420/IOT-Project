@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import VehiclesPieChart from "./VehiclesPieChart.jsx";
-import { Car, ClipboardList, LogOut, LogIn, Space, Microchip } from "lucide-react";
+import { Car, ClipboardList, LogOut, LogIn, Space, Microchip,ParkingSquare } from "lucide-react";
 import { Card, CardContent } from "@mui/material";
 import { Link } from "react-router-dom";
 import ActivityLog from "./ActivityLog.jsx";
@@ -115,7 +115,7 @@ const HomeAdmin = () => {
           {
             title: "PARKING SPACES",
             value: homeData.total_spaces,
-            icon: Space,
+            icon: ParkingSquare,
             link: "/parking-spaces",
           },
           {

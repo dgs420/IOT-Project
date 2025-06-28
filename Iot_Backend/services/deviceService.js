@@ -5,7 +5,7 @@ const { Op } = require("sequelize");
 
 const createDevice = async ({
   embed_id,
-  location,
+  name,
   type,
   status = "offline",
 }) => {
@@ -15,7 +15,7 @@ const createDevice = async ({
   if (existingDevice)
     throw { code: 400, message: "Device with this ID already exists." };
 
-  const newDevice = await Device.create({ embed_id, location, type, status });
+  const newDevice = await Device.create({ embed_id, name, type, status });
 
   const topic = `device/${embed_id}/status`;
   client.subscribe(topic);
@@ -49,7 +49,7 @@ const updateDevice = async (deviceId, updateData) => {
   if (!device) throw { code: 404, message: "Device not found." };
 
   await device.update({
-    location: updateData.location ?? device.location,
+    name: updateData.name ?? device.name,
     type: updateData.type ?? device.type,
     status: updateData.status ?? device.status,
     last_seen: updateData.last_seen ?? device.last_seen,

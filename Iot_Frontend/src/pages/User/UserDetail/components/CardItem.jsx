@@ -32,7 +32,7 @@ const CardItem = ({ card, onDelete }) => {
                 }}>
                     <CreditCard />
                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {card.vehicle_number}
+                        {card.vehicle_plate}
                     </Typography>
                 </Box>
 
@@ -67,7 +67,7 @@ const CardItem = ({ card, onDelete }) => {
                                 Vehicle Details
                             </Typography>
                             <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                                {card.vehicle_number ? `${card.vehicle_number} (${card.vehicle_type_id || 'Unknown'})` : 'No vehicle linked'}
+                                {card.vehicle_plate ? `${card.vehicle_plate} (${card.vehicle_type_id || 'Unknown'})` : 'No vehicle linked'}
                             </Typography>
                         </Box>
                     </Box>

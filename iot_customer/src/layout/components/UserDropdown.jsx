@@ -33,7 +33,6 @@ const UserDropdown = ({ username, showDropdown, setShowDropdown ,userInitial}) =
                 </div>
                 <div className="hidden md:block text-left">
                     <p className="text-sm font-medium text-gray-700">{username}</p>
-                    <p className="text-xs text-gray-500"> {role || 'User'}</p>
                 </div>
                 <ChevronDown className="h-4 w-4 text-gray-500"/>
             </button>

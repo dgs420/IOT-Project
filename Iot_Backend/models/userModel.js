@@ -34,14 +34,14 @@ const User = sequelize.define(
       type: DataTypes.STRING,
     },
     balance: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
       allowNull: false,
     },
   },
   {
-    timestamps: true, // Enable automatic timestamp fields
-    createdAt: "created_at", // Custom name for createdAt
+    timestamps: true,
+    createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );

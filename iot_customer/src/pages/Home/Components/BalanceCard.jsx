@@ -38,7 +38,7 @@ export default function BalanceCard({ balance, onTopUp, onRequestNewCard }) {
                 Your available parking credit
             </Typography>
             <Typography variant="h3" fontWeight="bold" sx={{ mb: 3 }}>
-                ${balance.toFixed(2)}
+                ${balance}
             </Typography>
             <Box sx={{ display: 'flex', justifyItems:'', gap: 2 }}>
                 <Button

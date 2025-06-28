@@ -33,7 +33,7 @@ export default function HomeTransactionPanel({ transactions = [] }) {
       <Card>
         <CardHeader
           title="Recent Transactions"
-          subheader="Your parking and payment history"
+          subheader="Your transactions history"
         />
         <CardContent>
           <List sx={{ p: 0 }}>

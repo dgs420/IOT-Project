@@ -23,7 +23,6 @@ exports.createTopUp = async (req, res) => {
   }
 };
 
-
 exports.handleWebhook = async (req, res) => {
   const sig = req.headers["stripe-signature"];
 
@@ -33,5 +32,19 @@ exports.handleWebhook = async (req, res) => {
   } catch (error) {
     console.error("Webhook Error:", error.message);
     res.status(400).send(`Webhook Error: ${error.message}`);
+  }
+};
+
+exports.topUpCash = async (req, res) => {
+  try {
+    const result = await paymentService.handleTopUpCash(
+      req.body.user_id,
+      req.body.amount
+    );
+    res.status(200).json({ code: 200, message: result });
+  } catch (error) {
+    res
+      .status(error.code || 500)
+      .json({ code: error.code || 500, message: error.message });
   }
 };

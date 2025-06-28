@@ -9,6 +9,53 @@ exports.getAllSessions = async () => {
   return sessions;
 };
 
+exports.getTransactionSession = async (userId, sessionId) => {
+  const session = await ParkingSession.findOne({
+    where: {
+      session_id: sessionId,
+    },
+    include: [
+      {
+        model: Vehicle,
+        where: {
+          user_id: userId,
+        },
+        required: true,
+      },
+    ],
+  });
+
+  if (!session) {
+    const error = new Error("Session not found");
+    error.code = 400;
+    throw error;
+  }
+
+  return session;
+};
+
+exports.getTransactionSessionAdmin = async (sessionId) => {
+  const session = await ParkingSession.findOne({
+    where: {
+      session_id: sessionId,
+    },
+    include: [
+      {
+        model: Vehicle,
+      },
+    ],
+  });
+
+  if (!session) {
+    const error = new Error("Session not found");
+    error.code = 400;
+    throw error;
+  }
+
+  return session;
+};
+
+
 exports.getPaginatedsSessions = async (query, userId) => {
   const {
     page = 1,
@@ -55,7 +102,7 @@ exports.getPaginatedsSessions = async (query, userId) => {
     const isNumeric = !isNaN(search);
     whereClause[Op.or] = [
       {
-        "$Vehicle.vehicle_number$": {
+        "$Vehicle.vehicle_plate$": {
           [Op.like]: `%${search}%`,
         },
       },
@@ -108,7 +155,7 @@ exports.getUserSessions = async (userId) => {
       {
         model: Vehicle,
         where: { user_id: userId },
-        attributes: ["vehicle_number"],
+        attributes: ["vehicle_plate"],
       },
     ],
   });
@@ -121,7 +168,7 @@ exports.getYourSessions = async (userId) => {
       {
         model: Vehicle,
         where: { user_id: userId },
-        attributes: ["vehicle_number"],
+        attributes: ["vehicle_plate"],
       },
     ],
   });
@@ -132,7 +179,7 @@ exports.closeActiveSession = async (sessionId) => {
   const session = await ParkingSession.findByPk(sessionId);
   if (!session) {
     const error = new Error("Session not found");
-    error.code = 404;
+    error.code = 400;
     throw error;
   }
   await session.update({ status: "completed" });

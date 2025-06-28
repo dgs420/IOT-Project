@@ -46,8 +46,8 @@ export const VehicleItem = ({ card }) => {
                             {VehicleIcon(card.vehicle_type_id)}
                         </div>
                         <div>
-                            <span className="text-gray-500">Vehicle:</span>{' '}
-                            <span className="font-medium">{card.vehicle_number}</span>
+                            <span className="text-gray-500">Lisence Plate:</span>{' '}
+                            <span className="font-medium">{card.vehicle_plate}</span>
                             <span className="ml-1 text-xs text-gray-500 capitalize">({getTypeNameById(card.vehicle_type_id)})</span>
                         </div>
                     </div>

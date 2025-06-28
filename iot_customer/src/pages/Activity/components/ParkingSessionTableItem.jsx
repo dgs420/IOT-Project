@@ -16,7 +16,7 @@ const ParkingSessionTableItem = ({ session }) => {
       <TableCell>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Car size={16} style={{ marginRight: 8 }} />
-          {session.Vehicle.vehicle_number}
+          {session.Vehicle.vehicle_plate}
         </Box>
       </TableCell>
       <TableCell>

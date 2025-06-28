@@ -164,8 +164,9 @@ exports.exportTransactionsExcel = async (req, res) => {
 
     worksheet.columns = [
       { header: "ID", key: "transaction_id", width: 10 },
-      { header: "Device ID", key: "device_id", width: 10 },
-      { header: "Embed ID", key: "embed_id", width: 15 },
+      // { header: "Device ID", key: "device_id", width: 10 },
+      { header: "Device ID", key: "embed_id", width: 15 },
+      { header: "Device Name", key: "device_name", width: 15 },
       { header: "Type", key: "transaction_type", width: 10 },
       { header: "Method", key: "payment_method", width: 10 },
       { header: "Amount", key: "amount", width: 10 },
@@ -177,6 +178,7 @@ exports.exportTransactionsExcel = async (req, res) => {
       worksheet.addRow({
         ...tx.dataValues,
         embed_id: tx.dataValues.embed_id || null || null,
+        device_name: tx.dataValues.device_name || null || null,
       });
     });
 

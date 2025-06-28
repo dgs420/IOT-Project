@@ -15,7 +15,7 @@ const UserVehiclesList = ({ userId }) => {
   const [newVehicle, setNewVehicle] = useState({
     card_number: "",
     user_id: userId,
-    vehicle_number: "",
+    vehicle_plate: "",
     vehicle_type_id: 1,
   });
 
@@ -54,7 +54,7 @@ const UserVehiclesList = ({ userId }) => {
         setNewVehicle({
           card_number: "",
           user_id: userId,
-          vehicle_number: "",
+          vehicle_plate: "",
           vehicle_type_id: 1,
         });
       } else {
@@ -99,7 +99,7 @@ const UserVehiclesList = ({ userId }) => {
             />
           ))
         ) : (
-          <p>No RFID cards found for this user.</p>
+          <p>No vehicle found for this user.</p>
         )}
       </div>
 

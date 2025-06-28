@@ -3,7 +3,6 @@ const sequelize = require("../config/database");
 const Transaction = require("../models/transactionModel");
 const Device = require("../models/deviceModel");
 
-
 exports.getAllTransactions = async () => {
   return await Transaction.findAll();
 };
@@ -38,18 +37,18 @@ exports.getDeviceCashFlow = async () => {
       SELECT
         d.device_id,
         d.embed_id,
-        d.location,
+        d.name,
         COUNT(t.transaction_id) AS transaction_count,
         SUM(t.amount) AS cash_total
       FROM transactions t
       JOIN devices d ON t.device_id = d.device_id
       WHERE t.payment_method = 'cash' AND t.status = 'completed'
-      GROUP BY d.device_id, d.embed_id, d.location
+      GROUP BY d.device_id, d.embed_id, d.name
       ORDER BY cash_total DESC
     `);
 
   return data;
-}
+};
 
 exports.getDeviceCashByDay = async (device_id, from, to) => {
   const [data] = await sequelize.query(
@@ -93,6 +92,7 @@ exports.getTransactionsWithSummary = async (query) => {
     embedId,
     paymentMethod,
     transactionType,
+    userId,
     startDate,
     endDate,
     date,
@@ -109,6 +109,10 @@ exports.getTransactionsWithSummary = async (query) => {
     whereConditions.device_id = parseInt(deviceId);
   }
 
+  if (userId) {
+    whereConditions.user_id = parseInt(userId);
+  }
+  
   if (embedId) {
     const device = await Device.findOne({ where: { embed_id: embedId } });
     if (device) {
@@ -193,19 +197,26 @@ exports.getTransactionsWithSummary = async (query) => {
   const summaryResult = await Transaction.findAll({
     where: finalWhereConditions,
     attributes: [
-      [sequelize.fn("COUNT", sequelize.col("transaction_id")), "total_transactions"],
+      [
+        sequelize.fn("COUNT", sequelize.col("transaction_id")),
+        "total_transactions",
+      ],
       [sequelize.fn("SUM", sequelize.col("amount")), "total_amount"],
       [
         sequelize.fn(
           "SUM",
-          sequelize.literal("CASE WHEN transaction_type = 'top-up' THEN amount ELSE 0 END")
+          sequelize.literal(
+            "CASE WHEN transaction_type = 'top-up' THEN amount ELSE 0 END"
+          )
         ),
         "total_topups",
       ],
       [
         sequelize.fn(
           "SUM",
-          sequelize.literal("CASE WHEN transaction_type = 'fee' THEN amount ELSE 0 END")
+          sequelize.literal(
+            "CASE WHEN transaction_type = 'fee' THEN amount ELSE 0 END"
+          )
         ),
         "total_fees",
       ],
@@ -233,9 +244,9 @@ exports.getTransactionsWithSummary = async (query) => {
       },
     },
   };
-}
+};
 
-exports.getAllTransactionsWithoutPagination =  async (query) => {
+exports.getAllTransactionsWithoutPagination = async (query) => {
   const {
     deviceId,
     embedId,
@@ -315,12 +326,17 @@ exports.getAllTransactionsWithoutPagination =  async (query) => {
         )`),
           "embed_id",
         ],
+        [
+          sequelize.Sequelize.literal(`(
+          SELECT name FROM Devices AS device
+          WHERE device.device_id = Transaction.device_id
+          )`),
+          "device_name",
+        ],
       ],
     },
     order: [[sanitizedSortField, sanitizedSortOrder]],
   });
 
   return transactions;
-}
-
-
+};

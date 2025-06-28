@@ -11,8 +11,8 @@ const RequestList = ({ requests, searchQuery, statusFilter, sortBy }) => {
     const matchesSearch =
       (request.name &&
         request.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (request.vehicle_number &&
-        request.vehicle_number
+      (request.vehicle_plate &&
+        request.vehicle_plate
           .toLowerCase()
           .includes(searchQuery.toLowerCase())) ||
       (request.delivery_address &&

@@ -26,7 +26,7 @@ export const VehicleFormModal = ({
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  {selectedVehicle ? 'Edit RFID Card' : 'Add New RFID Card'}
+                  {selectedVehicle ? 'Edit RFID Card' : 'Add New Vehicle'}
                 </h3>
                 <div className="mt-4 space-y-4">
                   <div>
@@ -44,16 +44,16 @@ export const VehicleFormModal = ({
                   </div>
 
                   <div>
-                    <label htmlFor="vehicle_number" className="block text-sm font-medium text-gray-700">
-                      Vehicle Number
+                    <label htmlFor="vehicle_plate" className="block text-sm font-medium text-gray-700">
+                      Vehicle Plate
                     </label>
                     <input
                       type="text"
-                      name="vehicle_number"
-                      id="vehicle_number"
+                      name="vehicle_plate"
+                      id="vehicle_plate"
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       placeholder="ABC123"
-                      defaultValue={selectedVehicle?.vehicle_number || ''}
+                      defaultValue={selectedVehicle?.vehicle_plate || ''}
                     />
                   </div>
 

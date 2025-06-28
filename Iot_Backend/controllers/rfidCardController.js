@@ -78,7 +78,7 @@ exports.getYourRecentRfidCards = async (req, res) => {
     }
 }
 exports.createRfidCard = async (req, res) => {
-    const { card_number, user_id, vehicle_number, vehicle_type } = req.body;
+    const { card_number, user_id, vehicle_plate, vehicle_type } = req.body;
 
     try {
         // Check if the card already exists
@@ -94,7 +94,7 @@ exports.createRfidCard = async (req, res) => {
 
         // Check if a card is already associated with this vehicle
         const vehicleCard = await RfidCard.findOne({
-            where: { vehicle_number }
+            where: { vehicle_plate }
         });
 
         if (vehicleCard) {
@@ -107,7 +107,7 @@ exports.createRfidCard = async (req, res) => {
         const newCard = await RfidCard.create({
             card_number,
             user_id,
-            vehicle_number,
+            vehicle_plate,
             vehicle_type,
             status: 'exited', // Default status
         });

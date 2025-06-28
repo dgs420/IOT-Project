@@ -29,18 +29,6 @@ const RfidCard = sequelize.define('rfid_card', {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
         onUpdate: DataTypes.NOW}
-    // status: {
-    //     type: DataTypes.ENUM('parking', 'exited','blocked'),
-    //     allowNull: false,
-    // },
-    // vehicle_number: {
-    //     type: DataTypes.STRING,
-    //     allowNull: false,
-    //     unique: true
-    // },
-    // vehicle_type: {
-    //     type: DataTypes.ENUM('car', 'bike', 'others'),
-    // }
 
 }, {
     timestamps: true, 

@@ -10,7 +10,7 @@ const VehicleType = require("../../models/vehicleTypeModel");
 const Transaction = require("../../models/transactionModel");
 const { mqttEventEmitter } = require("../eventEmitter");
 const { getClient } = require("../../config/mqttClient.js");
-
+const calculateFee = require("../../utils/calculateFee");
 const {
   createAndSendNotification,
 } = require("../../services/notificationService");
@@ -19,21 +19,25 @@ const { isParkingFull } = require("../helper/helper.js");
 const { Hooks } = require("sequelize/lib/hooks");
 // const EventEmitter = require("events");
 // const client  = getClient ();
-async function calculateFee(entryTime, exitTime, vehicleTypeId) {
-  // Fetch the vehicle type to get the fee per hour
-  const vehicleType = await VehicleType.findByPk(vehicleTypeId);
+// async function calculateFee(entryTime, exitTime, vehicleTypeId) {
+//   if (exitTime <= entryTime) {
+//     throw new Error("Exit time must be after entry time");
+//   }
+//   const vehicleType = await VehicleType.findByPk(vehicleTypeId);
 
-  if (!vehicleType) {
-    throw new Error("Vehicle type not found");
-  }
+//   if (!vehicleType) {
+//     throw new Error("Vehicle type not found");
+//   }
 
-  const ratePerHour = vehicleType.fee_per_hour;
-  const durationMs = exitTime - entryTime;
-  const durationHours = Math.ceil(durationMs / (1000 * 60 * 60)); // Convert to hours and round up
-
-  return durationHours * ratePerHour;
-}
-
+//   const ratePerHour = vehicleType.fee_per_hour;
+//   const durationMs = exitTime - entryTime;
+//   const durationMinutes = Math.ceil(durationMs / (1000 * 60));
+//   const ratePerMinute = ratePerHour / 60;
+//   const finalFee = durationMinutes * ratePerHour;
+//   // const finalFee = Math.round(baseFee * Math.pow(10, 2)) / Math.pow(10, 2);
+//   console.log("durationMinutes", durationMinutes, "ratePerMinute",ratePerMinute, "finalFee", finalFee);
+//   return finalFee;
+// }
 // Input validation schema
 const validateInput = (data, requiredFields) => {
   return requiredFields.every(
@@ -44,13 +48,7 @@ const validateInput = (data, requiredFields) => {
   );
 };
 
-const publishResponse = (
-  topic,
-  embed_id,
-  status,
-  message,
-  extra = {}
-) => {
+const publishResponse = (topic, embed_id, status, message, extra = {}) => {
   const client = getClient();
   return client.publish(
     `barrier/${topic}/response/${embed_id}`,
@@ -65,7 +63,7 @@ const logTraffic = async ({
   action,
   is_valid,
   details,
-  vehicle_number,
+  vehicle_plate,
   embed_id,
 }) => {
   if (device_id && action) {
@@ -81,20 +79,20 @@ const logTraffic = async ({
       action: log.action,
       is_valid: log.is_valid,
       details: log.details,
-      vehicle_number,
+      vehicle_plate,
       embed_id,
     });
   }
 };
 
-async function handleCardScan( topic, data) {
+async function handleCardScan(topic, data) {
   const { card_number, embed_id, action } = data;
 
   let card_id = null;
   let device_id = null;
   let is_valid = false;
   let details = null;
-
+  const isEnter = action === "enter";
   try {
     if (!card_number || !embed_id || !action) {
       return publishResponse(
@@ -140,7 +138,8 @@ async function handleCardScan( topic, data) {
         "invalid",
         "Card or user not found",
         {
-          vehicle_number: "N/A",
+          vehicle_plate: "",
+          ...(isEnter ? {} : { fee: 0 })
         }
       );
     }
@@ -163,7 +162,8 @@ async function handleCardScan( topic, data) {
         embed_id,
       });
       return publishResponse(topic, embed_id, "invalid", details, {
-        vehicle_number: "N/A",
+        vehicle_plate: "",
+          ...(isEnter ? {} : { fee: 0 })
       });
     }
 
@@ -177,15 +177,14 @@ async function handleCardScan( topic, data) {
         is_valid,
         details,
         embed_id,
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
       return publishResponse(topic, embed_id, "invalid", details, {
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
     }
 
-    // Check balance for entry
-    if (action === "enter" && user.balance <= 0) {
+    if (isEnter && user.balance <= 0) {
       createAndSendNotification(
         user.user_id,
         "Insufficient balance to park",
@@ -199,15 +198,15 @@ async function handleCardScan( topic, data) {
         is_valid,
         details,
         embed_id,
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
       return publishResponse(topic, embed_id, "invalid", details, {
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
     }
 
     // Handle entry
-    if (action === "enter") {
+    if (isEnter) {
       if (vehicle.status !== "exited") {
         details = "Vehicle is already inside";
         await logTraffic({
@@ -217,10 +216,10 @@ async function handleCardScan( topic, data) {
           is_valid,
           details,
           embed_id,
-          vehicle_number: vehicle.vehicle_number,
+          vehicle_plate: vehicle.vehicle_plate,
         });
         return publishResponse(topic, embed_id, "invalid", details, {
-          vehicle_number: vehicle.vehicle_number,
+          vehicle_plate: vehicle.vehicle_plate,
         });
       }
 
@@ -233,10 +232,10 @@ async function handleCardScan( topic, data) {
           is_valid,
           details,
           embed_id,
-          vehicle_number: vehicle.vehicle_number,
+          vehicle_plate: vehicle.vehicle_plate,
         });
         return publishResponse(topic, embed_id, "invalid", details, {
-          vehicle_number: vehicle.vehicle_number,
+          vehicle_plate: vehicle.vehicle_plate,
         });
       }
 
@@ -260,10 +259,10 @@ async function handleCardScan( topic, data) {
         action,
         is_valid,
         embed_id,
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
       return publishResponse(topic, embed_id, "valid", "Entry logged", {
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
     }
 
@@ -281,10 +280,11 @@ async function handleCardScan( topic, data) {
         is_valid,
         details,
         embed_id,
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
-      return publishResponse( topic, embed_id, "invalid", details, {
-        vehicle_number: vehicle.vehicle_number,
+      return publishResponse(topic, embed_id, "invalid", details, {
+        vehicle_plate: vehicle.vehicle_plate,
+        fee: 0
       });
     }
 
@@ -298,7 +298,7 @@ async function handleCardScan( topic, data) {
     if (user.balance < fee) {
       createAndSendNotification(
         user.user_id,
-        `Insufficient balance for exit fee of $${fee} for vehicle ${vehicle.vehicle_number}`,
+        `Insufficient balance for exit fee of $${fee} for vehicle ${vehicle.vehicle_plate}`,
         "warning"
       );
       details = "Insufficient balance";
@@ -309,10 +309,10 @@ async function handleCardScan( topic, data) {
         is_valid,
         details,
         embed_id,
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
       return publishResponse(topic, embed_id, "invalid", details, {
-        vehicle_number: vehicle.vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
         fee,
       });
     }
@@ -354,10 +354,10 @@ async function handleCardScan( topic, data) {
       action,
       is_valid,
       embed_id,
-      vehicle_number: vehicle.vehicle_number,
+      vehicle_plate: vehicle.vehicle_plate,
     });
-    return publishResponse( topic, embed_id, "valid", "Exit logged", {
-      vehicle_number: vehicle.vehicle_number,
+    return publishResponse(topic, embed_id, "valid", "Exit logged", {
+      vehicle_plate: vehicle.vehicle_plate,
       fee,
     });
   } catch (error) {
@@ -375,18 +375,16 @@ async function handleCardScan( topic, data) {
   }
 }
 
-// Cash payment handler
-async function cashConfirm( data) {
-  const { vehicle_number, embed_id, fee } = data;
+async function cashConfirm(data) {
+  const { vehicle_plate, embed_id, fee } = data;
   let device_id = null;
 
   try {
-    // Validate input
     if (!embed_id) {
       return console.error("Missing embed_id");
     }
     const topic = `exit`;
-    if (!vehicle_number || !fee) {
+    if (!vehicle_plate || !fee) {
       // await logTraffic({ device_id, action: 'exit-cash', is_valid: false, details: 'Missing or invalid fields' });
       return publishResponse(
         topic,
@@ -396,21 +394,14 @@ async function cashConfirm( data) {
       );
     }
 
-    // Find device
     const device = await Device.findOne({ where: { embed_id } });
     if (!device) {
       // await logTraffic({ device_id, action: 'exit-cash', is_valid: false, details: 'Device not found' });
-      return publishResponse(
-        topic,
-        embed_id,
-        "invalid",
-        "Device not found"
-      );
+      return publishResponse(topic, embed_id, "invalid", "Device not found");
     }
     device_id = device.device_id;
 
-    // Find vehicle
-    const vehicle = await Vehicle.findOne({ where: { vehicle_number } });
+    const vehicle = await Vehicle.findOne({ where: { vehicle_plate } });
     if (!vehicle) {
       await logTraffic({
         device_id,
@@ -418,14 +409,9 @@ async function cashConfirm( data) {
         is_valid: false,
         details: "Vehicle not found",
         embed_id,
-        vehicle_number,
+        vehicle_plate,
       });
-      return publishResponse(
-        topic,
-        embed_id,
-        "invalid",
-        "Vehicle not found"
-      );
+      return publishResponse(topic, embed_id, "invalid", "Vehicle not found");
     }
     // Find session
     const session = await ParkingSession.findOne({
@@ -434,11 +420,12 @@ async function cashConfirm( data) {
     if (!session) {
       await logTraffic({
         device_id,
+        card_id: vehicle.card_id,
         action: "exit-cash",
         is_valid: false,
         details: "No active parking session",
         embed_id,
-        vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
       return publishResponse(
         topic,
@@ -446,37 +433,47 @@ async function cashConfirm( data) {
         "invalid",
         "No active parking session found",
         {
-          vehicle_number: vehicle.vehicle_number,
+          vehicle_plate: vehicle.vehicle_plate,
         }
       );
     }
 
-    // Verify fee
+    const vehicleType = await VehicleType.findByPk(vehicle.vehicle_type_id);
+
     const exit_time = new Date();
     const calculatedFee = await calculateFee(
       session.entry_time,
       exit_time,
       vehicle.vehicle_type_id
     );
-    if (calculatedFee !== parseFloat(fee)) {
+
+    const feeNumber = parseFloat(fee);
+    const difference = Math.abs(calculatedFee - feeNumber);
+    //allow 8% of hourly fee or approximately 5 minutes margin
+    const maxAllowedDifference = Math.max(
+      0.08 * vehicleType.fee_per_hour,
+      0.05 // Minimum 5 cents tolerance for very cheap rates
+    );
+
+    const isFeeValid = difference <= maxAllowedDifference;
+
+    if (!isFeeValid) {
       await logTraffic({
         device_id,
+        card_id: vehicle.card_id,
         action: "exit-cash",
         is_valid: false,
         details: "Fee mismatch",
         embed_id,
-        vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
-      return publishResponse(
-        topic,
-        embed_id,
-        "invalid",
-        "Fee mismatch",
-        {
-          vehicle_number: vehicle.vehicle_number,
-          fee: calculatedFee,
-        }
+      console.log(
+        `Fee mismatch: ${calculatedFee} vs ${fee} for vehicle ${vehicle.vehicle_plate}`
       );
+      return publishResponse(topic, embed_id, "invalid", "Fee mismatch", {
+        vehicle_plate: vehicle.vehicle_plate,
+        fee: calculatedFee,
+      });
     }
 
     // Find user
@@ -484,21 +481,16 @@ async function cashConfirm( data) {
     if (!user) {
       await logTraffic({
         device_id,
+        card_id: vehicle.card_id,
         action: "exit-cash",
         is_valid: false,
         details: "User not found",
         embed_id,
-        vehicle_number,
+        vehicle_plate: vehicle.vehicle_plate,
       });
-      return publishResponse(
-        topic,
-        embed_id,
-        "invalid",
-        "User not found"
-      );
+      return publishResponse(topic, embed_id, "invalid", "User not found");
     }
 
-    // Use transaction for data integrity
     await Sequelize.transaction(async (t) => {
       await session.update(
         {
@@ -534,23 +526,17 @@ async function cashConfirm( data) {
       card_id: vehicle.card_id,
       is_valid: true,
       embed_id,
-      vehicle_number,
+      vehicle_plate,
     });
-    publishResponse(
-      topic,
-      embed_id,
-      "valid",
-      "Cash payment confirmed",
-      {
-        vehicle_number: vehicle.vehicle_number,
-        fee,
-        payment_method: "cash",
-      }
-    );
+    publishResponse(topic, embed_id, "valid", "Cash payment confirmed", {
+      vehicle_plate: vehicle.vehicle_plate,
+      fee,
+      payment_method: "cash",
+    });
 
     createAndSendNotification(
       user.user_id,
-      `Cash payment of ${fee} received for vehicle ${vehicle.vehicle_number}`,
+      `Cash payment of ${fee} received for vehicle ${vehicle.vehicle_plate}`,
       "info"
     );
   } catch (error) {

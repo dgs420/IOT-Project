@@ -22,7 +22,7 @@ const Request = sequelize.define('request', {
         defaultValue: 'pending',
         allowNull: false,
     },
-    vehicle_number: {
+    vehicle_plate: {
         type: DataTypes.STRING,
         allowNull: false,
         // unique: true

@@ -58,7 +58,7 @@ const ParkingSessions = () => {
             const query = searchQuery.toLowerCase()
             result = result.filter(
                 (session) =>
-                    (session.Vehicle?.vehicle_number?.toLowerCase()?.includes(query)) || session.session_id.toString().includes(query),
+                    (session.Vehicle?.vehicle_plate?.toLowerCase()?.includes(query)) || session.session_id.toString().includes(query),
             )
         }
 

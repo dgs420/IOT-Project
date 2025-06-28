@@ -47,13 +47,13 @@ const ParkingSession = sequelize.define(
       defaultValue: "unpaid",
     },
     fee: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
     },
   },
   {
-    timestamps: true, // Enable automatic timestamp fields
-    createdAt: "created_at", // Custom name for createdAt
+    timestamps: true, 
+    createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );

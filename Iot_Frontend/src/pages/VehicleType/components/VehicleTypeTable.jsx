@@ -32,7 +32,7 @@ const VehicleTypeRow = ({vehicleType, onEdit, onDelete}) => (
         <TableCell>{vehicleType.vehicle_type_id}</TableCell>
         <TableCell>{vehicleType.vehicle_type_name}</TableCell>
         <TableCell>{vehicleType.description}</TableCell>
-        <TableCell>${vehicleType.fee_per_hour.toFixed(2)}</TableCell>
+        <TableCell>${vehicleType.fee_per_hour}</TableCell>
         <TableCell className=" flex justify-between">
             <IconButton color="primary" onClick={() => onEdit(vehicleType)}>
                 <Edit size={18}/>
@@ -53,7 +53,7 @@ const VehicleTypeTable = ({vehicleTypes, onEdit, onDelete}) => {
                         <TableCell sx={{fontWeight: "bold"}}>ID</TableCell>
                         <TableCell sx={{fontWeight: "bold"}}>Vehicle Type Name</TableCell>
                         <TableCell sx={{fontWeight: "bold"}}>Description</TableCell>
-                        <TableCell sx={{fontWeight: "bold"}}>Fee Per Hour ($)</TableCell>
+                        <TableCell sx={{fontWeight: "bold"}}>Price ($)</TableCell>
                         <TableCell sx={{fontWeight: "bold"}}>Actions</TableCell>
                     </TableRow>
                 </TableHead>

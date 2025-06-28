@@ -8,7 +8,7 @@ import {CustomButton} from "../../../../common/components/CustomButton.jsx";
 function NewDeviceModal({open,onClose, onSuccess}) {
     const [newDevice, setNewDevice] = useState({
         embed_id: '',
-        location: '',
+        name: '',
         type: 'both'
     });
     const handleInputChange = (e) => {
@@ -19,13 +19,13 @@ function NewDeviceModal({open,onClose, onSuccess}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response= await postRequest('/device/create-device', newDevice); // Adjust the endpoint as necessary
+            const response= await postRequest('/device/create-device', newDevice);
             if (response.code===200){
                 onSuccess();
             } else{
                 toast.error(response.message);
             }
-            onClose(); // Close the modal
+            onClose();
         } catch (error) {
             console.log(error);
             console.error('Error adding RFID card:', error);
@@ -57,8 +57,8 @@ function NewDeviceModal({open,onClose, onSuccess}) {
                     />
                     <TextField
                         label="Device name"
-                        name="location"
-                        value={newDevice.location}
+                        name="name"
+                        value={newDevice.name}
                         onChange={handleInputChange}
                         fullWidth
                         style={{marginTop: '10px'}}

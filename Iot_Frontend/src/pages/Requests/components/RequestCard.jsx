@@ -7,11 +7,13 @@ import RejectModal from "./RejectModal.jsx";
 import { postRequest } from "../../../api/index.js";
 import { toast } from "react-toastify";
 import { getVehicleIcon } from "../../../utils/helpers.jsx";
+import { useVehicleTypeStore } from "@/store/useVehicleTypeStore.js";
 
 const RequestCard = ({ request, refreshRequest }) => {
   const [expanded, setExpanded] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const getTypeNameById = useVehicleTypeStore((state) => state.getTypeNameById);
 
   const handleApprove = async (cardNumber) => {
     try {
@@ -76,8 +78,8 @@ const RequestCard = ({ request, refreshRequest }) => {
                 ) : (
                   <span className="italic text-gray-400">No name provided</span>
                 )}
-                {request.vehicle_number && (
-                  <span className="ml-2">• {request.vehicle_number}</span>
+                {request.vehicle_plate && (
+                  <span className="ml-2">• {request.vehicle_plate}</span>
                 )}
               </div>
             </div>
@@ -129,8 +131,8 @@ const RequestCard = ({ request, refreshRequest }) => {
               <RequestDetailItem
                 icon={getVehicleIcon(request.vehicle_type_id, { className: "h-4 w-4 text-gray-500" })}
                 label="Vehicle Information"
-                value={`${request.vehicle_number || "No number"} (${
-                  request.vehicle_type_id || "Unknown type"
+                value={`${request.vehicle_plate || "No number"} (${
+                  getTypeNameById(request.vehicle_type_id) || "Unknown type"
                 })`}
               />
               <RequestDetailItem

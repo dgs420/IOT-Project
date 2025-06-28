@@ -14,7 +14,7 @@ const DeviceDetail = () => {
     const {embedId} = useParams();
     const [deviceDetails, setDeviceDetails] = useState({
         embed_id: '',
-        location: '',
+        name: '',
         type: '',
         status: '',
         last_seen: ''
@@ -85,7 +85,7 @@ const DeviceDetail = () => {
 
                         {activeTab === 1 && <ActivityList embedId={embedId}/>}
 
-                        {activeTab === 2 && <TransactionsTable embedId={embedId}/>
+                        {activeTab === 2 && <TransactionsTable embedId={embedId} userId={""}/>
                         }
 
                         {activeTab === 3 && <Typography>Device settings would be displayed here</Typography>}

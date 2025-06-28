@@ -16,7 +16,7 @@ export const VehicleList = ({
 
 
   const filteredVehicles = vehicles.filter((vehicle) => {
-    const matchesSearch = vehicle.vehicle_number
+    const matchesSearch = vehicle.vehicle_plate
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
 

@@ -3,7 +3,7 @@ const Vehicle = require("../models/vehicleModel");
 const ParkingSession = require("../models/parkingSessionModel");
 const sequelize = require("../config/database");
 const { Op } = require("sequelize");
-
+const normalizeVehiclePlate = require("../utils/cleanVehiclePlate");
 exports.getAllVehicles = async () => {
   const vehicles = await Vehicle.findAll({
     include: [
@@ -37,14 +37,15 @@ exports.getYourRecentVehicles = async (user_id) => {
 
 exports.createVehicle = async ({
   user_id,
-  vehicle_number,
+  vehicle_plate,
   vehicle_type_id,
   card_number,
 }) => {
   const t = await sequelize.transaction();
   try {
+    const normalizedPlate = normalizeVehiclePlate(vehicle_plate);
     const existingVehicle = await Vehicle.findOne({
-      where: { vehicle_number },
+      where: { vehicle_plate },
       transaction: t,
     });
     if (existingVehicle)
@@ -65,7 +66,7 @@ exports.createVehicle = async ({
     const newVehicle = await Vehicle.create(
       {
         user_id,
-        vehicle_number,
+        vehicle_plate: normalizedPlate,
         vehicle_type_id,
         status: "exited",
         card_id: newCard.card_id,

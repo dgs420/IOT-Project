@@ -36,9 +36,9 @@ function DeviceTable({devices, setDevices}) {
             <table className="min-w-full bg-white border-gray-300">
                 <thead className='top-0 sticky'>
                 <tr className="bg-gray-100 text-gray-600">
-                    <th className="py-3 px-4 border-b">ID</th>
-                    <th className="py-3 px-4 border-b">Embed ID</th>
-                    <th className="py-3 px-4 border-b">Location</th>
+                    <th className="py-3 px-4 border-b">#</th>
+                    <th className="py-3 px-4 border-b">Device ID</th>
+                    <th className="py-3 px-4 border-b">Name</th>
                     <th className="py-3 px-4 border-b">Type</th>
                     <th className="py-3 px-4 border-b">Status</th>
                     <th className="py-3 px-4 border-b">Last seen</th>
@@ -52,7 +52,7 @@ function DeviceTable({devices, setDevices}) {
                             {index + 1}
                         </td>
                         <td className="py-2 px-4 border-b text-center">{device.embed_id}</td>
-                        <td className="py-2 px-4 border-b text-center">{device.location}</td>
+                        <td className="py-2 px-4 border-b text-center">{device.name}</td>
                         <td className="py-2 px-4 border-b text-center">{device.type}</td>
                         <td
                             className="py-2 px-4 border-b text-center font-medium"

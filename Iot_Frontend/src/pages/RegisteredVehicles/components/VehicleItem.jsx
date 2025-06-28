@@ -77,8 +77,8 @@ export const VehicleItem = ({vehicle,  onDeleteSucess}) => {
                     <div className="flex items-center text-sm">
                         <div className="w-8">{getVehicleIcon(vehicle.vehicle_type_id)}</div>
                         <div>
-                            <span className="text-gray-500">Vehicle:</span>{" "}
-                            <span className="font-medium">{vehicle.vehicle_number}</span>
+                            <span className="text-gray-500">License Plate:</span>{" "}
+                            <span className="font-medium">{vehicle.vehicle_plate}</span>
                             <span className="ml-1 text-xs text-gray-500 capitalize">
                                 ({getTypeNameById(vehicle.vehicle_type_id)})
                             </span>

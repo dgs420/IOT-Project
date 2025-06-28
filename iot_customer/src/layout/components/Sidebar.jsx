@@ -8,7 +8,7 @@ const Sidebar = ({userRole}) => {
         [
             {to: "/", icon: <Home/>, label: "Home"},
             {to: "/activity", icon: <BarChart/>, label: "Activity"},
-            {to: "/your-cards", icon: <IdCard />, label: "Registered Vehicles" },
+            {to: "/your-vehicles", icon: <IdCard />, label: "Registered Vehicles" },
             {to: "/transactions", icon: <Landmark />, label: "Transactions" },
             {to:"/requests", icon:<FileQuestion/>, label: "Requests"},
             {to: "/about", icon: <Info/>, label: "About Us"},

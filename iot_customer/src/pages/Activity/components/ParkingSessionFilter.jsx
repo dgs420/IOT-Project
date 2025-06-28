@@ -12,6 +12,7 @@ import {
   Grid2,
 } from "@mui/material";
 import { Search, Filter, Download, RefreshCw } from "lucide-react";
+import { CustomButton } from "../../../Common/Components/CustomButton";
 
 const ParkingSessionFilters = ({
   searchQuery,
@@ -27,86 +28,51 @@ const ParkingSessionFilters = ({
 }) => {
   return (
     <Paper sx={{ p: 2, mb: 3 }}>
-      <Grid2
-        container
-        spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Grid2 item xs={12} md={6}>
-          <TextField
-            fullWidth
-            placeholder="Search by vehicle number or session ID..."
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+        <div className="relative flex-grow">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search by vehicle or session ID..."
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search fontSize="small" />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            size="small"
-            sx={{ minWidth: 600 }}
           />
-        </Grid2>
-        <Grid2 container item xs={12} md={8} spacing={2} alignItems="center">
-          <Grid2 item xs={12} sm={6} md={3}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Status</InputLabel>
-              <Select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                label="Status"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Filter size={18} />
-                  </InputAdornment>
-                }
-              >
-                <MenuItem value="all">All Statuses</MenuItem>
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="completed">Completed</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid2>
+        </div>
 
-          <Grid2 item xs={12} sm={6} md={3}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Payment</InputLabel>
-              <Select
-                value={paymentFilter}
-                onChange={(e) => setPaymentFilter(e.target.value)}
-                label="Payment"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Filter size={18} />
-                  </InputAdornment>
-                }
-              >
-                <MenuItem value="all">All Payments</MenuItem>
-                <MenuItem value="paid">Paid</MenuItem>
-                <MenuItem value="unpaid">Unpaid</MenuItem>
-                <MenuItem value="pending">Pending</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid2>
+        <div className="flex items-center space-x-2">
+          <Filter className="h-4 w-4 text-gray-500" />
+          <select
+            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
 
-          <Grid2 item md="auto">
-            <Button
-              variant="outlined"
-              startIcon={<RefreshCw size={18} />}
-              onClick={onRefresh}
-              disabled={loading}
-            >
-              Refresh
-            </Button>
-          </Grid2>
-        </Grid2>
+        <div className="flex items-center space-x-2">
+          <Filter className="h-4 w-4 text-gray-500" />
+          <select
+            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            value={paymentFilter}
+            onChange={(e) => setPaymentFilter(e.target.value)}
+          >
+            <option value="all">All Payments</option>
+            <option value="paid">Paid</option>
+            <option value="unpaid">Unpaid</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
 
-      </Grid2>
+        <CustomButton onClick={onRefresh} variant="success">
+          <RefreshCw size={18} /> Refresh
+        </CustomButton>
+      </div>
     </Paper>
   );
 };

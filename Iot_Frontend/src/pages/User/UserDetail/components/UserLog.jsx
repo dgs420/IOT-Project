@@ -29,7 +29,7 @@ export const UserLog = ({ userId }) => {
         <table className="min-w-full bg-white border border-gray-300 shadow-lg">
           <thead className="top-0 sticky">
             <tr className="bg-gray-100 text-gray-600">
-              <th className="py-3 px-4 border-b">Vehicle Number</th>
+              <th className="py-3 px-4 border-b">Vehicle Plate</th>
               <th className="py-3 px-4 border-b">Entry time</th>
               <th className="py-3 px-4 border-b">Exit time</th>
               <th className="py-3 px-4 border-b">Status</th>
@@ -44,7 +44,7 @@ export const UserLog = ({ userId }) => {
               .map((session) => (
                 <tr key={session.session_id} className="hover:bg-gray-100">
                   <td className="py-2 px-4 border-b text-center">
-                    {session.Vehicle.vehicle_number}
+                    {session.Vehicle.vehicle_plate}
                   </td>
                   <td className="py-2 px-4 border-b text-center">
                     {new Date(session.entry_time).toLocaleString()}
@@ -71,9 +71,7 @@ export const UserLog = ({ userId }) => {
                   <td className="py-2 px-4 border-b text-center">
                     {session.fee}
                   </td>
-                  {/* <td className="py-2 px-4 border-b text-center">
-                  {session.Vehicle.vehicle_number}
-                </td> */}
+                 
                 </tr>
               ))}
           </tbody>

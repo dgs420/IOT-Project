@@ -50,8 +50,8 @@ exports.getYourRecentVehicles = async (req, res) => {
 };
 
 exports.createVehicle = async (req, res) => {
-  const { user_id, vehicle_number, vehicle_type_id, card_number } = req.body;
-  if (!user_id || !vehicle_number || !vehicle_type_id || !card_number) {
+  const { user_id, vehicle_plate, vehicle_type_id, card_number } = req.body;
+  if (!user_id || !vehicle_plate || !vehicle_type_id || !card_number) {
     return res
       .status(400)
       .json({ code: 400, message: "Missing required fields." });
@@ -59,7 +59,7 @@ exports.createVehicle = async (req, res) => {
   try {
     const newVehicle = await vehicleService.createVehicle({
       user_id,
-      vehicle_number,
+      vehicle_plate,
       vehicle_type_id,
       card_number,
     });

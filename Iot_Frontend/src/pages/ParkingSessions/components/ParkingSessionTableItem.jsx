@@ -36,7 +36,7 @@ const ParkingSessionTableItem = ({ session }) => {
                 {getVehicleIcon(session.Vehicle.vehicle_type_id)}
               </span>
               <span className="font-medium text-lg">
-                {session.Vehicle.vehicle_number ?? "Unknown Number"}
+                {session.Vehicle.vehicle_plate ?? "Unknown Number"}
               </span>
             </div>
             <span className="text-sm text-gray-500">

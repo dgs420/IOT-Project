@@ -29,7 +29,7 @@ const Vehicle = sequelize.define(
         key: "card_id",
       },
     },
-    vehicle_number: {
+    vehicle_plate: {
       type: DataTypes.STRING(20),
       allowNull: false,
       unique: true,
@@ -58,7 +58,7 @@ const Vehicle = sequelize.define(
   },
   {
     tableName: "vehicles",
-    timestamps: true,
+    timestamps: false,
     underscored: true
   }
 );

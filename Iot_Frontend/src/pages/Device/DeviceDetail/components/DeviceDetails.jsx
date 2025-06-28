@@ -8,7 +8,7 @@ import { CustomButton } from "@/common/components/CustomButton.jsx";
 const DeviceDetails = ({ embedId }) => {
   const [deviceDetails, setDeviceDetails] = useState({
     embed_id: "",
-    location: "",
+    name: "",
     type: "",
     status: "",
     last_seen: "",
