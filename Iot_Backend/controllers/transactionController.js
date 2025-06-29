@@ -29,7 +29,78 @@ exports.getYourTransactions = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getYourTransactionsPaginated = async (req, res) => {
+  try {
+    const user_id = req.user.user_id;
+    const { transactions, count, pagination, filters } =
+      await transactionService.getUserTransactionsPaginated({
+        user_id,
+        query: req.query,
+      });
 
+    res.status(200).json({
+      code: 200,
+      message: "All transaction found",
+      info: transactions,
+      pagination: {
+        total: count,
+        totalPages: pagination.totalPages,
+        currentPage: pagination.currentPage,
+        limit: pagination.limit,
+        hasNextPage: pagination.currentPage < pagination.totalPages,
+        hasPrevPage: pagination.currentPage > 1,
+      },
+      filters,
+    });
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getTransactionsBySession = async (req, res) => {
+  try {
+    const session_id = req.query  .session_id;
+    if (!session_id) {
+      return res.status(400).json({ error: "Missing session_id" });
+    }
+    const transaction = await transactionService.getTransactionBySessionId(
+      session_id
+    );
+
+    res.status(200).json({
+      code: 200,
+      message: "Transaction found",
+      info: transaction,
+    });
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getTransactionsBySessionUser = async (req, res) => {
+  try {
+    const session_id = req.query.session_id;
+    const user_id = req.user.user_id;
+    if (!session_id) {
+      return res.status(400).json({ error: "Missing session_id" });
+    }
+    const transaction = await transactionService.getTransactionBySessionIdUser({
+      session_id,
+      user_id,
+    });
+
+    res.status(200).json({
+      code: 200,
+      message: "Transaction found",
+      info: transaction,
+    });
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
 exports.getRecentTransactions = async (req, res) => {
   try {
     const user_id = req.user.user_id;

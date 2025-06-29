@@ -33,6 +33,7 @@ import { CustomButton } from "../../../../common/components/CustomButton.jsx";
 import { formatCurrency } from "@/utils/formatters.js";
 import { set } from "date-fns";
 import AdminResetPasswordModal from "./ResetPasswordModal.jsx";
+import CashTopUpModal from "./CashTopupModal.jsx";
 
 // eslint-disable-next-line react/prop-types
 const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
@@ -40,6 +41,7 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
   const [editMode, setEditMode] = useState(false);
   const [error, setError] = useState(null);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [cashTopUpModalOpen, setCashTopUpModalOpen] = useState(false);
   const handleUserInputChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });
@@ -231,6 +233,13 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
                 <Typography variant="h6" color="text.primary" fontWeight={600}>
                   {formatCurrency(userDetails.balance || 0)}
                 </Typography>
+                <CustomButton
+                  type="button"
+                  color="success"
+                  onClick={() => setCashTopUpModalOpen(true)}
+                  disabled={isSubmitting}
+                  title="Top-up by cash"
+                />
               </div>
             </Grid2>
           </Grid2>
@@ -280,10 +289,18 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
           )}
         </form>
       </CardContent>
+      {cashTopUpModalOpen && (
+        <CashTopUpModal
+          userId={userId}
+          open={cashTopUpModalOpen}
+          onClose={() => setCashTopUpModalOpen(false)}
+        />
+      )}
       {openPasswordModal && (
         <AdminResetPasswordModal
           userId={userId}
-          setShowPasswordModal={setOpenPasswordModal}
+          open={openPasswordModal}
+          onClose={() => setOpenPasswordModal(false)}
         />
       )}
     </Card>

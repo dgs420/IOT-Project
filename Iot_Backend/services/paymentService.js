@@ -92,7 +92,7 @@ exports.handleStripeWebhook = async (req, sig) => {
   return { received: true };
 };
 
-exports.topUpCash = async (user_id, amount) => {
+exports.handleTopUpCash = async (user_id, amount) => {
   const t = await sequelize.transaction();
   try {
     const user = await User.findOne({ where: { user_id }, transaction: t });

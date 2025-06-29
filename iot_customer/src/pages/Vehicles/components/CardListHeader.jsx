@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Plus } from 'lucide-react';
 import {CustomButton} from "../../../Common/Components/CustomButton.jsx";
@@ -15,7 +16,6 @@ export const CardListHeader = ({ onRequestCard }) => {
                 <CustomButton
                     onClick={onRequestCard}
                 >
-                    <Plus className="h-4 w-4 mr-2" />
                     Request New Vehicle
                 </CustomButton>
 

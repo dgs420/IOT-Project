@@ -19,7 +19,7 @@ const PageContentHeader = ({
           <p className="mt-1 text-sm text-gray-500">{description}</p>
         </div>
         {buttonLabel && onClick && (
-          <CustomButton onClick={onClick}>
+          <CustomButton onClick={onClick} icon={Plus}>
             <Plus className="h-4 w-4 mr-2" />
             {buttonLabel}
           </CustomButton>

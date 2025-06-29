@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 const ApproveModal = ({ isOpen, onClose, onApprove, request }) => {
   const [cardNumber, setCardNumber] = useState("");
-  const { readCard } = useSerialRFID();
+  const { readCard, cancelRead } = useSerialRFID();
   const handleApprove = () => {
     onApprove(cardNumber);
   };
@@ -38,7 +38,14 @@ const ApproveModal = ({ isOpen, onClose, onApprove, request }) => {
         </div>
 
         <div className="mt-4 flex justify-end space-x-3">
-          <CustomButton title="Cancel" color="secondary" onClick={onClose} />
+          <CustomButton
+            title="Cancel"
+            color="secondary"
+            onClick={() => {
+              cancelRead();
+              onClose();
+            }}
+          />
           <CustomButton
             title="Read Card"
             color="primary"

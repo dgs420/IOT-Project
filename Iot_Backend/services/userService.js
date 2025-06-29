@@ -1,5 +1,8 @@
 const User = require("../models/userModel");
 const Card = require("../models/rfidCardModel");
+const Vehicle = require("../models/vehicleModel");
+const sequelize = require("../config/database");
+
 const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async () => {
@@ -45,18 +48,43 @@ exports.deleteUser = async (userId, currentUser) => {
   if (parseInt(userId) === currentUser.user_id) {
     throw { code: 400, message: "You cannot delete your own account." };
   }
-  const user = await User.findByPk(userId);
-  if (!user) throw { code: 404, message: "User not found." };
 
-  const card = await Card.findOne({ where: { user_id: userId } });
-  if (card)
-    throw {
-      code: 400,
-      message: "User cannot be deleted while having associated RFID cards.",
-    };
+  const transaction = await sequelize.transaction();
 
-  await user.destroy();
-  return "User deleted successfully.";
+  try {
+    const user = await User.findByPk(userId, { transaction });
+    if (!user) throw { code: 404, message: "User not found." };
+
+    const card = await Card.findOne({
+      where: { user_id: userId },
+      transaction,
+    });
+    if (card) {
+      throw {
+        code: 400,
+        message: "User cannot be deleted while having associated RFID cards.",
+      };
+    }
+
+    const vehicle = await Vehicle.findOne({
+      where: { user_id: userId },
+      transaction,
+    });
+    if (vehicle) {
+      throw {
+        code: 400,
+        message: "User cannot be deleted while having registered vehicles.",
+      };
+    }
+
+    await user.destroy({ transaction });
+
+    await transaction.commit();
+    return "User deleted successfully.";
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
 };
 
 exports.updateUser = async (userId, updates) => {

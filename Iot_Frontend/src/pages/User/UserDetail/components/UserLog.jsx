@@ -29,7 +29,7 @@ export const UserLog = ({ userId }) => {
         <table className="min-w-full bg-white border border-gray-300 shadow-lg">
           <thead className="top-0 sticky">
             <tr className="bg-gray-100 text-gray-600">
-              <th className="py-3 px-4 border-b">Vehicle Plate</th>
+              <th className="py-3 px-4 border-b">License Plate</th>
               <th className="py-3 px-4 border-b">Entry time</th>
               <th className="py-3 px-4 border-b">Exit time</th>
               <th className="py-3 px-4 border-b">Status</th>

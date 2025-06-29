@@ -14,7 +14,7 @@ const DeviceActivity = ({embedId}) => {
                 <thead className="bg-gray-100">
                 <tr>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Card Number</th>
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Vehicle Plate</th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">License Plate</th>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Action</th>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Message</th>
                     <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Time</th>

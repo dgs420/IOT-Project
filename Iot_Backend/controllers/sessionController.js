@@ -72,6 +72,7 @@ exports.getPaginatedYourSessions = async (req, res) => {
     res.status(500).json({ code: 500, message: error.message });
   }
 };
+
 exports.getUserSessions = async (req, res) => {
   try {
     const sessions = await sessionService.getUserSessions(req.params.userId);

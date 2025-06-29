@@ -45,7 +45,7 @@ export const VehicleFormModal = ({
 
                   <div>
                     <label htmlFor="vehicle_plate" className="block text-sm font-medium text-gray-700">
-                      Vehicle Plate
+                      License Plate
                     </label>
                     <input
                       type="text"

@@ -11,6 +11,7 @@ router.get('/user-vehicles/:userId',requireRole(['manager','admin']), vehicleCon
 router.delete('/:vehicleId',requireRole('admin'), vehicleController.deleteVehicle);
 router.get('/your-vehicles', vehicleController.getYourVehicles);
 router.get('/recent-vehicles', vehicleController.getYourRecentVehicles);
+router.put('/assign-card',requireRole('admin'), vehicleController.assignNewCard);
 
 // router.get('/recent-cards', rfidCardController.getYourRecentRfidCards);
 // router.post('/create-card', rfidCardController.createRfidCard);

@@ -7,6 +7,7 @@ import ParkingSessionTable from "./components/ParkingSessionTable.jsx"
 import {getRequest} from "../../api/index.js";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
 import ParkingSessionTablePaginated from "./components/ParkingSessionPaginated.jsx"
+import { fetchData } from "@/api/fetchData.js"
 
 const ParkingSessions = () => {
     const [sessions, setSessions] = useState([])
@@ -36,19 +37,9 @@ const ParkingSessions = () => {
         setLoading(true)
         setError(null)
 
-        try {
-            const response = await getRequest("/session");
-            if (response.code === 200) {
-                setSessions(response.info)
-            } else {
-                throw new Error(response.message || "Failed to fetch parking sessions")
-            }
-        } catch (err) {
-            console.error("Error loading parking sessions:", err)
-            setError("Failed to load parking sessions. Please try again.")
-        } finally {
-            setLoading(false)
-        }
+        void fetchData("/session", setSessions, setLoading, null, null)
+
+       
     }
 
     const applyFiltersAndSort = () => {

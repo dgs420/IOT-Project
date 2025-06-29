@@ -53,7 +53,7 @@ const VehicleTypeTable = ({vehicleTypes, onEdit, onDelete}) => {
                         <TableCell sx={{fontWeight: "bold"}}>ID</TableCell>
                         <TableCell sx={{fontWeight: "bold"}}>Vehicle Type Name</TableCell>
                         <TableCell sx={{fontWeight: "bold"}}>Description</TableCell>
-                        <TableCell sx={{fontWeight: "bold"}}>Price ($)</TableCell>
+                        <TableCell sx={{fontWeight: "bold"}}>Price per hour($)</TableCell>
                         <TableCell sx={{fontWeight: "bold"}}>Actions</TableCell>
                     </TableRow>
                 </TableHead>

@@ -7,7 +7,7 @@ const TransactionFilter = ({ filters, setFilters }) => {
     };
 
     return (
-        <div className="mt-3 mx-6 p-3 bg-gray-50 rounded-md border border-gray-200">
+        <div className="mt-3 p-3 bg-gray-50 rounded-md border border-gray-200">
             <div className="flex flex-wrap gap-4">
                 {/* <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>

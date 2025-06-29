@@ -23,15 +23,15 @@ const UserVehiclesList = ({ userId }) => {
     void fetchData(`/vehicle/user-vehicles/${userId}`, setVehicles, null, null);
   }, [userId]);
 
-  const { readCard } = useSerialRFID();
+  const { readCard, cancelRead } = useSerialRFID();
   const handleReadCard = () => {
-  readCard((cardId) => {
-    setNewVehicle((prev) => ({
-      ...prev,
-      card_number: cardId,
-    }));
-  });
-};
+    readCard((cardId) => {
+      setNewVehicle((prev) => ({
+        ...prev,
+        card_number: cardId,
+      }));
+    });
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewVehicle({ ...newVehicle, [name]: value });
@@ -74,6 +74,11 @@ const UserVehiclesList = ({ userId }) => {
     setVehicles(newVehicle);
   };
 
+  const handleCloseModal = () => {
+    cancelRead();
+    setOpenModal(false);
+  };
+
   return (
     <div className="px-4 py-4">
       <button
@@ -106,7 +111,7 @@ const UserVehiclesList = ({ userId }) => {
       <AddCardModal
         open={openModal}
         onReadCard={handleReadCard}
-        onClose={() => setOpenModal(false)}
+        onClose={handleCloseModal}
         newCard={newVehicle}
         onInputChange={handleInputChange}
         onSubmit={handleSubmit}

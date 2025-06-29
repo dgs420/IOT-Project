@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import {
   Dialog,
@@ -206,7 +207,7 @@ export default function NewVehicleDialog({ open, onClose }) {
                 "Enter your vehicle license plate number"
               }
               sx={{ mt: 2, mb: 3 }}
-              placeholder="e.g., ABC123"
+              placeholder="e.g., ABC1234"
             />
 
             <FormControl fullWidth sx={{ mb: 3 }}>

@@ -94,6 +94,7 @@ const TransactionItem = ({ transaction }) => {
           onClose={() => setShowSessionModal(false)}
           sessionId={transaction.session_id}
           isOpen={showSessionModal}
+          transaction={transaction}
         />
       )}
     </div>

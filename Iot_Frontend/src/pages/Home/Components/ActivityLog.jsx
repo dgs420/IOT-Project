@@ -27,7 +27,7 @@ const ActivityLog = ({ latestActivityEvent }) => {
                   Device ID
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
-                  Vehicle Plate
+                  License Plate
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
                   Action

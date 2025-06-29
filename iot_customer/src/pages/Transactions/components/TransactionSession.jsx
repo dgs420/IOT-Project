@@ -8,8 +8,14 @@ import {
   formatDuration,
 } from "../../../utils/formatters";
 import StatusChip from "../../Activity/components/StatusChip";
-
-export default function TransactionSession({ isOpen, sessionId, onClose }) {
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
+export default function TransactionSession({
+  isOpen,
+  sessionId,
+  onClose,
+  transaction,
+}) {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
@@ -45,10 +51,24 @@ export default function TransactionSession({ isOpen, sessionId, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 max-w-md shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Parking Session Details</h2>
-
+    <Dialog open={isOpen} onClose={onClose}>
+      <DialogTitle className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Parking Session Details</h2>
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={onClose}
+          disabled={loading}
+          size="small"
+          sx={{
+            bgcolor: "rgba(255,255,255,0.1)",
+            "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
+          }}
+        >
+          <Close />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
         {loading && <p>Loading...</p>}
         {fetchError && <p className="text-red-600">Error: {fetchError}</p>}
 
@@ -61,7 +81,7 @@ export default function TransactionSession({ isOpen, sessionId, onClose }) {
                     Session ID
                   </td>
                   <td className="px-4 py-3 text-gray-800">
-                    #{session.session_id}
+                    {session.session_id}
                   </td>
                 </tr>
                 <tr className="border-b border-gray-200">
@@ -115,6 +135,22 @@ export default function TransactionSession({ isOpen, sessionId, onClose }) {
                     />
                   </td>
                 </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="px-4 py-3 bg-gray-50 font-semibold text-gray-700 border-r border-gray-300">
+                    Transaction ID
+                  </td>
+                  <td className="px-4 py-3">
+                    {transaction ? transaction.transaction_id : "—"}
+                  </td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="px-4 py-3 bg-gray-50 font-semibold text-gray-700 border-r border-gray-300">
+                    Payment method
+                  </td>
+                  <td className="px-4 py-3">
+                    {transaction ? transaction.payment_method : "—"}
+                  </td>
+                </tr>
                 <tr>
                   <td className="px-4 py-3 bg-gray-50 font-semibold text-gray-700 border-r border-gray-300">
                     Fee
@@ -134,14 +170,14 @@ export default function TransactionSession({ isOpen, sessionId, onClose }) {
             </table>
           </div>
         )}
-
-        <button
-          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
-    </div>
+      </DialogContent>
+      {/* 
+      <button
+        className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        onClick={onClose}
+      >
+        Close
+      </button> */}
+    </Dialog>
   );
 }
