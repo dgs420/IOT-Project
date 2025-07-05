@@ -4,10 +4,9 @@ import { EmptyVehicleList } from "./EmptyVehicleList";
 import {fetchData} from "../../../api/fetchData.js";
 import {TablePagination} from "@mui/material";
 
-export const VehicleList = ({
+export const  VehicleList = ({
   searchQuery,
   statusFilter,
-  onAddNewCard,
   typeFilter,
 }) => {
   const [vehicles, setVehicles] = useState([]);
@@ -53,8 +52,6 @@ export const VehicleList = ({
 
       ) : (
         <EmptyVehicleList
-          searchActive={searchActive}
-          onAddNewCard={onAddNewCard}
         />
       )}
       <TablePagination

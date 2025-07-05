@@ -9,12 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import { CustomButton } from "@/common/components/CustomButton";
+import { putRequest } from "@/api";
+import { toast } from "react-toastify";
 
-const CashTopUpModal = ({ userId, open, onClose }) => {
+const CashTopUpModal = ({ userId, open, onClose, setUserDetails }) => {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const value = parseFloat(amount);
 
     if (isNaN(value) || value <= 0) {
@@ -22,16 +24,35 @@ const CashTopUpModal = ({ userId, open, onClose }) => {
       return;
     }
 
-    // Allow up to 2 decimal places only
     if (!/^\d+(\.\d{1,2})?$/.test(amount)) {
       setError("Only up to 2 decimal places allowed.");
       return;
     }
 
-    setError("");
-    // onSubmit(value); // Send value to parent
-    setAmount("");
-    onClose();
+    try {
+      const response = await putRequest("/payment/top-up-cash", {
+        user_id: userId, // replace with your actual user id
+        amount: value,
+      });
+
+      if (response.code === 200) {
+        toast.success(response.message);
+        setUserDetails((prev) => ({
+          ...prev,
+          balance: ((parseFloat(prev.balance) || 0) + value).toFixed(2),
+        }));  
+        onClose();
+        setAmount("");
+        setError("");
+      } else {
+        setError(response.message || "An error occurred.");
+      }
+    } catch (error) {
+      console.error(error);
+      setError(
+        error?.message || "Failed to top up balance. Please try again later."
+      );
+    }
   };
 
   const handleClose = () => {
@@ -45,8 +66,8 @@ const CashTopUpModal = ({ userId, open, onClose }) => {
       <DialogTitle>Top-up by Cash</DialogTitle>
       <DialogContent>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          Make sure the correct amount is entered. Only positive numbers with up to 2
-          decimal places are allowed.
+          Make sure the correct amount is entered. Only positive numbers with up
+          to 2 decimal places are allowed.
         </Typography>
         <TextField
           autoFocus

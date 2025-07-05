@@ -1,7 +1,7 @@
 import React from 'react';
 import { CreditCard, Plus } from 'lucide-react';
 
-export const EmptyVehicleList = ({ searchActive, onAddNewCard }) => {
+export const EmptyVehicleList = () => {
     return (
         <div className="text-center py-12">
             <CreditCard className="mx-auto h-12 w-12 text-gray-400" />

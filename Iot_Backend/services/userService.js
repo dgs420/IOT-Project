@@ -59,13 +59,6 @@ exports.deleteUser = async (userId, currentUser) => {
       where: { user_id: userId },
       transaction,
     });
-    if (card) {
-      throw {
-        code: 400,
-        message: "User cannot be deleted while having associated RFID cards.",
-      };
-    }
-
     const vehicle = await Vehicle.findOne({
       where: { user_id: userId },
       transaction,
@@ -74,6 +67,12 @@ exports.deleteUser = async (userId, currentUser) => {
       throw {
         code: 400,
         message: "User cannot be deleted while having registered vehicles.",
+      };
+    }
+    if (card) {
+      throw {
+        code: 400,
+        message: "User cannot be deleted while having associated RFID cards.",
       };
     }
 

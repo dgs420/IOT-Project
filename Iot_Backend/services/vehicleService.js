@@ -14,6 +14,12 @@ exports.getAllVehicles = async () => {
   return vehicles;
 };
 
+exports.findByCardId = async (card_id) =>
+  Vehicle.findOne({
+    where: { card_id },
+    include: [{ model: VehicleType }],
+  });
+
 exports.getVehiclesByUserId = async (user_id) => {
   const vehicles = await Vehicle.findAll({
     where: { user_id },
@@ -58,6 +64,12 @@ exports.createVehicle = async ({
     });
 
     if (existingCard) {
+      if (existingCard.is_guest) {
+        throw {
+          code: 400,
+          message: "Cannot assign to guest card.",
+        };
+      }
       const existingVehicleWithCard = await Vehicle.findOne({
         where: { card_id: existingCard.card_id },
         transaction: t,
@@ -118,6 +130,12 @@ exports.assignNewCardToVehicle = async ({ vehicle_id, card_number }) => {
         { transaction: t }
       );
     } else {
+      if (card.is_guest) {
+        throw {
+          code: 400,
+          message: "Cannot assign to guest card.",
+        };
+      }
       const assignedCard = await Vehicle.findOne({
         where: { card_id: card.card_id },
         transaction: t,

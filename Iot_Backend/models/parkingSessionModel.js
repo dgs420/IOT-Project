@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Vehicle = require("./vehicleModel");
+const VehicleType = require("./vehicleTypeModel");
+const RfidCard = require("./rfidCardModel");
 const ParkingSession = sequelize.define(
   "parking_session",
   {
@@ -19,6 +21,33 @@ const ParkingSession = sequelize.define(
 
       onDelete: "SET NULL",
       index: true,
+    },
+    vehicle_plate: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      unique: false,
+    },
+    vehicle_type_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: VehicleType,
+        key: "vehicle_type_id",
+      },
+    },
+    card_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: RfidCard,
+        key: "card_id",
+      },
+      index: true,
+    },
+    is_guest: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     entry_time: {
       type: DataTypes.DATE,
@@ -52,7 +81,7 @@ const ParkingSession = sequelize.define(
     },
   },
   {
-    timestamps: true, 
+    timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }

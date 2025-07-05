@@ -3,12 +3,7 @@ const TrafficLog = require("../models/trafficLogModel");
 const { getClient } = require("../config/mqttClient");
 const { Op } = require("sequelize");
 
-const createDevice = async ({
-  embed_id,
-  name,
-  type,
-  status = "offline",
-}) => {
+const createDevice = async ({ embed_id, name, type, status = "offline" }) => {
   const client = getClient();
 
   const existingDevice = await Device.findOne({ where: { embed_id } });
@@ -95,6 +90,9 @@ const commandDevice = async ({ embed_id, command }) => {
   return { message: "Command sent successfully", action: actionType };
 };
 
+const findByEmbedId = async (embed_id) =>
+  Device.findOne({ where: { embed_id } });
+
 module.exports = {
   createDevice,
   getAllDevices,
@@ -103,4 +101,5 @@ module.exports = {
   updateDevice,
   deleteDevice,
   commandDevice,
+  findByEmbedId,
 };

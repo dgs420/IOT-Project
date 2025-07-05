@@ -3,9 +3,11 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const requireAuth = require('../middleware/requireAuth');
 const requireRole = require('../middleware/requireRole');
-
+const User = require("../models/userModel");
 router.post('/login',authController.login);
 router.post('/login-admin',authController.loginAdmin);
 router.post('/create-user',requireAuth,requireRole(['manager','admin']),authController.createUser);
 router.post('/signup', authController.signup);
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-forgot-password", authController.resetForgotPassword);
 module.exports = router;

@@ -77,8 +77,8 @@ exports.getYourRecentRfidCards = async (req, res) => {
             message: 'Server error' });
     }
 }
-exports.createRfidCard = async (req, res) => {
-    const { card_number, user_id, vehicle_plate, vehicle_type } = req.body;
+exports.createGuestRfidCard = async (req, res) => {
+    const { card_number } = req.body;
 
     try {
         // Check if the card already exists
@@ -92,24 +92,9 @@ exports.createRfidCard = async (req, res) => {
                 message: 'Card number already exists.' });
         }
 
-        // Check if a card is already associated with this vehicle
-        const vehicleCard = await RfidCard.findOne({
-            where: { vehicle_plate }
-        });
-
-        if (vehicleCard) {
-            return res.json({
-                code:400,
-                message: 'A card is already associated with this vehicle.' });
-        }
-
-        // Create a new card
         const newCard = await RfidCard.create({
             card_number,
-            user_id,
-            vehicle_plate,
-            vehicle_type,
-            status: 'exited', // Default status
+            is_guest: true                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              , // Default status
         });
 
         res.status(201).json({

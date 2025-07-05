@@ -8,7 +8,47 @@ exports.getAllSessions = async () => {
   });
   return sessions;
 };
-
+exports.findActiveGuestSession = async (card_id) =>
+  ParkingSession.findOne({
+    where: { card_id, status: "active", is_guest: true },
+  });
+exports.findActiveSessionByVehicleId = async (vehicle_id) =>
+  ParkingSession.findOne({
+    where: { vehicle_id, status: "active" },
+  });
+exports.createGuestSession = async (
+  card_id,
+  vehicle_plate,
+  vehicle_type_id,
+  transaction
+) =>
+  ParkingSession.create(
+    {
+      card_id,
+      vehicle_plate,
+      vehicle_type_id,
+      entry_time: new Date(),
+      status: "active",
+      is_guest: true,
+    },
+    { transaction }
+  );
+exports.createSession = async (
+  vehicle_id,
+  vehicle_type_id,
+  vehicle_plate,
+  transaction
+) =>
+  ParkingSession.create(
+    {
+      vehicle_id,
+      entry_time: new Date(),
+      status: "active",
+      vehicle_type_id,
+      vehicle_plate,
+    },
+    { transaction }
+  );
 exports.getTransactionSession = async (userId, sessionId) => {
   const session = await ParkingSession.findOne({
     where: {
@@ -54,7 +94,6 @@ exports.getTransactionSessionAdmin = async (sessionId) => {
 
   return session;
 };
-
 
 exports.getPaginatedsSessions = async (query, userId) => {
   const {
@@ -149,20 +188,7 @@ exports.getPaginatedsSessions = async (query, userId) => {
   };
 };
 
-exports.getUserSessions = async (userId) => {
-  const sessions = await ParkingSession.findAll({
-    include: [
-      {
-        model: Vehicle,
-        where: { user_id: userId },
-        attributes: ["vehicle_plate"],
-      },
-    ],
-  });
-  return sessions;
-};
-
-exports.getYourSessions = async (userId) => {
+exports.getSessionsByUserId = async (userId) => {
   const sessions = await ParkingSession.findAll({
     include: [
       {

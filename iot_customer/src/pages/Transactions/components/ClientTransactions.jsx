@@ -117,7 +117,7 @@ const ClientTransactions = () => {
   return (
     <Card>
       <CardContent>
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-2 py-2 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl font-bold text-gray-900">

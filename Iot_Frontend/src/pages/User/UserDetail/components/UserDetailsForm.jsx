@@ -294,6 +294,7 @@ const UserDetailsForm = ({ userDetails, setUserDetails, userId, onUpdate }) => {
           userId={userId}
           open={cashTopUpModalOpen}
           onClose={() => setCashTopUpModalOpen(false)}
+          setUserDetails={setUserDetails}
         />
       )}
       {openPasswordModal && (

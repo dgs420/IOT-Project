@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Home from '../pages/Home/Home.jsx';
 import Login from "../pages/Auth/Login/index.jsx";
 import Signup from "../pages/Auth/Signup/index.jsx";
@@ -8,6 +9,8 @@ import {UserVehicles} from "../pages/Vehicles/index.jsx";
 import {UserRequests} from "../pages/Requests/index.jsx";
 import ProfilePage from "../pages/Profile/index.jsx";
 import AboutUs from '../pages/AboutUs/index.jsx';
+import ForgotPassword from '@/pages/Auth/ForgotPassword/index.jsx';
+import ResetPassword from '@/pages/Auth/ResetPassword/index.jsx';
 // import Statistics from '../pages/Statistics';
 // import PersonalProfile from '../pages/PersonalProfile';
 // import Report from '../pages/Report';
@@ -66,6 +69,18 @@ export const APP_ROUTES = [
         key:'requests',
         path: '/requests',
         element: <UserRequests/>,
+
+    },
+    {
+        key:'forgot-password',
+        path: '/forgot-password',
+        element: <ForgotPassword/>,
+
+    },
+    {
+        key:'reset-password',
+        path: '/reset-password',
+        element: <ResetPassword/>,
 
     },
     // {

@@ -58,11 +58,10 @@ export const useSerialRFID = () => {
         try {
           tempReader.releaseLock();
         } catch (releaseError) {
-          // Reader might already be released
+          // Reader might already be released 
         }
       }
 
-      // Now create the actual reader for card reading
       const reader = port.readable.getReader();
       readerRef.current = reader;
 

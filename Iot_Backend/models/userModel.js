@@ -33,6 +33,12 @@ const User = sequelize.define(
     last_name: {
       type: DataTypes.STRING,
     },
+    reset_token: {
+      type: DataTypes.STRING,
+    },
+    reset_token_expiry: {
+      type: DataTypes.DATE,
+    },
     balance: {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,

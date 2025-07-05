@@ -99,7 +99,7 @@ const TransactionDetailsmodal = ({ isOpen, onClose, sessionId }) => {
                 label="Created At"
                 value={formatDate(transaction.createdAt)}
               />
-              <TableRow label="Balance" value={transaction.balance} />
+              {/* <TableRow label="Balance" value={transaction.balance} /> */}
             </tbody>
           </Box>
         )}

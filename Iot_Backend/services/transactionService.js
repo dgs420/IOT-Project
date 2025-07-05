@@ -6,6 +6,23 @@ const Device = require("../models/deviceModel");
 exports.getAllTransactions = async () => {
   return await Transaction.findAll();
 };
+exports.create = async (
+  { user_id, balance, amount, session_id, device_id, payment_method },
+  transaction
+) =>
+  Transaction.create(
+    {
+      user_id,
+      balance,
+      amount,
+      status: "completed",
+      payment_method,
+      transaction_type: "fee",
+      session_id,
+      device_id,
+    },
+    { transaction }
+  );
 
 exports.getUserTransactions = async (user_id) => {
   return await Transaction.findAll({
@@ -145,9 +162,9 @@ exports.getTransactionBySessionId = async (session_id) => {
   });
 };
 
-exports.getTransactionBySessionIdUser = async ({session_id, user_id}) => {
+exports.getTransactionBySessionIdUser = async ({ session_id, user_id }) => {
   return await Transaction.findOne({
-    where: { session_id , user_id },
+    where: { session_id, user_id },
   });
 };
 exports.getTransactionSummary = async () => {

@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Tooltip, IconButton, TableCell, TableRow } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  IconButton,
+  TableCell,
+  TableRow,
+  Typography,
+  Chip,
+} from "@mui/material";
 import { DollarSign, FileText } from "lucide-react";
 import StatusChip from "./StatusChip.jsx";
 import {
@@ -31,11 +39,33 @@ const ParkingSessionTableItem = ({ session }) => {
         <TableCell>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {session.Vehicle?.user_id ? (
-              <Link to={`/user/${session.Vehicle.user_id}`}>
-                {session.Vehicle.user_id}
-              </Link>
+              <Chip
+                label={
+                  <Link
+                    to={`/user/${session.Vehicle.user_id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    {session.Vehicle.user_id}
+                  </Link>
+                }
+                color="primary"
+                variant="filled"
+                size="small"
+              />
+            ) : session.is_guest ? (
+              <Chip
+                label={`Guest`}
+                color="secondary"
+                variant="filled"
+                size="small"
+              />
             ) : (
-              <span>Unknown User</span> // Or fallback UI
+              <Chip
+                label={`Unknown User`}
+                color="error"
+                variant="filled"
+                size="small"
+              />
             )}
           </Box>
         </TableCell>
@@ -44,18 +74,37 @@ const ParkingSessionTableItem = ({ session }) => {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <span className="w-8">
-                  {getVehicleIcon(session.Vehicle.vehicle_type_id)}
+                  {getVehicleIcon(
+                    session.Vehicle.vehicle_type_id || session.vehicle_type_id
+                  )}
                 </span>
                 <span className="font-medium text-lg">
-                  {session.Vehicle.vehicle_plate ?? "Unknown Number"}
+                  {(session.Vehicle.vehicle_plate || session.vehicle_plate) ??
+                    "Unknown Number"}
                 </span>
               </div>
               <span className="text-sm text-gray-500">
-                ({getTypeNameById(session.Vehicle.vehicle_type_id)})
+                (
+                {getTypeNameById(
+                  session.Vehicle.vehicle_type_id || session.vehicle_type_id
+                )}
+                )
               </span>
             </div>
           ) : (
-            <div className="text-gray-400 italic">Vehicle data missing</div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <span className="w-8">
+                  {getVehicleIcon(session.vehicle_type_id)}
+                </span>
+                <span className="font-medium text-lg">
+                  {session.vehicle_plate ?? "Unknown Number"}
+                </span>
+              </div>
+              <span className="text-sm text-gray-500">
+                ({getTypeNameById(session.vehicle_type_id)})
+              </span>
+            </div>
           )}
         </TableCell>
 

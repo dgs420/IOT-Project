@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useState} from 'react';
 import {Alert, Box, Button, Paper, Snackbar, TextField, Typography} from '@mui/material';
 import {toast} from "react-toastify";

@@ -75,7 +75,7 @@ exports.getPaginatedYourSessions = async (req, res) => {
 
 exports.getUserSessions = async (req, res) => {
   try {
-    const sessions = await sessionService.getUserSessions(req.params.userId);
+    const sessions = await sessionService.getSessionsByUserId(req.params.userId);
     res
       .status(200)
       .json({ code: 200, message: "All sessions fetched", info: sessions });
@@ -86,7 +86,7 @@ exports.getUserSessions = async (req, res) => {
 
 exports.getYourSessions = async (req, res) => {
   try {
-    const sessions = await sessionService.getYourSessions(req.user.user_id);
+    const sessions = await sessionService.getSessionsByUserId(req.user.user_id);
     res
       .status(200)
       .json({ code: 200, message: "All sessions fetched", info: sessions });

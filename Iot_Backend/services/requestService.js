@@ -76,18 +76,35 @@ exports.approveRequest = async (request_id, card_number) => {
     throw { code: 400, message: "This vehicle is already registered." };
 
   const existingCard = await RfidCard.findOne({ where: { card_number } });
-  if (existingCard)
-    throw { code: 400, message: "This card is already registered" };
+  if (existingCard) {
+    if (existingCard.is_guest) {
+      throw {
+        code: 400,
+        message: "Cannot assign to guest card.",
+      };
+    }
+    const existingVehicleWithCard = await Vehicle.findOne({
+      where: { card_id: existingCard.card_id },
+      // transaction: t,
+    });
+    if (existingVehicleWithCard)
+      throw {
+        code: 400,
+        message: "This card is already registered with another vehicle.",
+      };
+  }
 
   const transaction = await sequelize.transaction();
   try {
-    const newCard = await RfidCard.create(
-      {
-        card_number,
-        user_id: request.user_id,
-      },
-      { transaction }
-    );
+    const newCard =
+      existingCard ||
+      (await RfidCard.create(
+        {
+          card_number,
+          user_id: request.user_id,
+        },
+        { transaction }
+      ));
 
     const newVehicle = await Vehicle.create(
       {
