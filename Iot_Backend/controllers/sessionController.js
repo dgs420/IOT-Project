@@ -11,6 +11,20 @@ exports.getAllSessions = async (req, res) => {
   }
 };
 
+exports.getTransactionSession = async (req, res) => {
+  try {
+    const session = await sessionService.getTransactionSession(
+      req.user.user_id,
+      req.query.sessionId
+    );
+    res
+      .status(200)
+      .json({ code: 200, message: "Session fetched", info: session });
+  } catch (error) {
+    res.status(500).json({ code: 500, message: error.message });
+  }
+};
+
 exports.getPaginatedSessions = async (req, res) => {
   try {
     const result = await sessionService.getPaginatedsSessions(req.query);
@@ -31,14 +45,12 @@ exports.getPaginatedUserSessions = async (req, res) => {
       req.query,
       req.params.userId
     );
-    res
-      .status(200)
-      .json({
-        code: 200,
-        message: "All sessions fetched",
-        info: result.sessions,
-        pagination: result.pagination,
-      });
+    res.status(200).json({
+      code: 200,
+      message: "All sessions fetched",
+      info: result.sessions,
+      pagination: result.pagination,
+    });
   } catch (error) {
     res.status(500).json({ code: 500, message: error.message });
   }
@@ -50,21 +62,20 @@ exports.getPaginatedYourSessions = async (req, res) => {
       req.query,
       req.user.user_id
     );
-    res
-      .status(200)
-      .json({
-        code: 200,
-        message: "All sessions fetched",
-        info: result.sessions,
-        pagination: result.pagination,
-      });
+    res.status(200).json({
+      code: 200,
+      message: "All sessions fetched",
+      info: result.sessions,
+      pagination: result.pagination,
+    });
   } catch (error) {
     res.status(500).json({ code: 500, message: error.message });
   }
 };
+
 exports.getUserSessions = async (req, res) => {
   try {
-    const sessions = await sessionService.getUserSessions(req.params.userId);
+    const sessions = await sessionService.getSessionsByUserId(req.params.userId);
     res
       .status(200)
       .json({ code: 200, message: "All sessions fetched", info: sessions });
@@ -75,7 +86,7 @@ exports.getUserSessions = async (req, res) => {
 
 exports.getYourSessions = async (req, res) => {
   try {
-    const sessions = await sessionService.getYourSessions(req.user.user_id);
+    const sessions = await sessionService.getSessionsByUserId(req.user.user_id);
     res
       .status(200)
       .json({ code: 200, message: "All sessions fetched", info: sessions });

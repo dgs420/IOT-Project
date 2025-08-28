@@ -17,7 +17,7 @@ const VehicleType = sequelize.define('vehicle_type', {
         allowNull: true,
     },
     fee_per_hour: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
     created_at: {

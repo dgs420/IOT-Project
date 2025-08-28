@@ -15,7 +15,7 @@ const UserVehiclesList = ({ userId }) => {
   const [newVehicle, setNewVehicle] = useState({
     card_number: "",
     user_id: userId,
-    vehicle_number: "",
+    vehicle_plate: "",
     vehicle_type_id: 1,
   });
 
@@ -23,15 +23,15 @@ const UserVehiclesList = ({ userId }) => {
     void fetchData(`/vehicle/user-vehicles/${userId}`, setVehicles, null, null);
   }, [userId]);
 
-  const { readCard } = useSerialRFID();
+  const { readCard, cancelRead } = useSerialRFID();
   const handleReadCard = () => {
-  readCard((cardId) => {
-    setNewVehicle((prev) => ({
-      ...prev,
-      card_number: cardId,
-    }));
-  });
-};
+    readCard((cardId) => {
+      setNewVehicle((prev) => ({
+        ...prev,
+        card_number: cardId,
+      }));
+    });
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewVehicle({ ...newVehicle, [name]: value });
@@ -54,7 +54,7 @@ const UserVehiclesList = ({ userId }) => {
         setNewVehicle({
           card_number: "",
           user_id: userId,
-          vehicle_number: "",
+          vehicle_plate: "",
           vehicle_type_id: 1,
         });
       } else {
@@ -72,6 +72,11 @@ const UserVehiclesList = ({ userId }) => {
       (vehicle) => vehicle.vehicle_id !== vehicleId
     );
     setVehicles(newVehicle);
+  };
+
+  const handleCloseModal = () => {
+    cancelRead();
+    setOpenModal(false);
   };
 
   return (
@@ -99,14 +104,14 @@ const UserVehiclesList = ({ userId }) => {
             />
           ))
         ) : (
-          <p>No RFID cards found for this user.</p>
+          <p>No vehicle found for this user.</p>
         )}
       </div>
 
       <AddCardModal
         open={openModal}
         onReadCard={handleReadCard}
-        onClose={() => setOpenModal(false)}
+        onClose={handleCloseModal}
         newCard={newVehicle}
         onInputChange={handleInputChange}
         onSubmit={handleSubmit}

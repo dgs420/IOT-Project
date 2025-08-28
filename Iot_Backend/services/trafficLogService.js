@@ -23,7 +23,7 @@ exports.fetchJoinedLogs = async ({ limit = 20, offset = 0, embed_id }) => {
       rfid_cards.card_number,
       rfid_cards.user_id,
 
-      vehicles.vehicle_number,
+      vehicles.vehicle_plate,
       vehicles.vehicle_type_id,
 
       devices.embed_id
@@ -98,7 +98,7 @@ exports.fetchDetailedLogs = async ({
         include: [
           {
             model: Vehicle,
-            attributes: ["user_id", "vehicle_number", "vehicle_type_id"],
+            attributes: ["user_id", "vehicle_plate", "vehicle_type_id"],
           },
         ],
       },

@@ -104,7 +104,7 @@ const ParkingSessionTablePaginated = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            {['session_id','user_id', 'vehicle_number', 'entry_time', 'exit_time','duration', 'status', 'payment_status', 'fee'].map(field => (
+                            {['session_id','user_id', 'vehicle_plate', 'entry_time', 'exit_time','duration', 'status', 'payment_status', 'fee'].map(field => (
                                 <TableCell key={field} onClick={() => handleSort(field)} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
                                     {field.replace(/_/g, ' ')}{sortField === field ? (sortOrder === 'ASC' ? ' ▲' : ' ▼') : ''}
                                 </TableCell>

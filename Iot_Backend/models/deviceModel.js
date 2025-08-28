@@ -12,9 +12,11 @@ const Device = sequelize.define('device', {
         allowNull: false,
         unique: true
     },
-    location: {
+    name: {
         type: DataTypes.STRING,
-        allowNull: true, // Optional: Specify where the device is installed.
+        allowNull: true,
+        allowNull: false,
+        unique: true
     },
     type: {
         type: DataTypes.ENUM('entry', 'exit', 'both'),

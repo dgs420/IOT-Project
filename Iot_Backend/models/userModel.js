@@ -33,15 +33,21 @@ const User = sequelize.define(
     last_name: {
       type: DataTypes.STRING,
     },
+    reset_token: {
+      type: DataTypes.STRING,
+    },
+    reset_token_expiry: {
+      type: DataTypes.DATE,
+    },
     balance: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
       allowNull: false,
     },
   },
   {
-    timestamps: true, // Enable automatic timestamp fields
-    createdAt: "created_at", // Custom name for createdAt
+    timestamps: true,
+    createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );

@@ -12,9 +12,13 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   Box,
+  Collapse,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -27,8 +31,9 @@ import { toast } from "react-toastify";
 import { downloadRequest, getRequest } from "../../api/index.js";
 import { DollarSign } from "lucide-react";
 import { TransactionStatusChip } from "./TransactionStatusChip.jsx";
-
-const TransactionsList = ({ embedId }) => {
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+const TransactionsList = ({ embedId, userId }) => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -41,8 +46,13 @@ const TransactionsList = ({ embedId }) => {
   const [sortOrder, setSortOrder] = useState("DESC");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("all");
+  const [transactionType, seTtransactionType] = useState("all");
   const getFetchParams = () => ({
     ...(embedId && { embedId }),
+    ...(userId && { userId }),
+    ...(paymentMethod !== "all" && { paymentMethod }),
+    ...(transactionType !== "all" && { transactionType }),
     page: pagination.currentPage,
     limit: pagination.limit,
     sortField,
@@ -51,6 +61,7 @@ const TransactionsList = ({ embedId }) => {
     ...(endDate && { endDate: format(endDate, "yyyy-MM-dd") }),
   });
   const [exporting, setExporting] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleExportExcel = async () => {
     try {
@@ -136,48 +147,25 @@ const TransactionsList = ({ embedId }) => {
       <CardContent>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item xs={12} sm={6} md={3}>
-              <DatePicker
-                label="Start Date"
-                value={startDate}
-                onChange={setStartDate}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    size: "small",
-                    sx: { fontSize: 14 },
-                  },
-                  actionBar: {
-                    actions: ["clear", "today"],
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <DatePicker
-                label="End Date"
-                value={endDate}
-                onChange={setEndDate}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    size: "small",
-                    sx: { fontSize: 14 },
-                  },
-                  actionBar: {
-                    actions: ["clear", "today"],
-                  },
-                }}
-              />
-            </Grid>
+            {/* Action buttons & filter toggle */}
             <Grid
               item
               xs={12}
-              sm={6}
-              md={6}
               display="flex"
-              justifyContent={{ xs: "flex-start", md: "flex-end" }}
+              justifyContent="space-between"
+              flexWrap="wrap"
+              gap={1}
             >
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={
+                  showFilters ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                }
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                Filters
+              </Button>
               <Stack direction="row" spacing={1}>
                 <CustomButton
                   color="primary"
@@ -189,9 +177,79 @@ const TransactionsList = ({ embedId }) => {
                   title={exporting ? "Exporting..." : "Export"}
                   onClick={handleExportExcel}
                   disabled={exporting || !transactions.length}
-                  // icon={exporting ? <CircularProgress size={20} /> : <FileDownloadIcon />}
                 />
               </Stack>
+            </Grid>
+
+            {/* Collapsible Filters */}
+            <Grid item xs={12}>
+              <Collapse in={showFilters}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <DatePicker
+                      label="Start Date"
+                      value={startDate}
+                      onChange={setStartDate}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          size: "small",
+                        },
+                        actionBar: {
+                          actions: ["clear", "today"],
+                        },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <DatePicker
+                      label="End Date"
+                      value={endDate}
+                      onChange={setEndDate}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          size: "small",
+                        },
+                        actionBar: {
+                          actions: ["clear", "today"],
+                        },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel id="payment-method-label">Method</InputLabel>
+                      <Select
+                        labelId="payment-method-label"
+                        value={paymentMethod}
+                        label="Method"
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      >
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="rfid_balance">Balance</MenuItem>
+                        <MenuItem value="cash">Cash</MenuItem>
+                        <MenuItem value="stripe">Stripe</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel id="transaction-type-label">Type</InputLabel>
+                      <Select
+                        labelId="transaction-type-label"
+                        value={transactionType}
+                        label="Type"
+                        onChange={(e) => seTtransactionType(e.target.value)}
+                      >
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="top-up">Top up</MenuItem>
+                        <MenuItem value="fee">Fee</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Collapse>
             </Grid>
           </Grid>
         </LocalizationProvider>

@@ -12,7 +12,7 @@ const Transaction = sequelize.define(
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: User,
         key: "user_id",
@@ -44,9 +44,11 @@ const Transaction = sequelize.define(
         model: ParkingSession,
         key: "session_id",
       },
+      allowNull: true,
+      unique: true,
     },
     balance: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
       allowNull: false,
     },
@@ -71,7 +73,7 @@ const Transaction = sequelize.define(
   },
   {
     tableName: "transactions",
-    timestamps: true, // Enable automatic timestamp fields
+    timestamps: true,
     underscored: true,
   }
 );

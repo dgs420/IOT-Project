@@ -1,9 +1,10 @@
 // File: components/transactions/TransactionList.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import TransactionItem from './TransactionItem';
 import EmptyState from './EmptyState';
 
 const TransactionList = ({ transactions, loading, error }) => {
+   
     if (loading) return <div className="py-8 text-center">Loading transactions...</div>;
     if (error) return <div className="py-8 text-center text-red-500">Error loading transactions</div>;
 
@@ -19,6 +20,7 @@ const TransactionList = ({ transactions, loading, error }) => {
                     transaction={transaction}
                 />
             ))}
+           
         </div>
     );
 };

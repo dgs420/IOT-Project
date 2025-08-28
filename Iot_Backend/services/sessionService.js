@@ -8,6 +8,92 @@ exports.getAllSessions = async () => {
   });
   return sessions;
 };
+exports.findActiveGuestSession = async (card_id) =>
+  ParkingSession.findOne({
+    where: { card_id, status: "active", is_guest: true },
+  });
+exports.findActiveSessionByVehicleId = async (vehicle_id) =>
+  ParkingSession.findOne({
+    where: { vehicle_id, status: "active" },
+  });
+exports.createGuestSession = async (
+  card_id,
+  vehicle_plate,
+  vehicle_type_id,
+  transaction
+) =>
+  ParkingSession.create(
+    {
+      card_id,
+      vehicle_plate,
+      vehicle_type_id,
+      entry_time: new Date(),
+      status: "active",
+      is_guest: true,
+    },
+    { transaction }
+  );
+exports.createSession = async (
+  vehicle_id,
+  vehicle_type_id,
+  vehicle_plate,
+  transaction
+) =>
+  ParkingSession.create(
+    {
+      vehicle_id,
+      entry_time: new Date(),
+      status: "active",
+      vehicle_type_id,
+      vehicle_plate,
+    },
+    { transaction }
+  );
+exports.getTransactionSession = async (userId, sessionId) => {
+  const session = await ParkingSession.findOne({
+    where: {
+      session_id: sessionId,
+    },
+    include: [
+      {
+        model: Vehicle,
+        where: {
+          user_id: userId,
+        },
+        required: true,
+      },
+    ],
+  });
+
+  if (!session) {
+    const error = new Error("Session not found");
+    error.code = 400;
+    throw error;
+  }
+
+  return session;
+};
+
+exports.getTransactionSessionAdmin = async (sessionId) => {
+  const session = await ParkingSession.findOne({
+    where: {
+      session_id: sessionId,
+    },
+    include: [
+      {
+        model: Vehicle,
+      },
+    ],
+  });
+
+  if (!session) {
+    const error = new Error("Session not found");
+    error.code = 400;
+    throw error;
+  }
+
+  return session;
+};
 
 exports.getPaginatedsSessions = async (query, userId) => {
   const {
@@ -55,7 +141,7 @@ exports.getPaginatedsSessions = async (query, userId) => {
     const isNumeric = !isNaN(search);
     whereClause[Op.or] = [
       {
-        "$Vehicle.vehicle_number$": {
+        "$Vehicle.vehicle_plate$": {
           [Op.like]: `%${search}%`,
         },
       },
@@ -102,26 +188,13 @@ exports.getPaginatedsSessions = async (query, userId) => {
   };
 };
 
-exports.getUserSessions = async (userId) => {
+exports.getSessionsByUserId = async (userId) => {
   const sessions = await ParkingSession.findAll({
     include: [
       {
         model: Vehicle,
         where: { user_id: userId },
-        attributes: ["vehicle_number"],
-      },
-    ],
-  });
-  return sessions;
-};
-
-exports.getYourSessions = async (userId) => {
-  const sessions = await ParkingSession.findAll({
-    include: [
-      {
-        model: Vehicle,
-        where: { user_id: userId },
-        attributes: ["vehicle_number"],
+        attributes: ["vehicle_plate"],
       },
     ],
   });
@@ -132,7 +205,7 @@ exports.closeActiveSession = async (sessionId) => {
   const session = await ParkingSession.findByPk(sessionId);
   if (!session) {
     const error = new Error("Session not found");
-    error.code = 404;
+    error.code = 400;
     throw error;
   }
   await session.update({ status: "completed" });

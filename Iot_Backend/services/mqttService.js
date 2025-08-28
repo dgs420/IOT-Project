@@ -1,6 +1,7 @@
 const mqtt = require("mqtt");
 const { handleDeviceStatus } = require("./handler/deviceStatusHandler");
 
+// const { handleCardScan, cashConfirm } = require("./handler/barrierCardHandler");
 const { handleCardScan, cashConfirm } = require("./handler/barrierHandler");
 const { connectMqtt, getClient } = require("../config/mqttClient"); // For emitting MQTT events
 // let client;

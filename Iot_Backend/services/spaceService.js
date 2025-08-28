@@ -2,7 +2,7 @@ const { fn, col } = require("sequelize");
 const ParkingSpace = require("../models/parkingSpaceModel");
 const Vehicle = require("../models/vehicleModel");
 const VehicleType = require("../models/vehicleTypeModel");
-
+const ParkingSession = require("../models/parkingSessionModel");
 exports.create = async ({ vehicle_type_id, total_spaces }) => {
   if (!vehicle_type_id || isNaN(vehicle_type_id)) {
     return { code: 400, message: "Vehicle type ID is required and must be a number." };
@@ -60,9 +60,9 @@ exports.update = async ({ space_id, total_spaces }) => {
 
 exports.getAll = async () => {
   const spaces = await ParkingSpace.findAll();
-  const occupiedCounts = await Vehicle.findAll({
-    attributes: ["vehicle_type_id", [fn("COUNT", col("vehicle_id")), "occupied"]],
-    where: { status: "parking" },
+  const occupiedCounts = await ParkingSession.findAll({
+    attributes: ["vehicle_type_id", [fn("COUNT", col("session_id")), "occupied"]],
+    where: { status: "active" },
     group: ["vehicle_type_id"],
     raw: true,
   });

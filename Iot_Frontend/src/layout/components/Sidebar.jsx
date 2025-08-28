@@ -31,7 +31,7 @@ const Sidebar = () => {
   ];
   return (
     <div className="w-64 bg-white fixed h-full border-r p-4">
-      <div className="text-3xl font-bold text-blue-600 mb-10">ParkMag</div>
+      <div className="text-3xl font-bold text-blue-600 mb-10">ParkAdmin</div>
       <nav>
         {links.map(({ to, icon, label }) => (
           <NavLink

@@ -50,8 +50,8 @@ exports.getYourRecentVehicles = async (req, res) => {
 };
 
 exports.createVehicle = async (req, res) => {
-  const { user_id, vehicle_number, vehicle_type_id, card_number } = req.body;
-  if (!user_id || !vehicle_number || !vehicle_type_id || !card_number) {
+  const { user_id, vehicle_plate, vehicle_type_id, card_number } = req.body;
+  if (!user_id || !vehicle_plate || !vehicle_type_id || !card_number) {
     return res
       .status(400)
       .json({ code: 400, message: "Missing required fields." });
@@ -59,7 +59,7 @@ exports.createVehicle = async (req, res) => {
   try {
     const newVehicle = await vehicleService.createVehicle({
       user_id,
-      vehicle_number,
+      vehicle_plate,
       vehicle_type_id,
       card_number,
     });
@@ -76,6 +76,30 @@ exports.createVehicle = async (req, res) => {
   }
 };
 
+exports.assignNewCard = async (req, res) => {
+  const { vehicle_id, card_number } = req.body;
+  if (!vehicle_id || !card_number) {
+    return res
+      .status(400)
+      .json({ code: 400, message: "Missing required fields." });
+  }
+  try {
+    const vehicle = await vehicleService.assignNewCardToVehicle({
+      vehicle_id,
+      card_number,
+    });
+    res.status(201).json({
+      code: 200,
+      message: "New card assigned successfully.",
+      info: vehicle,
+    });
+  } catch (error) {
+    res.status(error.code || 500).json({
+      code: error.code || 500,
+      message: error.message || "Server error",
+    });
+  }
+};
 exports.deleteVehicle = async (req, res) => {
   try {
     await vehicleService.deleteVehicle(req.params.vehicleId);

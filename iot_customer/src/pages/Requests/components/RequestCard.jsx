@@ -31,8 +31,8 @@ export const RequestCard = ({ request }) => {
                                 ) : (
                                     <span className="italic text-gray-400">No name provided</span>
                                 )}
-                                {request.vehicle_number && (
-                                    <span className="ml-2">• {request.vehicle_number}</span>
+                                {request.vehicle_plate && (
+                                    <span className="ml-2">• {request.vehicle_plate}</span>
                                 )}
                             </div>
                         </div>
@@ -76,7 +76,7 @@ export const RequestCard = ({ request }) => {
                             <RequestDetailItem
                                 icon={getVehicleIcon(request.vehicle_type, "h-4 w-4 text-gray-500")}
                                 label="Vehicle Information"
-                                value={`${request.vehicle_number || "No number"} (${request.vehicle_type_id || "Unknown type"})`}
+                                value={`${request.vehicle_plate || "No Plate Provided"} (${request.vehicle_type_id || "Unknown type"})`}
                             />
                             <RequestDetailItem
                                 icon={<MapPin className="h-4 w-4 text-gray-500" />}

@@ -55,9 +55,9 @@ const AddCardModal = ({
             title="Start reading card"
           />
           <TextField
-            label="Vehicle Number"
-            name="vehicle_number"
-            value={newCard.vehicle_number}
+            label="Vehicle Lisence Plate"
+            name="vehicle_plate"
+            value={newCard.vehicle_plate}
             onChange={onInputChange}
             fullWidth
             margin="normal"
@@ -106,16 +106,5 @@ const AddCardModal = ({
   );
 };
 
-// AddCardModal.propTypes = {
-//     open: propTypes.bool.isRequired,
-//     onClose: propTypes.func.isRequired,
-//     newCard: propTypes.shape({
-//         card_number: propTypes.string.isRequired,
-//         vehicle_number: propTypes.string.isRequired,
-//         vehicle_type_id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
-//     }).isRequired,
-//     onInputChange: propTypes.func.isRequired,
-//     onSubmit: propTypes.func.isRequired,
-// };
 
 export default AddCardModal;

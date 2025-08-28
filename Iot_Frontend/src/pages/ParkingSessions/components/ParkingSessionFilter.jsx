@@ -10,6 +10,8 @@ const ParkingSessionFilters = ({
                                    setStatusFilter,
                                    paymentFilter,
                                    setPaymentFilter,
+                                   typeFilter,
+                                   setTypeFilter,
                                    onRefresh,
                                    loading,
                                    hasData,
@@ -23,13 +25,24 @@ const ParkingSessionFilters = ({
                     </div>
                     <input
                         type="text"
-                        placeholder="Search by vehicle number or session ID..."
+                        placeholder="Search by vehicle or session ID..."
                         className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
-
+                <div className="flex items-center space-x-2">
+                    <Filter className="h-4 w-4 text-gray-500"/>
+                    <select
+                        className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                        value={typeFilter}
+                        onChange={(e) => setTypeFilter(e.target.value)}
+                    >
+                        <option value="all">All type</option>
+                        <option value="guest">Guest</option>
+                        <option value="registered">Registered</option>
+                    </select>
+                </div>
                 <div className="flex items-center space-x-2">
                     <Filter className="h-4 w-4 text-gray-500"/>
                     <select

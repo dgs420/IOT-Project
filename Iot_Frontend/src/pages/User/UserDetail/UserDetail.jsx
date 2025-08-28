@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import { Paper, Tab, Tabs } from "@mui/material";
 import { getRequest } from "../../../api/index.js";
 import UserDetailsForm from "./components/UserDetailsForm";
-import UserVehiclesList from "./components/UserVehiclesList.jsx";
+import TransactionsTable from "../../../common/components/TransactionsTable.jsx";
 import { UserLog } from "./components/UserLog.jsx";
+import UserVehiclesList from "./components/UserVehiclesList.jsx";
 
 const UserDetail = () => {
   const { user_id } = useParams();
@@ -48,11 +49,14 @@ const UserDetail = () => {
         >
           <Tab label="Registered vehicles" />
           <Tab label="User Logs" />
+          <Tab label="Transactions" />
         </Tabs>
 
         {tabIndex === 0 && <UserVehiclesList userId={user_id} />}
 
         {tabIndex === 1 && <UserLog userId={user_id} />}
+
+        {tabIndex === 2 && <TransactionsTable embedId={""} userId={user_id}/>}
       </Paper>
     </>
   );

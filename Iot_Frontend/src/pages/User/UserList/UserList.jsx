@@ -5,9 +5,9 @@ import { fetchData } from "../../../api/fetchData.js";
 import UserFilterBar from "./components/UserFilterBar.jsx";
 import PageContentHeader from "../../../common/components/PageContentHeader.jsx";
 import AddUserModal from "./components/AddUserModal.jsx";
-import {Box} from "@mui/material"
+import { Box } from "@mui/material";
 import UsersTable from "./components/UsersTable.jsx";
-import {Modal as AntModal} from "antd";
+import { Modal as AntModal } from "antd";
 
 function UserList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,17 +28,34 @@ function UserList() {
     void fetchData("/user/all-user", setUsers);
   }, []);
 
-  const filteredUsers= users.filter(user => {
+  const filteredUsers = users.filter((user) => {
     const matchesSearch =
-        (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (user.username && user.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (user.first_name && user.first_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (user.last_name && user.last_name.toLowerCase().includes(searchQuery.toLowerCase())) ;
+      (user.email &&
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.username &&
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.first_name &&
+        user.first_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.last_name &&
+        user.last_name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesStatus = roleFilter === 'all' || user.role === roleFilter;
+    const matchesStatus = roleFilter === "all" || user.role === roleFilter;
 
-    return (searchQuery === '' || matchesSearch) && matchesStatus;
-});
+    return (searchQuery === "" || matchesSearch) && matchesStatus;
+  });
+
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+
+    if (sortBy === "newest") {
+      // @ts-ignore
+      return dateB - dateA;
+    } else {
+      // @ts-ignore
+      return dateA - dateB;
+    }
+  });
 
   const handleAddUserOpen = () => {
     setOpen(true);
@@ -89,8 +106,8 @@ function UserList() {
   };
   const handleDeleteUser = async (userId) => {
     AntModal.confirm({
-      title: 'Confirm Deletion',
-      content: 'Are you sure you want to delete this user?',
+      title: "Confirm Deletion",
+      content: "Are you sure you want to delete this user?",
       onOk: async () => {
         try {
           const response = await deleteRequest(`/user/${userId}`);
@@ -110,29 +127,26 @@ function UserList() {
       },
     });
   };
-  
+
   return (
     <Box>
-        <PageContentHeader
-          onClick={handleAddUserOpen}
-          label="All Users"
-          description={"Manger all users"}
-          buttonLabel={"Add user"}
-          className='mb-4'
-        />
-
-        <UserFilterBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          roleFilter={roleFilter}
-          setRoleFilter={setRoleFilter}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-        />
-      <UsersTable
-        users={filteredUsers}
-        handleDeleteUser={handleDeleteUser}
+      <PageContentHeader
+        onClick={handleAddUserOpen}
+        label="All Users"
+        description={"Manger all users"}
+        buttonLabel={"Add user"}
+        className="mb-4"
       />
+
+      <UserFilterBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        roleFilter={roleFilter}
+        setRoleFilter={setRoleFilter}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
+      <UsersTable users={sortedUsers} handleDeleteUser={handleDeleteUser} />
 
       <AddUserModal
         open={open}

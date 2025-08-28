@@ -3,19 +3,14 @@ const TrafficLog = require("../models/trafficLogModel");
 const { getClient } = require("../config/mqttClient");
 const { Op } = require("sequelize");
 
-const createDevice = async ({
-  embed_id,
-  location,
-  type,
-  status = "offline",
-}) => {
+const createDevice = async ({ embed_id, name, type, status = "offline" }) => {
   const client = getClient();
 
   const existingDevice = await Device.findOne({ where: { embed_id } });
   if (existingDevice)
     throw { code: 400, message: "Device with this ID already exists." };
 
-  const newDevice = await Device.create({ embed_id, location, type, status });
+  const newDevice = await Device.create({ embed_id, name, type, status });
 
   const topic = `device/${embed_id}/status`;
   client.subscribe(topic);
@@ -49,7 +44,7 @@ const updateDevice = async (deviceId, updateData) => {
   if (!device) throw { code: 404, message: "Device not found." };
 
   await device.update({
-    location: updateData.location ?? device.location,
+    name: updateData.name ?? device.name,
     type: updateData.type ?? device.type,
     status: updateData.status ?? device.status,
     last_seen: updateData.last_seen ?? device.last_seen,
@@ -95,6 +90,9 @@ const commandDevice = async ({ embed_id, command }) => {
   return { message: "Command sent successfully", action: actionType };
 };
 
+const findByEmbedId = async (embed_id) =>
+  Device.findOne({ where: { embed_id } });
+
 module.exports = {
   createDevice,
   getAllDevices,
@@ -103,4 +101,5 @@ module.exports = {
   updateDevice,
   deleteDevice,
   commandDevice,
+  findByEmbedId,
 };

@@ -27,7 +27,7 @@ export default function App() {
                         key={route.key}
                         path={route.path}
                         element={
-                            route.path === '/login' || route.path === '/register' ?  (
+                            route.path === '/login' || route.path === '/register' || route.path === '/forgot-password' || route.path === '/reset-password' ?  (
                                 route.element
                             ) : (
                                 <ProtectedRoute>

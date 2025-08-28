@@ -1,5 +1,4 @@
-import React from 'react'
-
+import React from "react";
 
 import { useState, useEffect } from "react";
 import {
@@ -22,8 +21,8 @@ import { useVehicleTypeStore } from "../../store/useVehicleTypeStore.js";
 import { fetchData } from "../../api/fetchData.js";
 import { toast } from "react-toastify";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
-import { deleteRequest } from "../../api/index.js";
-import {CustomButton} from "../../common/components/CustomButton.jsx";
+import { deleteRequest, putRequest } from "../../api/index.js";
+import { CustomButton } from "../../common/components/CustomButton.jsx";
 
 const ParkingSpaceManagement = () => {
   const [spaces, setSpaces] = useState([]);
@@ -85,13 +84,21 @@ const ParkingSpaceManagement = () => {
     if (formDialog.mode === "create") {
       await createParkingSpace(formData);
     } else {
-      await updateParkingSpace(formData);
+      const res = await putRequest("/parking-spaces/update", formData);
+      if (res.code !== 200) {
+        toast.error(res.message);
+      } else {
+        toast.success("Updated successfully");
+        void fetchData("/parking-spaces", setSpaces);
+      }
     }
   };
 
   const handleDelete = async (spaceId) => {
     try {
-      const response = await deleteRequest('/parking-spaces/delete',{space_id: spaceId});
+      const response = await deleteRequest("/parking-spaces/delete", {
+        space_id: spaceId,
+      });
       if (response.code === 200) {
         setSpaces((prev) => prev.filter((space) => space.space_id !== spaceId));
       } else {
@@ -108,14 +115,14 @@ const ParkingSpaceManagement = () => {
       <PageContentHeader
         label="Parking Space Management"
         description="Manage parking spaces for different vehicle types"
-        buttonLabel = "Add Parking Space"
+        buttonLabel="Add Parking Space"
         onClick={handleAddClick}
       />
       <ParkingSpaceStats spaces={spaces} />
 
       <Paper sx={{ p: 2, mb: 3 }}>
         <Grid2 container spacing={2} alignItems="center">
-          <Grid2 item xs={12} md={6}>
+          <Grid2 container spacing={2} alignItems="center">
             <TextField
               fullWidth
               placeholder="Search parking spaces..."
@@ -133,9 +140,6 @@ const ParkingSpaceManagement = () => {
           </Grid2>
 
           <Grid2
-            item
-            xs={12}
-            md={6}
             sx={{
               display: "flex",
               justifyContent: { xs: "flex-start", md: "flex-end" },
@@ -143,13 +147,12 @@ const ParkingSpaceManagement = () => {
             }}
           >
             <CustomButton
-                icon={<RefreshCw size={18}/>}
-                onClick={() => fetchData("/parking-spaces", setSpaces)}
-                title="Refresh"
-                color="success"
-                disabled={loading}
+              icon={<RefreshCw size={18} />}
+              onClick={() => fetchData("/parking-spaces", setSpaces)}
+              title="Refresh"
+              color="success"
+              disabled={loading}
             />
-
           </Grid2>
         </Grid2>
       </Paper>

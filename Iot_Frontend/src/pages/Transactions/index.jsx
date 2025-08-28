@@ -12,7 +12,7 @@ export default function TransactionsDashboard() {
             {/* <TransactionSummary /> */}
             {/*<DeviceCashFlow />*/}
             {/*<DailyRevenueChart from={from} to={to} />*/}
-            <TransactionsList embedId={""}/>
+            <TransactionsList embedId={""} userId={""}/>
         </div>
     );
 }

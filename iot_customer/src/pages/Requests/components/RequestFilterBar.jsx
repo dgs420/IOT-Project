@@ -4,8 +4,8 @@ import { Search, Filter, Calendar} from 'lucide-react';
 
 const RequestFilterBar = ({ searchQuery, setSearchQuery, statusFilter, setStatusFilter, sortBy, setSortBy }) => {
     return (
-        <div className="bg-white rounded-lg shadow mb-6">
-            <div className="p-4 sm:p-6 border-b border-gray-200">
+        <div className="bg-white rounded-lg shadow mb-6 px-6 py-4">
+            <div className=" border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
                     {/* Search Input */}
                     <div className="relative flex-grow">
@@ -14,7 +14,7 @@ const RequestFilterBar = ({ searchQuery, setSearchQuery, statusFilter, setStatus
                         </div>
                         <input
                             type="text"
-                            placeholder="Search by name, vehicle number, or address"
+                            placeholder="Search by name, vehicle plate, or address"
                             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -33,7 +33,6 @@ const RequestFilterBar = ({ searchQuery, setSearchQuery, statusFilter, setStatus
                             <option value="pending">Pending</option>
                             <option value="approved">Approved</option>
                             <option value="rejected">Rejected</option>
-                            <option value="completed">Completed</option>
                         </select>
                     </div>
 

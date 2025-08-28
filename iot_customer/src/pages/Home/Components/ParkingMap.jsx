@@ -9,9 +9,9 @@ const ParkingMap = ({ parkingLots = [] }) => {
                 maxHeight: '60vh',      
                 overflowY: 'auto',     
             }}>
-            <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
+            {/* <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
                 Parking Availability
-            </Typography>
+            </Typography> */}
 
             <Grid container spacing={3}>
                 {parkingLots.map(lot => (

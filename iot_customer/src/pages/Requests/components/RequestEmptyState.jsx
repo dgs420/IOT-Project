@@ -9,7 +9,7 @@ const RequestEmptyState = ({searchQuery, statusFilter}) => {
             <p className="mt-1 text-sm text-gray-500">
                 {searchQuery || statusFilter !== 'all'
                     ? "Try changing your search or filter settings."
-                    : "There are no card requests at this time."}
+                    : "There are no vehicle requests at this time."}
             </p>
         </div>
     );

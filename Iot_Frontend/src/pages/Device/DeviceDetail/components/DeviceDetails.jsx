@@ -8,7 +8,7 @@ import { CustomButton } from "@/common/components/CustomButton.jsx";
 const DeviceDetails = ({ embedId }) => {
   const [deviceDetails, setDeviceDetails] = useState({
     embed_id: "",
-    location: "",
+    name: "",
     type: "",
     status: "",
     last_seen: "",
@@ -75,12 +75,20 @@ const DeviceDetails = ({ embedId }) => {
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body2" color="text.secondary">
+              Name:
+            </Typography>
+            <Typography variant="body2">
+              {deviceDetails?.name || "Unknown"}
+            </Typography>
+          </Box>
+          {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="body2" color="text.secondary">
               Type:
             </Typography>
             <Typography variant="body2">
               {deviceDetails?.type || "Standard"}
             </Typography>
-          </Box>
+          </Box> */}
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="body2" color="text.secondary">
               Last Active:

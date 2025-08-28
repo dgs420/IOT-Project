@@ -2,14 +2,14 @@
  export const notifications = [
     {
         id: 1,
-        message: 'Your vehicle card request has been approved.',
+        message: 'Your vehicle request has been approved.',
         time: '2 minutes ago',
         is_read: false,
         type: 'success',
     },
     {
         id: 2,
-        message: 'Your vehicle card request has been rejected.',
+        message: 'Your vehicle request has been rejected.',
         time: '10 minutes ago',
         is_read: false,
         type: 'error',

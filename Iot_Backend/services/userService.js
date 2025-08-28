@@ -1,5 +1,8 @@
 const User = require("../models/userModel");
 const Card = require("../models/rfidCardModel");
+const Vehicle = require("../models/vehicleModel");
+const sequelize = require("../config/database");
+
 const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async () => {
@@ -7,13 +10,36 @@ exports.getAllUsers = async () => {
 };
 
 exports.getUserDetail = async (userId) => {
-  const user = await User.findByPk(userId, { attributes: { exclude: ["password"] } });
+  const user = await User.findByPk(userId, {
+    attributes: { exclude: ["password"] },
+  });
   if (!user) throw { code: 404, message: "User does not exist" };
   return user;
 };
 
+exports.changePassword = async (userId, oldPassword, password) => {
+  const user = await User.findByPk(userId);
+  if (!user) throw { code: 404, message: "User does not exist" };
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) throw { code: 400, message: "Old password is incorrect" };
+  user.password = await bcrypt.hash(password, 10);
+  await user.save();
+  return "Password changed successfully.";
+};
+
+exports.changePasswordAdmin = async (userId, password) => {
+  const user = await User.findByPk(userId);
+  if (!user) throw { code: 404, message: "User does not exist" };
+
+  user.password = await bcrypt.hash(password, 10);
+  await user.save();
+  return "Password changed successfully.";
+};
+
 exports.getPersonalDetail = async (userId) => {
-  const user = await User.findByPk(userId, { attributes: { exclude: ["password"] } });
+  const user = await User.findByPk(userId, {
+    attributes: { exclude: ["password"] },
+  });
   if (!user) throw { code: 404, message: "User does not exist" };
   return user;
 };
@@ -22,18 +48,46 @@ exports.deleteUser = async (userId, currentUser) => {
   if (parseInt(userId) === currentUser.user_id) {
     throw { code: 400, message: "You cannot delete your own account." };
   }
-  const user = await User.findByPk(userId);
-  if (!user) throw { code: 404, message: "User not found." };
 
-  const card = await Card.findOne({ where: { user_id: userId } });
-  if (card) throw { code: 400, message: "User cannot be deleted while having associated RFID cards." };
+  const transaction = await sequelize.transaction();
 
-  await user.destroy();
-  return "User deleted successfully.";
+  try {
+    const user = await User.findByPk(userId, { transaction });
+    if (!user) throw { code: 404, message: "User not found." };
+
+    const card = await Card.findOne({
+      where: { user_id: userId },
+      transaction,
+    });
+    const vehicle = await Vehicle.findOne({
+      where: { user_id: userId },
+      transaction,
+    });
+    if (vehicle) {
+      throw {
+        code: 400,
+        message: "User cannot be deleted while having registered vehicles.",
+      };
+    }
+    if (card) {
+      throw {
+        code: 400,
+        message: "User cannot be deleted while having associated RFID cards.",
+      };
+    }
+
+    await user.destroy({ transaction });
+
+    await transaction.commit();
+    return "User deleted successfully.";
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
 };
 
 exports.updateUser = async (userId, updates) => {
-  const { email, password, username, role, first_name, last_name } = updates;
+  const { email, username, role, first_name, last_name } = updates;
   const user = await User.findByPk(userId);
   if (!user) throw { code: 404, message: "User not found" };
 
@@ -43,11 +97,12 @@ exports.updateUser = async (userId, updates) => {
   }
   if (username && username !== user.username) {
     const existingUsername = await User.findOne({ where: { username } });
-    if (existingUsername) throw { code: 400, message: "Username already taken" };
+    if (existingUsername)
+      throw { code: 400, message: "Username already taken" };
   }
 
   const updatedFields = { email, username, role, first_name, last_name };
-  if (password) updatedFields.password = await bcrypt.hash(password, 10);
+  // if (password) updatedFields.password = await bcrypt.hash(password, 10);
 
   await user.update(updatedFields);
   return {
@@ -71,7 +126,8 @@ exports.updateProfile = async (userId, updates) => {
   }
   if (username && username !== user.username) {
     const existingUsername = await User.findOne({ where: { username } });
-    if (existingUsername) throw { code: 400, message: "Username already taken" };
+    if (existingUsername)
+      throw { code: 400, message: "Username already taken" };
   }
 
   const updatedFields = { email, username, first_name, last_name };

@@ -5,26 +5,21 @@ import {VehicleSearch} from "./components/VehicleSearch.jsx";
 import {VehicleList} from "./components/VehicleList.jsx";
 import {VehicleFormModal} from "./components/VehicleFormModal.jsx";
 import PageContentHeader from "../../common/components/PageContentHeader.jsx";
+import GuestCardModal from "./components/GuestCardModal.jsx";
 
 export const RegisteredVehicles = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [typeFilter, setTypeFilter] = useState("all");
-    const [showAddCardModal, setShowAddCardModal] = useState(false);
-    const [selectedCard, setSelectedCard] = useState(null);
-
-
-    const handleAddCard = () => {
-        setSelectedCard(null);
-        setShowAddCardModal(true);
-    };
-
+    const [showGuestCardModal, setShowGuestCardModal] = useState(false); 
     return (
         <Box>
             <PageContentHeader
                 label="Registered Vehicles"
                 description="List of all registered vehicles"
                 className="mb-4"
+                buttonLabel="Add guest card"
+                onClick={() => setShowGuestCardModal(true)}
             />
 
             <VehicleSearch
@@ -40,13 +35,17 @@ export const RegisteredVehicles = () => {
                 searchQuery={searchQuery}
                 statusFilter={statusFilter}
                 typeFilter={typeFilter}
-                onAddNewCard={handleAddCard}
             />
 
-            <VehicleFormModal
+            <GuestCardModal
+                isOpen={showGuestCardModal}
+                onClose={() => setShowGuestCardModal(false)}
+            />
+
+            {/* <VehicleFormModal
                 isOpen={showAddCardModal}
                 onClose={() => setShowAddCardModal(false)}
-            />
+            /> */}
         </Box>
     );
 };

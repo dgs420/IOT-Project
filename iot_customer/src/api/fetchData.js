@@ -1,11 +1,17 @@
 import {getRequest} from "./index.js";
 
-export const fetchData = async (url, setData, setLoading, setError) => {
+export const fetchData = async (url, setData, setLoading, setError, setPagination, params=null) => {
     try {
         setLoading?.(true);
-        const response = await getRequest(url);
+        const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+        const fullUrl = `${url}${query}`;
+
+        const response = await getRequest(fullUrl);
         if (response.code === 200) {
             setData(response.info);
+            if (response.pagination && typeof setPagination === 'function') {
+                setPagination?.(response.pagination);
+            }
         } else {
             console.error(response.message);
             setError?.(response.message);

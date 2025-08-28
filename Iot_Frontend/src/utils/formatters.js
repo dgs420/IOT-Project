@@ -22,7 +22,7 @@ export const calculateDuration = (session) => {
     const start = new Date(session.entry_time)
     const end = session.exit_time ? new Date(session.exit_time) : new Date()
 
-    return Math.round((end - start) / (1000 * 60))
+    return Math.ceil((end - start) / (1000 * 60))
 }
 
 // Format duration for display

@@ -75,7 +75,7 @@ export const LogHistory = () => {
   //             new Date(log.time).toLocaleString(),
   //             log.action,
   //             log.rfid_card?.card_number || "N/A",
-  //             log.rfid_card?.Vehicle?.vehicle_number || "N/A",  // Use "Vehicle" with uppercase "V"
+  //           
   //             log.rfid_card?.Vehicle?.vehicle_type || "N/A",    // Make sure vehicle_type exists
   //             log.device_id,
   //             log.rfid_card?.Vehicle?.user_id || "N/A",

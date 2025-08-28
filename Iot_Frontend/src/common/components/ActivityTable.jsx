@@ -149,6 +149,7 @@ const ActivityList = ({ embedId }) => {
                   "Details",
                   "Device",
                   "Card ID",
+                  "License Plate",
                 ].map((field) => (
                   <TableCell key={field} sx={{ fontWeight: "bold" }}>
                     {field}
@@ -209,6 +210,7 @@ const ActivityList = ({ embedId }) => {
                       )}
                     </TableCell>
                     <TableCell>{log.card_id || "N/A"}</TableCell>
+                    <TableCell>{log.rfid_card?.Vehicle?.vehicle_plate || "N/A"}</TableCell>
                   </TableRow>
                 ))
               ) : (

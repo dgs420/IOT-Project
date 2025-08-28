@@ -14,7 +14,7 @@ const DeviceDetail = () => {
     const {embedId} = useParams();
     const [deviceDetails, setDeviceDetails] = useState({
         embed_id: '',
-        location: '',
+        name: '',
         type: '',
         status: '',
         last_seen: ''
@@ -75,7 +75,6 @@ const DeviceDetail = () => {
                         <Tab icon={<Info size={18}/>} label="Information"/>
                         <Tab icon={<Activity size={18}/>} label="Activity"/>
                         <Tab icon={<DollarSign size={18}/>} label="Revenue"/>
-                        <Tab icon={<Settings size={18}/>} label="Settings"/>
                     </Tabs>
 
                     <Box sx={{p: 3}}>
@@ -85,10 +84,9 @@ const DeviceDetail = () => {
 
                         {activeTab === 1 && <ActivityList embedId={embedId}/>}
 
-                        {activeTab === 2 && <TransactionsTable embedId={embedId}/>
+                        {activeTab === 2 && <TransactionsTable embedId={embedId} userId={""}/>
                         }
 
-                        {activeTab === 3 && <Typography>Device settings would be displayed here</Typography>}
                     </Box>
                 </Paper>
             </div>

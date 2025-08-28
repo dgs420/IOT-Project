@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Paper, Tab, Tabs } from "@mui/material";
 import BalanceCard from "./BalanceCard";
-import HomeCardsPanel from "./HomeCardsPanel";
+import HomeVehiclesPanel from "./HomeVehiclesPanel.jsx";
 import ParkingMap from "./ParkingMap";
 import HomeTransactionPanel from "./HomeTransactionPanel";
 import TopUpDialogWrapper from "../../../Common/Components/Dialogs/TopUpDialogWrapper";
-import NewCardDialog from "../../../Common/Components/Dialogs/NewCardDialog";
+import NewVehicleDialog from "../../../Common/Components/Dialogs/NewVehicleDialog.jsx";
 import { loadStripe } from "@stripe/stripe-js";
 // import process from "process";
 
@@ -16,7 +16,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 export default function CustomerDashboard() {
   const [tabValue, setTabValue] = useState(0);
   const [topUpDialogOpen, setTopUpDialogOpen] = useState(false);
-  const [newCardDialogOpen, setNewCardDialogOpen] = useState(false);
+  const [newVehicleDialogOpen, setNewVehicleDialogOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
   const [balance, setBalance] = useState(0);
   const [parkingSpaces, setParkingSpaces] = useState([]);
@@ -49,7 +49,7 @@ export default function CustomerDashboard() {
           balance={balance}
           onTopUp={() => setTopUpDialogOpen(true)}
         />
-        <HomeCardsPanel onRequestNewCard={() => setNewCardDialogOpen(true)} />
+        <HomeVehiclesPanel onRequestNewCard={() => setNewVehicleDialogOpen(true)} />
       </Box>
 
       <Paper sx={{ mb: 4, boxShadow: 3 }}>
@@ -59,7 +59,7 @@ export default function CustomerDashboard() {
           variant="fullWidth"
           sx={{ borderBottom: 1, borderColor: "divider" }}
         >
-          <Tab label="Parking Map" />
+          <Tab label="Parking Occupancy" />
           <Tab label="Recent Transactions" />
         </Tabs>
 
@@ -76,9 +76,9 @@ export default function CustomerDashboard() {
         currentBalance={balance}
       />
 
-      <NewCardDialog
-        open={newCardDialogOpen}
-        onClose={() => setNewCardDialogOpen(false)}
+      <NewVehicleDialog
+        open={newVehicleDialogOpen}
+        onClose={() => setNewVehicleDialogOpen(false)}
       />
     </Box>
   );

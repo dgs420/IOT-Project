@@ -77,7 +77,7 @@ const Header = ({toggleSidebar}) => {
                         'activity': 'Activity',
                         'transactions': 'Transactions',
                         'details': 'Statistics',
-                        'your-cards': 'Your cards',
+                        'your-vehicles': 'Your vehicles',
                         'users-list': 'Users',
                         'request': 'Request'
                     };

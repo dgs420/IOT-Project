@@ -3,10 +3,10 @@ import { Paper, Box, Typography, Button, Chip } from '@mui/material';
 import {ChevronRight, CreditCard} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import {getRequest} from "../../../api/index.js";
-import HomeCardsItem from "./HomeCardsItem.jsx";
+import HomeVehiclesItem from "./HomeVehiclesItem.jsx";
 import {CustomButton} from "../../../Common/Components/CustomButton.jsx";
 
-export default function HomeCardsPanel({ onRequestNewCard}) {
+export default function HomeVehiclesPanel({ onRequestNewCard}) {
     const navigate = useNavigate();
 
     const [vehicles, setVehicles] = React.useState([]);
@@ -37,7 +37,6 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
                     onClick={onRequestNewCard}
                     icon = {CreditCard}
                 >
-                    {/*<CreditCard  className="h-4 w-4 mr-2" />*/}
                     REGISTER NEW VEHICLE
                 </CustomButton>
 
@@ -45,16 +44,16 @@ export default function HomeCardsPanel({ onRequestNewCard}) {
 
             <Box sx={{ maxHeight: '200px', overflowY: 'auto',display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {vehicles.map((vehicle) => (
-                    <HomeCardsItem key={vehicle.vehicle_id} card={vehicle} />
+                    <HomeVehiclesItem key={vehicle.vehicle_id} vehicle={vehicle} />
                 ))}
             </Box>
 
             <Button
                 fullWidth
-                variant="outlined" // Changed to outlined for distinction
+                variant="outlined"
                 endIcon={<ChevronRight />}
                 sx={{ mt: 2, borderColor: '#1976d2', color: '#1976d2', '&:hover': { borderColor: '#115293', color: '#115293' } }}
-                onClick={() => navigate('/your-cards')}
+                onClick={() => navigate('/your-vehicles')}
             >
                 View All Registered Vehicles
             </Button>

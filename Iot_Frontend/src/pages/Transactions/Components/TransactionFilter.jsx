@@ -18,7 +18,7 @@ const TransactionFilter = ({ filters, setFilters }) => {
                     >
                         <option value="all">All Statuses</option>
                         <option value="completed">Completed</option>
-                        <option value="pending">Pending</option>
+                        {/* <option value="pending">Pending</option> */}
                         <option value="failed">Failed</option>
                     </select>
                 </div>
@@ -33,7 +33,6 @@ const TransactionFilter = ({ filters, setFilters }) => {
                         <option value="all">All Types</option>
                         <option value="top-up">Top-up</option>
                         <option value="fee">Fee</option>
-                        <option value="refund">Refund</option>
                     </select>
                 </div>
 
